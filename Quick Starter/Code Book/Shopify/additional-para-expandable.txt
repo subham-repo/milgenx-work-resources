@@ -1,0 +1,119 @@
+<section>
+  <div class="container">
+    {% comment %}
+    {% assign footerContent = "" %}
+    {% if template.name contains "index" %}
+      {% assign footerContent = section.settings.additional-para-home %}
+    {% else %}
+      {% assign footerContent = collection.metafields.collection.additional_paragraph %}
+    {% endif %}
+    {% endcomment %}
+
+    {% assign footerContent = section.settings.additional-content %}
+    
+    {% assign description_content = footerContent | strip_html %}	
+    {% assign description_size = description_content | size %}	
+    {% assign description_limit = 300 %}
+    {%- if description_content != blank -%}
+    <hr class=" hr--small">
+    <div description-size="{{ description_size }}" class="collection-description-para {% comment %}style-overlay{% endcomment %} {% if description_size > description_limit %}show-less{% endif %} rte">
+      <div class="collection-description-body">
+        {{ footerContent | truncate : description_limit  }}
+      </div>
+      {% if description_size > description_limit %}
+      <div class="collection-description-size-controller text-center">
+        <button class="btn btn--no-animate">Read More...</button>
+      </div>
+      {% endif %}
+    </div>
+    {%- endif -%}
+  </div>
+</section>
+
+<style>
+  .collection-description-para.show-less .collection-description-body {
+/*     height: 500px; */
+  }
+  .collection-description-para .collection-description-body {
+    overflow: hidden;
+    position: relative;
+  }
+  .collection-description-para {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-bottom: 30px;
+    position: relative;
+    padding-top: 15px;
+  }
+  .collection-description-para.style-overlay.show-less .collection-description-body:before {
+    content: '';
+    height: 200px;
+    width: 100%;
+    background-image: linear-gradient(360deg, #ffffffeb, #ffffff52);
+    position: absolute;
+    bottom: 0;
+  }
+  .collection-description-para .collection-description-body h2:not(:first-child), 
+  .collection-description-para .collection-description-body h3:not(:first-child) {
+    margin-top: 30px;
+  }
+  .collection-description-para .collection-description-body h4{
+    font-size: inherit;
+    line-height: inherit;
+    margin-bottom:15px;
+  }
+  .collection-description-para .collection-description-body a {
+      color: #ea222a;
+      font-weight: inherit;
+  }
+  .collection-description-para.style-overlay.show-less .collection-description-size-controller {
+    position: absolute;
+    bottom: 30px;
+    z-index: 1;
+    left: 0;
+    right: 0;
+  }
+  .collection-description-para .collection-description-body ul {
+    margin-left: 20px;
+    margin-bottom: 10px;
+    padding-left: 0;
+  }
+  
+  .collection-description-body * {
+      font-family: inherit;
+  }
+
+</style>
+<script>
+  let collection_description_para = document.querySelector('.collection-description-para');
+  
+  if(collection_description_para){
+    let collection_description_body = collection_description_para.querySelector('.collection-description-body');
+    let collection_description_controller = collection_description_para.querySelector('.collection-description-size-controller button');
+
+    collection_description_controller.addEventListener('click', function(){
+      let fullContent = "{{ footerContent }}";
+      let lessContent = "{{ footerContent | truncate : description_limit }}";
+      
+      if(collection_description_para.classList.contains('show-less')){
+        collection_description_para.classList.remove('show-less');
+        collection_description_para.classList.add('show-all');
+        collection_description_controller.innerText = 'Read Less';
+  //       collection_description_para.scrollIntoView({behavior: "smooth"});
+        if(!collection_description_body.classList.contains("style-overlay")){
+           collection_description_body.innerHTML = fullContent;
+        }
+      }else{
+        collection_description_para.classList.remove('show-all');
+        collection_description_para.classList.add('show-less');
+        if(!collection_description_body.classList.contains("style-overlay")){
+           collection_description_body.innerHTML = lessContent;
+          
+        }
+        collection_description_controller.innerText = 'Read More...';
+        collection_description_para.scrollIntoView({behavior: "smooth", block: "end", inline: "nearest"});
+      }
+    })
+  }
+</script>

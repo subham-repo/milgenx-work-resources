@@ -1,0 +1,53 @@
+<!-- Scroll to top HTML & CSS Start -->
+<a href="javascript:void(0);" class="scrollTop" style="opacity: 1;"><i class="fa fa-angle-up"></i></a>
+<style type="text/css">
+    a.scrollTop {
+        position: fixed;
+        bottom: 30px;
+        background-color: #fd6c83;
+        color: #fff;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 26px;
+        padding-bottom: 2px;
+        border-radius: 50%;
+        opacity: 0;
+        box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+        transition: .2s all ease-in-out;
+        text-decoration: none;
+        right: 30px;
+        z-index: 9999999;
+    }
+    a.scrollTop:hover, a.scrollTop:focus {
+        background-color: #1d2146;
+    }
+</style>
+<!-- Scroll to top HTML & CSS End -->
+
+<script>
+var header        = jQuery('header');
+var header_height = header.height();
+var page_blody    = jQuery('body');
+var scrollTop	  = jQuery('a.scrollTop');
+jQuery(window).scroll(function(){
+    if (jQuery(window).scrollTop() >= header_height) {
+        header.addClass('header_sticky');
+        page_blody.css({'padding-top':header_height});
+        scrollTop.css({'opacity':'1'});
+    }
+    else {
+        header.removeClass('header_sticky');
+        page_blody.css({'padding-top':'0'});
+        scrollTop.css({'opacity':'0'});
+    }
+})
+
+jQuery("a.scrollTop").on('click', function() {
+  jQuery("html, body").animate({ scrollTop: 0 }, "slow");
+  return false;
+});
+
+</script>

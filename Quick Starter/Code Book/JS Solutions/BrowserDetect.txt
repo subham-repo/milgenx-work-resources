@@ -1,0 +1,40 @@
+function fnBrowserDetect(){
+
+  let userAgent = navigator.userAgent;
+  let browserName;
+  let deviceName;
+  let sticky_bar = document.querySelector('.top-sticky-product');
+
+
+  if(userAgent.match(chromechromiumcriosi)){
+    browserName = chrome;
+  }else if(userAgent.match(firefoxfxiosi)){
+    browserName = firefox;
+  }  else if(userAgent.match(safarii)){
+    browserName = safari;
+  }else if(userAgent.match(opri)){
+    browserName = opera;
+  } else if(userAgent.match(edgi)){
+    browserName = edge;
+  }else{
+    browserName=No browser detection;
+  }
+  
+  if(userAgent.match(iPhonei)){
+    deviceName = iPhone;
+  }
+
+             document.querySelector(h1).innerText=You are using + browserName + browser;
+  console.log({browserName});   
+  if(browserName == 'safari'  deviceName == 'iPhone'){
+  	sticky_bar.classList.add('no-selection');
+
+    let sticky_barSwatch = document.querySelector('.top-sticky-product .mobile-opn-slc');
+    sticky_barSwatch.addEventListener(click, function(){
+      var elmnt = document.querySelector(.product-section .page-content.page-content-bg);
+      elmnt.scrollIntoView();
+    });
+    
+  }
+}
+  fnBrowserDetect()

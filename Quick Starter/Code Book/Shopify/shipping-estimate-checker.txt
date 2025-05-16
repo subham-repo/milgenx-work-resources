@@ -1,0 +1,165 @@
+<!-- snippets/edd-checker-snippet.liquid -->
+
+<!--
+Implemented on fireboltt.com
+Screenshot: https://prnt.sc/hi61wJtnmks5
+1. Shipping API with output of min & max data of item delivery.
+2. In API request, we're pushing the pin code & product variant id.
+ -->
+
+<div class="edd-checker-form-wrapper">
+  <div class="edd-checker-form">
+    <div class="edd-checker-form-info">
+        <strong class="form-title">Check Delivery</strong>
+        <input type="number" placeholder="Pin Code" name="customer-pin" maxlength="6" />
+    </div>
+    <span class="edd-message" default-mag="Enter Pincode to check estimated delivery date"></span>
+  </div>
+</div>
+<script>
+  function parseDate(input){
+    let options = { weekday: 'short', year: 'numeric', month: 'short',day: 'numeric'}
+    let time = new Date(input).toLocaleString("en-in", options)
+    return time;
+  }
+
+  function timeManipulation(input){
+    let options = { weekday: 'long', year: 'numeric', month: 'short',day: 'numeric'}
+    let shippingResetTime = "14:00:00";
+    let currentTime = new Date().toLocaleTimeString("en-in", {hour12: false });
+    let shippingMsg = '';
+    let onDate = new Date(input);
+    let onlyDate = onDate.toJSON().split("T")[0];
+    let tomorrow = new Date(onDate.setUTCDate(onDate.getUTCDate() + 1));
+    let todayDateSummary = new Date();
+    let todayDate = todayDateSummary.toJSON().split("T")[0];
+    
+    // let tommorrowDate = new Date(todayDate.setUTCDate(todayDate.getUTCDate() + 1)).toLocaleString("en-in", { year: 'numeric', month: 'numeric',day: 'numeric'});
+    // let endTime = new Date(tommorrowDate+"T14:00:00");
+    console.log({todayDateSummary, todayDate});
+    
+    console.log({todayDate, input, onlyDate, onDate, tomorrow})
+
+    setInterval(function(){
+      let deadline = new Date("2024-03-16T14:00:00").getTime();
+      let now  = new Date().getTime();
+      let t = deadline - now;
+      let days = Math.floor(t/(1000*60*60*24));
+      let hours = Math.floor((t%(1000*60*60*24))/(1000*60*60));
+      let minutes = Math.floor((t%(1000*60*60))/(1000*60));
+      let seconds = Math.floor((t%(1000*60))/1000);
+      let endTimePort = document.querySelector('.edd-checker-form .edd-message #timer');
+      if(endTimePort.length != 0){
+          endTimePort.innerHTML = hours+ "h : "+minutes+"m : "+ seconds+"s";
+      }
+    }, 1000)
+    
+    if(currentTime >= shippingResetTime){
+      shippingMsg = "Order within <strong id='timer'></strong> and get it by <b>"+parseDate(tomorrow)+"</b>";
+    }else{
+      shippingMsg = "Order before 2 PM and Get it by <b>"+parseDate(onlyDate)+"</b>.";
+    }
+    return shippingMsg;
+  }
+  
+  let deliveryPin = document.querySelector('.edd-checker-form input[name="customer-pin"]');
+  deliveryPin.addEventListener("input", function(){
+      let productVariantID = document.querySelector(".product-single__form select[name='id']").value;
+      let pincode = deliveryPin.value;
+      console.log({pincode, productVariantID})
+      // WARNING: For POST requests, body is set to null by browsers.
+      var data = JSON.stringify({
+        "product_variant_id": productVariantID,
+        "destination_pincode": pincode
+      });
+      
+      var xhr = new XMLHttpRequest();
+      xhr.withCredentials = true;
+
+      let eddMsgPort = document.querySelector('.edd-checker-form .edd-message');
+      xhr.addEventListener("readystatechange", function(e) {
+        // setInterval(function(){console.log(e)}, 100)
+        if(this.readyState === 4) {
+          let response = JSON.parse(this.response);
+          
+          let min_edd = response.min_edd;
+          let max_edd = response.max_edd;
+          let is_cod = response.is_cod;
+          let shippingComment = timeManipulation(min_edd);
+          
+          console.log({min_edd, max_edd});
+          if(min_edd != undefined || min_edd != undefined){}
+          eddMsgPort.innerHTML = shippingComment;
+        }
+      });
+
+      xhr.addEventListener( 'loadstart', function ( event ) {
+        eddMsgPort.innerHTML = "<b>Calculating..</b>";
+      })
+      xhr.open("POST", "https://www.fireboltt.com/apps/eshipz/edd?shop=boltt-audio.myshopify.com");
+      xhr.setRequestHeader("x-api-token", "<eshipz-user-id>");
+      xhr.setRequestHeader("Content-Type", "application/json");
+
+      if(pincode.length == 6){
+        xhr.send(data);
+      }
+  })
+</script>
+<style>
+  .edd-checker-form {
+      display: flex;
+      align-items: center;
+      text-align: left;
+      width: 100%;
+      flex-flow: column;
+  }
+  .edd-checker-form .edd-checker-form-info {
+      display: flex;
+      flex-flow: row;
+      align-items: center;
+      width: 100%;
+      column-gap: 15px;
+  }
+  @media(min-width: 481px){
+    .edd-checker-form-wrapper {
+       max-width: 360px; 
+    }
+  }
+  .edd-checker-form-wrapper {
+      background-color: #fff;
+      padding: 12.5px 15px;
+      text-align: left;
+      margin: 5px 0;
+      box-shadow: 0 0 2px 0 rgba(0,0,0,.2) inset;
+      border: 1px solid #ddd;
+      /* border-left: none; */
+      /* border-right: none; */
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 10px;
+  }
+  .edd-checker-form-wrapper span.edd-message:not(:empty) { margin-top: 5px; }
+  .edd-checker-form-wrapper .form-title { margin-bottom: 0px; white-space: nowrap;}
+  .edd-checker-form-wrapper span.edd-message {
+      font-size: 12px;
+      line-height: 17px;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      color: #2c2a2a;
+      width: 100%;
+  }
+  .edd-checker-form-wrapper span.edd-message b{ color: #F57D1F; }
+  .edd-checker-form input {
+      width: 100%;
+      display: inline-block;
+      letter-spacing: 1px;
+      height: 30px;
+      border: none;
+      outline: none;
+      border-bottom: 2px solid #8d8d8d;
+      padding-left: 0;
+      font-size: 15px;
+      /* max-width: 130px; */
+  }
+</style>

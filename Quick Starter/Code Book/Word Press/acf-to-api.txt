@@ -1,0 +1,12 @@
+In function.php File Add
+
+function acf_options_route(){
+  return get_field('registered_store_detail', 'option');
+}
+
+add_action("rest_api_init", function () {
+  register_rest_route("options", "/registered_store_detail", [
+    "methods" => "GET",
+    "callback" => "acf_options_route",
+  ]);
+});

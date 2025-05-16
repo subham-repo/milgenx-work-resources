@@ -1,0 +1,138 @@
+{% if template contains 'product' %}
+<div id="huratips-addtocart-sticky">
+  <div class="page-width">
+    <div class="product-info">
+      {% unless product.metafields.global.featured == blank %}
+      <img src="{{ product.metafields.global.featured | asset_url }}" alt="{{ product.title | escape }}" class="small--hide">
+      {% else %}
+      <img src="{{ product.featured_image | product_img_url: '60x' }}" alt="{{ product.title | escape }}" class="small--hide" />
+      {% endunless %}
+      <div class="product_info_block">
+      	<h3>{{ product.title }}</h3>
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+          {%- when 'custom_liquid' -%}
+          {{ block.settings.custom_liquid }}
+          {% endcase %}
+        {% endfor %}
+      </div>
+    </div>
+      <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+      <input type="hidden" name="quantity" value="1" min="1" >
+      <button type="submit" class="button button--primary stickybutton" {% if product.available == false %}disabled{% endif %}>{% if product.available %}Buy Now{% else %}Sold Out{% endif %}</button>
+  </div>
+</div>
+<script>
+  window.addEventListener("load", function(){
+    let productSubmitBtn = document.querySelector(".product-form__submit");
+    let stickySubmitButton = document.querySelector("#huratips-addtocart-sticky button");
+    stickySubmitButton.addEventListener("click", function(){
+        productSubmitBtn.click();
+    })
+  })
+</script>
+<style>
+  #huratips-addtocart-sticky{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    padding: 10px 0;
+    border-top: 1px solid #e2e2e2;
+    box-shadow: 0 0 20px 0 rgb(0 0 0 / 10%);
+  }
+  body.overflow-hidden #huratips-addtocart-sticky{
+    z-index: 9;
+  }
+  body:not(.overflow-hidden) #huratips-addtocart-sticky{
+    z-index: 9999;
+  }
+  #huratips-addtocart-sticky .product-info img {
+    height: 60px;
+    width: 60px;
+    object-position: center;
+    object-fit: cover;
+    border-radius: 6px;
+    margin-right: 20px;
+    box-shadow: 0 0px 2px 0 rgb(0 0 0 / 20%);
+  }
+  #huratips-addtocart-sticky .product-info .product_info_block h3 {
+    margin-bottom: 5px;
+    margin-top: 0;
+    font-weight: bold;
+  }
+  #huratips-addtocart-sticky select,
+  #huratips-addtocart-sticky input,
+  #huratips-addtocart-sticky button{
+    height:40px;
+    margin:0 5px;
+    vertical-align: middle;
+  }
+  #huratips-addtocart-sticky input{
+    width: 60px;
+    text-align: center;
+  }
+  #huratips-addtocart-sticky button {
+      padding: 0 15px;
+      font-weight: bold;
+      white-space: nowrap;
+  }
+  #huratips-addtocart-sticky .page-width {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+  }
+  #huratips-addtocart-sticky .button:before{
+    display:none;
+  }
+  #huratips-addtocart-sticky .page-width:after {
+    display: none;
+  }
+  #huratips-addtocart-sticky .product-info {
+    display: flex;
+    align-items: center;
+  }
+  @media(min-width:768px){
+    #huratips-addtocart-sticky .page-width {
+      justify-content: space-between;
+    }
+    div#huratips-addtocart-sticky {
+        background-color: #fff;
+    }
+  }
+  @media(max-width:767px){
+    div#huratips-addtocart-sticky {
+        background-color: #ebffcd;
+    }
+    #huratips-addtocart-sticky .product-info img{
+      display: none;
+    }
+    #huratips-addtocart-sticky .page-width {
+      justify-content: center;
+    }
+    #huratips-addtocart-sticky button {
+      margin: 0;
+    }
+    #huratips-addtocart-sticky .product-info {
+      margin-bottom: 0px;
+    }
+    #huratips-addtocart-sticky form, 
+    #huratips-addtocart-sticky .product-info, 
+    #huratips-addtocart-sticky .product-info .product_info_block, 
+    #huratips-addtocart-sticky .product-info .product_info_block .product__price .price__pricing-group {
+      width: 100%;
+    }
+    #huratips-addtocart-sticky .product-info .product_info_block .product__price .price__pricing-group {
+      justify-content: space-between;
+    }
+    #huratips-addtocart-sticky .product-info .product_info_block .product__price .price__pricing-group span.price__badge.price__badge--sale {
+      font-size: 12px;
+    }
+  }
+  @media(min-width:768px)and(max-width:991px){
+  	justify-content: space-between;
+  }
+</style>
+{% endif %}

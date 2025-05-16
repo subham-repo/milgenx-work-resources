@@ -1,0 +1,307 @@
+<section class="sticky-cta-page">
+  <div class="page-width container-sm">
+    <div class="grid">
+      <div class="header grid__item one-whole">
+        {%- render 'header-logo-block', section: section -%}
+        <button class="close_model" onclick="toggle_ctaOverScreen();"><span>Close</span> <img width="20" height="20" src="https://info.kinexmedia.com/wp-content/themes/understrap-child-master/img/close-32.png" alt="close-model" style="margin-left: 10px;"></button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="order_history-wrapper grid__item one-whole">
+        <div class="get-started-form full-width">
+          <h2 class="h3">{{ 'customer.orders.title' | t }}</h2>
+
+
+
+          {% if customer.orders.size != 0 %}
+
+          
+            <div class="orderHistory_log">
+              {%- for order in customer.orders -%}
+              {% for line_item in order.line_items%}
+              <div class="orderHistory_item">
+                <div class="orderHistory_header">
+                  <span class="order_details order_id">Order ID: {{ order.name }}</span>
+                  <a href="{{order.customer_url}}" class="order_details order_id">Order Details <img src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/34/assets/black-right-arrow.svg?v=1641228145" alt="right-arrow" /></a>
+                </div>
+                <div class="orderHistory_brief">
+                  <div class="grid grid--uniform">
+                    <div class="grid__item orderinfo__wrapper small--one-whole medium-up--three-quarters">
+                      <div class="order_thummb">
+                        {%- assign img_url = line_item | img_url: '240x' -%}
+                        <img src="{{ img_url }}" alt="{{ line_item.title | escape }}"> 
+                      </div>
+                      <div class="order_details">
+                        <h3>{{ line_item.product.title }}</h3>
+                        <div class="order_linedetails">
+                          <span class="line__item"><label>Variant: </label> {{ line_item.variant.title }}</span>
+                          <span class="line__item"><label>Quantity: </label> {{ line_item.quantity }}</span>
+                          <span class="line__item"><label>{{ 'customer.orders.total' | t }}: </label> {{ order.total_price | money }}</span>
+                          <span class="line__item"><label>Order Date: </label> {{ order.created_at | time_tag: format: 'date' }}</span>
+                          <span class="line__item"><label>Order Status: </label> {{ order.fulfillment_status_label }}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="grid__item small--one-whole medium-up--one-quarter">
+                      <div class="order_actions">
+                        <a href="https://boltt.clickpost.in/?order_id={{order.id}}" class="order_actions__items">Track order <img src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/34/assets/black-right-arrow.svg?v=1641228145" alt="right-arrow" /></a>
+                        <a href="/pages/warranty-support" class="order_actions__items">Raise Complaint <img src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/34/assets/black-right-arrow.svg?v=1641228145" alt="right-arrow" /></a>
+                        <a target="_blank" href="{{ shop.url }}/invoice/download/?id={{ order.id }}&number={{ order.order_number }}" class="order_actions__items">View invoice <img src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/34/assets/black-right-arrow.svg?v=1641228145" alt="right-arrow" /></a>
+                      </div>
+                    </div>
+                  </div>
+                </div> 
+              </div>
+              {% endfor %}
+              {%- endfor -%}
+            </div>
+
+          <hr class="hr--clear">
+
+          {% else %}
+
+          <p>{{ 'customer.orders.none' | t }}</p>
+
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section> 
+
+<style>
+  .order_actions a.order_actions__items:after {
+    display: none;
+  }
+  .orderHistory_header a.order_details.order_id {
+    color: #fff;
+    display: inline-flex;
+    align-items: center;
+  }
+  .orderHistory_header a.order_details.order_id img {
+    filter: brightness(0) invert(1);
+    width: 10px;
+    margin-left: 10px;
+  }
+  .orderinfo__wrapper .order_thummb {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  @media(min-width:1200px){
+    .orderinfo__wrapper {
+      border-right: 2px solid #ccc;
+    }
+    .order_actions {
+      flex-flow: column;
+    }
+  }
+  @media(max-width:1199px){
+    .order_actions {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .orderHistory_brief .grid__item {
+      width: 100%;
+    }
+    .order_actions a.order_actions__items {
+      padding: 0 10px;
+    }
+    .order_actions a.order_actions__items {
+      font-size: 16px;
+      padding: 10px 5px;
+      border: none;
+    }
+    .order_actions a.order_actions__items img {
+      width: 7px;
+      margin-left: 5px;
+    }
+    .order_actions{
+      border-top: 2px solid #ccc;
+      padding-top: 20px;
+      margin-top: 20px;
+    }
+  }
+  @media(min-width:1200px){
+    .order_actions a.order_actions__items {
+      font-size: 22px;
+      padding-bottom: 14px;
+      border: none;
+    }
+    .orderinfo__wrapper .order_thummb {
+      width: 300px;
+    }
+    .orderHistory_brief .order_details {
+      width: calc(100% - 300px);
+    }
+    .orderHistory_brief .order_details .order_linedetails span.line__item {
+      width: 50%;
+    }
+    .order_actions a.order_actions__items img {
+      width: 10px;
+      margin-left: 5px;
+    }
+  }
+  @media(max-width:1199px){
+  	.orderinfo__wrapper .order_thummb {
+      width: 150px;
+    }
+    .orderHistory_brief .order_details {
+      width: calc(100% - 150px);
+    }
+  }
+  @media(max-width:480px){
+    .orderHistory_brief .order_details, .orderinfo__wrapper .order_thummb {
+      width: 100%;
+    }
+  }
+  @media(min-width:768px){
+  	.orderHistory_brief .order_details .order_linedetails span.line__item {
+      width: 50%;
+    }
+  }
+  @media(max-width:767px){
+    .orderinfo__wrapper .order_thummb img {
+      max-width: 150px;
+    }
+  	.orderHistory_brief .order_details .order_linedetails span.line__item {
+      width: 100%;
+    }
+    .orderinfo__wrapper .order_thummb {
+      margin-bottom: 30px;
+    }
+    .orderHistory_header .order_details {
+      font-size: 14px;
+    }
+  }
+  .orderHistory_item {
+    background-color: #f5f5f5;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  .orderinfo__wrapper {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .order_actions {
+    display: flex;
+  }
+  
+  .orderHistory_brief .order_details .order_linedetails {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .orderHistory_brief .order_details .order_linedetails span.line__item label {
+    margin: 0;
+    opacity: .6;
+  }
+  .orderHistory_brief .order_details .order_linedetails span.line__item {
+    display: inline-flex;
+    align-items: center;
+    padding-right: 15px;
+    padding-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .orderHistory_brief {
+    padding: 30px 15px;
+  }
+  .orderHistory_header {
+    display: flex;
+    justify-content: space-between;
+    background-color: #000;
+    color: #fff;
+    padding: 15px 20px;
+  }
+  html.show-sticky-cta-page{
+    overflow: hidden;
+  }
+  html.show-sticky-cta-page section.sticky-cta-page {
+    height: 100%;
+    border-radius: 0;
+    opacity: 1;
+  }
+  html.show-sticky-cta-page body.unloading:before{
+  	display:none;
+  }
+	
+  .site-header__logo a {
+    color: #000;
+    border: none;
+  }
+  section.sticky-cta-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    z-index: 999999;
+    transition: .3s all ease-in-out;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+  html:not(.show-sticky-cta-page) section.sticky-cta-page {
+    height: 0;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    opacity: 0;
+  }
+  section.sticky-cta-page .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  section.sticky-cta-page .header a.navbar-brand {
+    display: inline-block;
+    max-width: 180px;
+  }
+  section.sticky-cta-page .header button.close_model {
+    border-style: none;
+    background-color: transparent;
+    font-size: 20px;
+    letter-spacing: .5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+  }
+a.image-wrap.orderimage img {
+    opacity: unset !important;
+}
+</style>
+<script>
+  let moveback = false;
+  let cta_hashAddress = '#order_history'
+  function toggle_ctaOverScreen(moveback){
+    // Use onclick="toggle_ctaOverScreen()" to toggle cta popup
+    // console.log({moveback});
+    let site_container = document.querySelector('html');
+    let sticky_cta_page_class = 'show-sticky-cta-page';
+
+    if(site_container.classList.contains(sticky_cta_page_class)){
+      if(moveback == true){
+        window.location.hash = '';
+        site_container.classList.remove(sticky_cta_page_class);
+      }else{
+        site_container.classList.remove(sticky_cta_page_class);
+        history.pushState(null, null, '#');
+      }
+    }else{
+      site_container.classList.add(sticky_cta_page_class);
+      document.querySelector('body').classList.remove('unloading');
+      history.pushState(null, null, cta_hashAddress);
+    }
+  }
+
+  if(window.location.hash == cta_hashAddress){
+    toggle_ctaOverScreen();
+  }
+
+  window.onhashchange = function() {
+    toggle_ctaOverScreen(moveback = true);
+  }
+</script> 

@@ -1,0 +1,86 @@
+<script>
+window.addEventListener('load', function(){
+    let cart_note_input = '<label for="shippingPrompt"><input type="checkbox" width="20" height="20" value="ATL" name="shippingPrompt">&nbsp;Authority to leave in safe place.</label>'
+    Checkout.$('form.edit_checkout .step_sections .content-box .content-box_row[role="table"]').append(cart_note_input)  
+    var data = localStorage.getItem("shipping_notes");
+if (data == null)
+{
+setTimeout(function() {
+ $('[name="shippingPrompt"]').prop("checked", true);
+    $.ajax({
+        url: '/cart/update.js',
+        type: 'POST',
+        data: {note: "ATL"},
+        success: function(result) { 
+        },
+    });   
+}, 50);     
+   }
+    if (data == 'checked')
+      {    
+    $('[name="shippingPrompt"]').prop("checked", true);
+        $.ajax({
+            url: '/cart/update.js',
+            type: 'POST',
+            data: {note: "ATL"},
+            success: function(result) { 
+            },
+        });   
+    }
+  else {
+    $('[name="shippingPrompt"]').prop("checked", false);
+     $.ajax({
+        url: '/cart/update.js',
+        type: 'POST',
+        data: {note: " "},
+        success: function(result) { 
+        },
+    });
+ }
+
+$('[name="shippingPrompt"]').change(function()
+      {
+    if ($(this).is(":checked")) {
+        localStorage.setItem("shipping_notes", 'checked');
+    } else {
+localStorage.setItem("shipping_notes", 'unchecked');
+    }
+
+    if ($(this).is(':checked')) {
+
+            $.ajax({
+            url: '/cart/update.js',
+            type: 'POST',
+            data: {note: "ATL"},
+            success: function(result) { 
+            },
+            
+        });
+        
+    }
+        else {
+    $.ajax({
+            url: '/cart/update.js',
+            type: 'POST',
+            data: {note: " "},
+            success: function(result) { 
+            },
+            
+        });
+            
+        }
+    });
+})
+</script>
+<style>
+label[for="shippingPrompt"] {
+    display: inline-block;
+    margin-top: 15px;
+    font-weight: 600;
+}
+label[for="shippingPrompt"] input[type="checkbox"] {
+  -webkit-appearance: auto !important;
+  appearance: auto !important;
+  padding: 5px;
+}
+</style>

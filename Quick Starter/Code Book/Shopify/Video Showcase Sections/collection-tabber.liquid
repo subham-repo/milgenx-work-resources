@@ -1,0 +1,238 @@
+{%- if section.settings.divider -%}<div class="section--divider">{%- endif -%}
+<section class="Section Section--spacingNormal">
+  <div id="CollectionTabberSection-{{ section.id }}" data-section-id="{{ section.id }}" class="collection-tabber-section" data-section-type="collection-tabber">
+    {% if section.settings.title != blank %}
+    <div class="container">
+      <header class="SectionHeader SectionHeader--center">
+        <h2 class="SectionHeader__Heading Heading u-h1">
+        {% if section.settings.collectionlink != blank %}<a href="{{ section.settings.collectionlink }}" class="section-title__link">{% endif %}
+        {{ section.settings.title }}
+        {% if section.settings.collectionlink != blank %}</a>{% endif %}
+        </h2>
+      </header>
+    </div>
+    {% endif %}
+  <div class="container page-width--flush-small">
+    <div class="grid-section">
+      <div class="tabber-thumb-container">
+        <div class="tabber-thumb-wrapper">
+          <!-- swiper1 -->
+          {%- for block in section.blocks -%}
+          <div index="{{ forloop.index }}" class="tabber-thumb-slide {% if forloop.index == 1 %}{% endif %}"><span>{% if block.settings.title != blank %}{{ block.settings.title }}{% else %}{{ block.settings.product.title }}{% endif %}</span></div>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="flickity-container product-video-cards">
+        <div class="flickity-wrapper flickity-slide-{{ section.id }}" data-aos="">
+
+          {%- for block in section.blocks -%}
+          {%- assign lowestPrice = block.settings.product.price_max -%}
+
+          <div index="{{ forloop.index }}" class="flickity-slide collection-product-slide text-center" id="#{{ block.settings.product.title | downcase | replace: " ", "-" }}">
+            <div class="flickity-slide-wrapper">
+              <div class="product-media" width="{{ block.settings.productBanner.width }}" height="{{ block.settings.productBanner.height }}" >
+
+                {%- if block.settings.video_url contains 'youtube.com/watch' -%}
+                {%- assign video_id = block.settings.video_url | split: 'v=' -%}
+                {%- assign video_id = video_id[1] | split: '&' | first -%}
+                <div
+                     id="YouTubeVideo-{{ section.id }}"
+                     class="video-div"
+                     data-type="youtube"
+                     data-video-id="{{ video_id }}"></div>
+                {%- endif -%}
+
+                {%- if block.settings.video_url contains 'youtu.be/' -%}
+                {%- assign video_id = block.settings.video_url | split: '.be/' -%}
+                {%- assign video_id = video_id[1] | split: '&' | first -%}
+                <div
+                     id="YouTubeVideo-{{ section.id }}"
+                     class="video-div"
+                     data-type="youtube"
+                     data-video-id="{{ video_id }}"></div>
+                {%- endif -%}
+
+                {%- if block.settings.video_url contains 'vimeo.com' -%}
+                {%- assign video_id = block.settings.video_url | split: '.com/' -%}
+                {%- assign video_id = video_id[1] | split: '/' | first -%}
+                <div
+                     id="Vimeo-{{ section.id }}"
+                     class="video-div"
+                     data-type="vimeo"
+                     data-video-id="{{ video_id }}"></div>
+                {%- endif -%}
+
+                {% if section.settings.enableVideo == true and block.settings.video_url != blank %}
+                {%- if block.settings.video_url contains '.mp4' or block.settings.video_url contains '.MP4' and section.settings.enableVideo == true -%}
+                <video
+                       preload="none"      
+                       loading="eager" 
+                       id="Mp4Video-{{ section.id }}"
+                       class="video-element lazy"
+                       video-src="{{ block.settings.video_url }}" 
+                       {% comment %}{% if forloop.index == 1 %}src="{{ block.settings.video_url }}"{% endif %}{%endcomment%}
+                       data-type="mp4" 
+                       poster="{{ block.settings.productBanner | img_url: "master"}}" 
+                       width="{{ block.settings.productBanner.width }}" 
+                       height="{{ block.settings.productBanner.height }}" 
+                       loop muted playsinline autoplay controls controlsList="nodownload" style="opacity:0;"></video>
+                <img class="video-poster" src="{{ block.settings.productBanner | img_url: "master"}}" 
+                     width="{{ block.settings.productBanner.width }}" 
+                     height="{{ block.settings.productBanner.height }}" 
+                     alt="{{shop.name}} {{ block.settings.title }}" 
+                     loading="{% if forloop.index == 1 %}eager{% else %}lazy{% endif %}" >
+                <!--                 <span 
+mute-src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/36/assets/mute.png?v=1653391706" 
+volume-src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/36/assets/volume.png?v=1653391706" class="audio-control"><img width="20" height="20" src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/36/assets/mute.png?v=1653391706"></span> -->
+                {% endif %}
+                {% else %}
+
+                {% if block.settings.productBanner == blank %}
+                <img 
+                     src="{{ block.settings.product.selected_or_first_available_variant.featured_image | img_url: "300x"}}" 
+                     alt="{{shop.name}} {{ block.settings.title }}" 
+                     width="300" 
+                     height="300"
+                     {% comment %}{% endcomment %}
+                     loading="{% if forloop.index == 1 %}eager{% else %}lazy{% endif %}" 
+                     class="product-banner">
+                {% else %}
+                <img 
+                     src="{{ block.settings.productBanner | img_url: "master"}}" 
+                     alt="{{shop.name}} {{ block.settings.title }}" 
+                     width="{{ block.settings.productBanner.width }}" 
+                     height="{{ block.settings.productBanner.height }}"
+                     loading="{% if forloop.index == 1 %}eager{% else %}lazy{% endif %}" style="margin-bottom:0px;">
+                {% endif %}
+
+                {%- endif -%}
+              </div>
+              
+              <div class="product-infos">
+                <h2 class="info-ttile h2-size">
+                  {% if block.settings.title == blank %}
+                  {{ block.settings.product.title }}
+                  {% else %}
+                  {{ block.settings.title }}
+                  {% endif %}
+                </h2>
+                <div class="price-infos">
+                	<span class="product_price lowestPrice">{{lowestPrice | money}}</span>
+                </div>
+                {%- assign review_link = '#Reviews-' | append: block.settings.product.id -%}
+                {% comment %}
+                <!-- RYVIU APP :: WIDGET-TOTAL -->
+                <div class="review-widget">
+                  <ryviu-widget-total reviews_data="{{block.settings.product.metafields.ryviu.product_reviews_info  | escape  }}" product_id="{{block.settings.product.id}}" handle="{{block.settings.product.handle}}"></ryviu-widget-total>
+                </div>
+                <!-- / RYVIU APP -->
+                {% endcomment %}
+                <div class="product_description">
+                  {% if block.settings.description == blank %}
+                  {{ block.settings.product.description }}
+                  {% else %}
+                  {{ block.settings.description }}
+                  {% endif %}
+                </div>
+                {% if block.settings.product.url != blank %}
+                <a href="{{block.settings.product.url}}#smartview" class="Button Button--primary">Buy 
+                  {% if block.settings.title == blank %}
+                  {{ block.settings.product.title }}
+                  {% else %}
+                  {{ block.settings.title }}
+                  {% endif %}</a>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+          {%- endfor -%} 
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+{%- if section.settings.divider -%}</div>{%- endif -%}
+<style>
+  .collection-product-slide {
+      width: 100%;
+  }
+  .text-center{
+    text-align: center;
+  }
+</style>
+{% schema %}
+  {
+  "name": "Collection Tabber",
+  "class": "shopify-section--bordered collection-tabber index-section",
+    "settings": [
+		{
+          "type": "text",
+          "id": "title",
+          "label": "Heading",
+          "default": "Collection Tabs"
+        },
+		{
+          "type": "url",
+          "id": "collectionlink",
+          "label": "Collection Link"
+        },
+		{
+          "type": "checkbox",
+          "id": "enableVideo",
+          "label": "Enable Video"
+        },
+      {
+        "type": "checkbox",
+        "id": "divider",
+        "label": "Show section divider",
+        "default": false
+      }
+	],
+	"presets": [{
+      "name": "Collection Tabber",
+      "category": "Collection"
+    }],
+    "blocks" : [
+		{
+          "type": "Product",
+          "name": "Product block",
+          "settings": [
+			{
+              "type": "product",
+              "id": "product",
+              "label": "Product-Handle"
+            },
+            {
+              "id": "productBanner",
+              "type": "image_picker",
+              "label": "Product/Poster Banner"
+            },
+			{
+              "type": "text",
+              "id": "video_url",
+              "label": "Background video link",
+              "info": "Supports YouTube, .MP4 and Vimeo. Not all features supported by Vimeo. [Learn more](https://archetypethemes.co/blogs/motion/how-do-i-add-background-videos)"
+            },
+			{
+              "id": "title",
+              "type": "text",
+              "label": "Title text"
+            },
+			{
+              "id": "description",
+              "type": "richtext",
+              "label": "Description"
+            }
+          ]
+        }
+	]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

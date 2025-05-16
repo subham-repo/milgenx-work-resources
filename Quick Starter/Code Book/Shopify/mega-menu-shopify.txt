@@ -1,0 +1,42 @@
+.accordion-custom-mh {
+  .item{
+    h3 {
+      padding: 10px 10px;
+      cursor:pointer;
+      &:hover{
+        @media(min-width:992px){
+          background-color: #6cbd16;
+          color: #fff;
+        }
+      }
+    }
+    &.show-panel {
+      h3 {
+        @media(min-width:992px){
+          background-color: #6cbd16;
+          color: #fff;
+        }
+      }
+      .panel {
+        display: block;
+      }
+    }
+  }
+}
+
+function accordian_panel(){
+        var accordian_panel = jQuery(".accordion-custom-mh .item");
+        accordian_panel.each(function(){
+          var acoordian_panel_trigger = jQuery(this);
+
+          acoordian_panel_trigger.find('h3').on('click', function(){
+            if(acoordian_panel_trigger.hasClass('show-panel')){
+            	jQuery(this).parent('.item').removeClass('show-panel')
+            }else{
+				jQuery(this).parent('.item').addClass('show-panel').siblings().removeClass('show-panel');
+			}
+          })
+
+        })
+      }
+      accordian_panel();

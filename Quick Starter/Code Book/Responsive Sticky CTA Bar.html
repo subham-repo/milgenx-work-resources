@@ -1,0 +1,102 @@
+
+===================================================================================
+============================== - C T A B A R - ====================================
+===================================================================================
+
+Screen-shot: https://prnt.sc/s96zam
+
+<!-- ==== CTA Bar Block Start ==== -->
+
+<div class="callnow cta_footer_above_720 custom_js_footer"> 
+	<div class="calltext">
+		<span class="show_full_add_text">
+			<span class="dynamic_change_bill">Need help finding a Detox Center?</span> 
+
+			<a class="custombill_style" href="tel:<?php echo $cont_number =  of_get_option('contact_num_op'); ?>"> <i class="fa fa-phone"></i> 
+			<?php echo $cont_number =  of_get_option('contact_num_op'); ?></a>
+
+			<span style="font-weight: 700;" class="sponsored_between_bill"> Sponsored 
+				<i class="fa fa-info-circle" aria-hidden="true"></i>
+			</span>
+
+		</span>
+		<span class="rep_avail_now">Representatives available now. <i class="fa fa-check"></i></span>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var call_height = jQuery('.callnow').height();
+
+	jQuery(window).scroll(function(){
+	    if (jQuery(window).scrollTop() >= 300) {
+	        jQuery('html').addClass('user-active');
+	        jQuery('html').css('margin-bottom', call_height);
+	    }
+	    else {
+	        jQuery('html').removeClass('user-active');
+	        jQuery('html').css('margin-bottom', '0');
+
+	    }
+	});
+</script>
+
+<!-- ==== CTA Bar Block End ==== -->
+
+<style>
+.callnow {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(-40deg, rgb(17, 83, 144), #39a6f5);
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 999999!important;
+    right: 0;
+    vertical-align: middle;
+    line-height: normal;
+    transition: .2s all ease-in-out;
+    box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
+}
+
+html:not(.user-active) .callnow {bottom: -200px !IMPORTANT;}
+
+.callnow a.custombill_style .fa {margin: 0;}
+.callnow * {color: #fff;letter-spacing: 1px;}
+.callnow span.sponsored_between_bill {font-size: 12px;}
+.callnow i.fa.fa-check {background: #1bbb1b;padding: 4px;margin-left: 10px;}
+.callnow a.custombill_style, .callnow a.custombill_style .fa {
+color: #fff900 !important;font-weight: 700;font-size: 26px;margin: 0 10px;}
+.calltext {display: flex;justify-content: center;align-items: center;flex-wrap: wrap;}
+.cta_footer_above_720 .show_full_add_text {display: flex;align-items: center;flex-wrap: wrap;text-align: center;}
+
+@media(min-width: 1101px){
+	.callnow {height: 100px;}
+	.cta_footer_above_720 .show_full_add_text {background: rgb(21, 91, 154);box-shadow: 0 0 10px 0 rgba(0,0,0,.2);}
+}
+
+@media (max-width: 1100px) {
+	.callnow {height: auto;padding: 10px 14px;}
+	.callnow span.sponsored_between_bill {margin: auto;}
+	.cta_footer_above_720 .show_full_add_text {flex-flow: column;}
+	.cta_footer_above_720 .calltext{font-size:18px !important;}
+	.cta_footer_above_720 .rep_avail_now{font-size:15px !important;display: none;}
+	.callnow a.custombill_style {
+	    background: linear-gradient(to right, #1ead4e, #398cca) !important;
+	    color: #fff;
+	    border: unset;
+	    padding: 10px 15px;
+	    margin: 5px auto !important;
+	    border-radius: 6px;
+	    box-shadow: 0 0 10px 0 rgba(0,0,0,.1);
+	}
+}
+@media (min-width: 720px){
+	.cta_footer_above_720 .calltext {color: #fff;font-size: 23px;}
+	.cta_footer_above_720 .rep_avail_now {margin-left: 25px;font-size: 19px;}
+	.cta_footer_above_720 .show_full_add_text {padding: 10px 40px;border-radius: 10px;}
+	.calltext {color: #fff900;text-align: center;z-index: 999999!important;font-size: 30px;}
+	.cta_footer_above_720 p.customcatptag {text-align: center;padding: 0;overflow: inherit;}	
+}
+</style>

@@ -1,0 +1,37 @@
+{%- liquid assign on_sale = false 
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif  -%}
+{%- if on_sale and product.available -%}
+  {%- if settings.product_save_amount -%}
+    {%- if settings.product_save_type == 'dollar' -%}
+      {% capture saved_amount %}{{ product.compare_at_price | minus: product.price | money | remove: '.00' }}{% endcapture %}
+    {%- else -%}
+      {% capture saved_amount %}{{ product.compare_at_price | minus: product.price | times: 100.0 | divided_by: product.compare_at_price | round }}%{% endcapture %}
+    {%- endif -%}
+    <span data-save-price="" class="product__price-savings">{{ 'products.general.save_html' | t: saved_amount: saved_amount }}</span>
+  {%- endif -%}
+{%- endif -%}
+
+
+==========================
+
+
+{%- liquid assign on_sale = false 
+  if product.compare_at_price > product.price
+    assign on_sale = true
+  endif  -%}
+{%- liquid 
+assign on_sale = false 
+if product.compare_at_price > product.price
+assign on_sale = true
+endif 
+-%}
+{%- if on_sale and product.available -%}
+{%- if settings.product_save_amount -%}
+{% capture saved_amount %}{{ product.compare_at_price | minus: product.price | money_without_currency | remove: '.00' }}{% endcapture %}
+<span data-save-price="" class="product__price-savings">
+{{ 'Spare ' | append: saved_amount }} {{ shop.currency }}
+</span>
+{%- endif -%}
+{%- endif -%}

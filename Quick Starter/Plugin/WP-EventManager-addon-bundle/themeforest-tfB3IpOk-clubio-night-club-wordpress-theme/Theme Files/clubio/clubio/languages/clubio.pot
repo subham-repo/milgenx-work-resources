@@ -1,0 +1,870 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Package Name\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-05-07 13:55+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+
+#: 404.php:11 404.php:20
+msgid "404"
+msgstr ""
+
+#: 404.php:21
+msgid "Sorry. Page Was Not Found"
+msgstr ""
+
+#: 404.php:22
+msgid "The page you are looking is not available or has been removed."
+msgstr ""
+
+#: 404.php:26
+msgid "back to home page"
+msgstr ""
+
+#: comments.php:40
+msgid "Your comment is awaiting moderation."
+msgstr ""
+
+#: comments.php:52 comments.php:64
+msgid "(Edit)"
+msgstr ""
+
+#: comments.php:78
+msgid "Comments"
+msgstr ""
+
+#: comments.php:86
+msgid "Comments are closed."
+msgstr ""
+
+#: comments.php:95
+msgid "leave comment"
+msgstr ""
+
+#: comments.php:101
+msgid "First name"
+msgstr ""
+
+#: comments.php:105
+msgid "Email"
+msgstr ""
+
+#: comments.php:109
+msgid "Website"
+msgstr ""
+
+#: comments.php:112
+msgid "Comment"
+msgstr ""
+
+#: comments.php:115
+msgid "Leave a Comment"
+msgstr ""
+
+#: comments.php:116
+msgid "cancel reply"
+msgstr ""
+
+#: footer.php:46
+msgid "Copyright &copy;"
+msgstr ""
+
+#: footer.php:50
+msgid "All rights reserved."
+msgstr ""
+
+#: footer.php:52
+msgid "Proudly powered by "
+msgstr ""
+
+#: footer.php:53
+msgid "WordPress"
+msgstr ""
+
+#: footer.php:60
+msgid "Footer Menu"
+msgstr ""
+
+#: functions.php:25 functions.php:131
+msgid "Top Menu"
+msgstr ""
+
+#: functions.php:66
+msgid "Small"
+msgstr ""
+
+#: functions.php:67
+msgid "S"
+msgstr ""
+
+#: functions.php:72
+msgid "Normal"
+msgstr ""
+
+#: functions.php:73
+msgid "M"
+msgstr ""
+
+#: functions.php:78
+msgid "Large"
+msgstr ""
+
+#: functions.php:79
+msgid "L"
+msgstr ""
+
+#: functions.php:84
+msgid "Huge"
+msgstr ""
+
+#: functions.php:85
+msgid "XL"
+msgstr ""
+
+#: functions.php:95
+msgid "Primary"
+msgstr ""
+
+#: functions.php:100
+msgid "Secondary"
+msgstr ""
+
+#: functions.php:152
+msgid "Sidebar"
+msgstr ""
+
+#: functions.php:154
+msgid "Add widgets here to appear in your sidebar."
+msgstr ""
+
+#: functions.php:177
+#, php-format
+msgid "read more<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr ""
+
+#: index.php:37
+msgid "Blog Posts"
+msgstr ""
+
+#: index.php:93 index.php:109 template-parts/clubioblog/posts-template.php:63
+#: template-parts/clubioblog/posts-template.php:81
+msgid "Previous page"
+msgstr ""
+
+#: index.php:94 index.php:110 template-parts/clubioblog/posts-template.php:64
+#: template-parts/clubioblog/posts-template.php:82
+msgid "Next page"
+msgstr ""
+
+#: index.php:95 index.php:111 inc/clubio-functions/clubio-page-bc.php:102
+#: template-parts/clubioblog/posts-template.php:65
+#: template-parts/clubioblog/posts-template.php:83
+msgid "Page"
+msgstr ""
+
+#: search.php:12
+msgid "Search"
+msgstr ""
+
+#: search.php:39 template-parts/post/content-none.php:10
+msgid "Nothing Found"
+msgstr ""
+
+#: search.php:40
+msgid ""
+"Sorry, but nothing matched your search terms. Please try again with some "
+"different keywords."
+msgstr ""
+
+#: ajax-load-more/content-loop.php:24
+msgid "know more"
+msgstr ""
+
+#: inc/back-compat.php:18 inc/back-compat.php:22 inc/back-compat.php:29
+#, php-format
+msgid ""
+"Recording Studio requires at least WordPress version 4.7. You are running "
+"version %s. Please upgrade and try again."
+msgstr ""
+
+#: inc/custom-header.php:25
+msgid "Default Header Image"
+msgstr ""
+
+#: inc/customizer.php:33
+msgid "Theme Fonts Sizes"
+msgstr ""
+
+#: inc/customizer.php:37
+msgid "Header blocks"
+msgstr ""
+
+#: inc/customizer.php:42
+msgid "Footer blocks"
+msgstr ""
+
+#: inc/customizer.php:108
+msgid "Clubio Activation Code"
+msgstr ""
+
+#: inc/customizer.php:121
+msgid "Write Purchased Code"
+msgstr ""
+
+#: inc/customizer.php:129
+msgid "Clubio General Settings"
+msgstr ""
+
+#: inc/customizer.php:144
+msgid "Type of Blog Posts Page"
+msgstr ""
+
+#: inc/customizer.php:165
+msgid "Using of preloader"
+msgstr ""
+
+#: inc/customizer.php:185
+msgid "Preloader html"
+msgstr ""
+
+#: inc/customizer.php:216
+msgid "Using of custom options"
+msgstr ""
+
+#: inc/customizer.php:455
+msgid "Theme Google Fonts"
+msgstr ""
+
+#: inc/customizer.php:499
+msgid "Select any font for the headings and highlighted texts."
+msgstr ""
+
+#: inc/customizer.php:511
+msgid "Select any font for the body/some texts."
+msgstr ""
+
+#: inc/icon-functions.php:9
+msgid "Please define default parameters in the form of an array."
+msgstr ""
+
+#: inc/icon-functions.php:12
+msgid "Please define an SVG icon filename."
+msgstr ""
+
+#: inc/template-tags.php:29
+msgid " Comment(s)"
+msgstr ""
+
+#: inc/template-tags.php:50
+#, php-format
+msgid "<span class=\"screen-reader-text\">Posted on</span> %s"
+msgstr ""
+
+#: inc/template-tags.php:66
+msgid "Tags:"
+msgstr ""
+
+#: inc/template-tags.php:66
+msgid "Tags"
+msgstr ""
+
+#: inc/template-tags.php:76
+msgid "Categories:"
+msgstr ""
+
+#: inc/template-tags.php:76
+msgid "Categories"
+msgstr ""
+
+#: inc/template-tags.php:89
+#, php-format
+msgid "Edit<span class=\"screen-reader-text\">\"%s\"</span>"
+msgstr ""
+
+#: inc/template-tags.php:111
+#, php-format
+msgid "Front Page Section %1$s Placeholder"
+msgstr ""
+
+#: inc/clubio-functions/clubio-common-settings.php:118
+#: inc/clubio-functions/clubio-common-settings.php:120
+msgid "VIP Clubio"
+msgstr ""
+
+#: inc/clubio-functions/clubio-common-settings.php:390
+msgctxt "placeholder"
+msgid "Search..."
+msgstr ""
+
+#: inc/clubio-functions/clubio-common-settings.php:391
+msgctxt "submit button"
+msgid "Search"
+msgstr ""
+
+#: inc/clubio-functions/clubio-import.php:13
+msgid "Import Demo Data"
+msgstr ""
+
+#: inc/clubio-functions/clubio-import.php:14
+msgid "Clubio Import Demo"
+msgstr ""
+
+#: inc/clubio-functions/clubio-import.php:25
+msgid "Clubio Layout"
+msgstr ""
+
+#: inc/clubio-functions/clubio-page-bc.php:18
+#: inc/clubio-functions/clubio-page-bc.php:25
+#: inc/clubio-functions/clubio-page-bc.php:28
+msgid "Home"
+msgstr ""
+
+#: inc/clubio-functions/clubio-page-bc.php:34
+msgid "Search results for"
+msgstr ""
+
+#: inc/clubio-functions/clubio-page-bc.php:92
+msgid "Tag: "
+msgstr ""
+
+#: inc/clubio-functions/clubio-page-bc.php:98
+msgid "Error 404"
+msgstr ""
+
+#: inc/clubio-woocommerce/clubio-hooks-functions.php:126
+msgid "Shop"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:75
+msgid "Install Required Plugins"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:76
+msgid "Install Plugins"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:77
+#, php-format
+msgid "Installing Plugin: %s"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:78
+#, php-format
+msgid "Updating Plugin: %s"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:79
+msgid "Something went wrong with the plugin API."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:81
+#, php-format
+msgid "This theme requires the following plugin: %1$s."
+msgid_plural "This theme requires the following plugins: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:86
+#, php-format
+msgid "This theme recommends the following plugin: %1$s."
+msgid_plural "This theme recommends the following plugins: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:91
+#, php-format
+msgid ""
+"The following plugin needs to be updated to its latest version to ensure "
+"maximum compatibility with this theme: %1$s."
+msgid_plural ""
+"The following plugins need to be updated to their latest version to ensure "
+"maximum compatibility with this theme: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:96
+#, php-format
+msgid "There is an update available for: %1$s."
+msgid_plural "There are updates available for the following plugins: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:101
+#, php-format
+msgid "The following required plugin is currently inactive: %1$s."
+msgid_plural "The following required plugins are currently inactive: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:106
+#, php-format
+msgid "The following recommended plugin is currently inactive: %1$s."
+msgid_plural "The following recommended plugins are currently inactive: %1$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:111
+msgid "Begin installing plugin"
+msgid_plural "Begin installing plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:116
+msgid "Begin updating plugin"
+msgid_plural "Begin updating plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:121
+msgid "Begin activating plugin"
+msgid_plural "Begin activating plugins"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:125
+msgid "Return to Required Plugins Installer"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:126
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:407
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1475
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2063
+msgid "Return to the Dashboard"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:127
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1869
+msgid "Plugin activated successfully."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:128
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1777
+msgid "The following plugin was activated successfully:"
+msgid_plural "The following plugins were activated successfully:"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:129
+#, php-format
+msgid "No action taken. Plugin %1$s was already active."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:130
+#, php-format
+msgid ""
+"Plugin not activated. A higher version of %s is needed for this theme. "
+"Please update the plugin."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:131
+#, php-format
+msgid "All plugins installed and activated successfully. %1$s"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:132
+msgid "Dismiss this notice"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:133
+msgid ""
+"There are one or more required or recommended plugins to install, update or "
+"activate."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:134
+msgid "Please contact the administrator of this site for help."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:213
+msgid "This plugin needs to be updated to be compatible with your theme."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:214
+msgid "Update Required"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:483
+msgid ""
+"The remote plugin package does not contain a folder with the desired slug "
+"and renaming did not work."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:483
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:486
+msgid ""
+"Please contact the plugin provider and ask them to package their plugin "
+"according to the WordPress guidelines."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:486
+msgid ""
+"The remote plugin package consists of more than one file, but the files are "
+"not packaged in a folder."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:626
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1773
+msgctxt "plugin A *and* plugin B"
+msgid "and"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1131
+#, php-format
+msgid "TGMPA v%s"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1302
+msgid "Required"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1305
+msgid "Recommended"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1313
+msgid "WordPress Repository"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1316
+msgid "External Source"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1319
+msgid "Pre-Packaged"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1328
+msgid "Not Installed"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1332
+msgid "Installed But Not Activated"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1334
+msgid "Active"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1340
+msgid "Required Update not Available"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1343
+msgid "Requires Update"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1346
+msgid "Update recommended"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1354
+#, php-format
+msgctxt "Install/Update Status"
+msgid "%1$s, %2$s"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1382
+#, php-format
+msgctxt "plugins"
+msgid "All <span class=\"count\">(%s)</span>"
+msgid_plural "All <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1385
+#, php-format
+msgid "To Install <span class=\"count\">(%s)</span>"
+msgid_plural "To Install <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1388
+#, php-format
+msgid "Update Available <span class=\"count\">(%s)</span>"
+msgid_plural "Update Available <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1391
+#, php-format
+msgid "To Activate <span class=\"count\">(%s)</span>"
+msgid_plural "To Activate <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1434
+msgctxt "as in: \"version nr unknown\""
+msgid "unknown"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1442
+msgid "Installed version:"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1450
+msgid "Minimum required version:"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1462
+msgid "Available version:"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1475
+msgid "No plugins to install, update or activate."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1482
+msgid "Plugin"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1483
+msgid "Source"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1484
+msgid "Type"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1488
+msgid "Version"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1489
+msgid "Status"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1511
+#, php-format
+msgid "Install %2$s"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1514
+#, php-format
+msgid "Update %2$s"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1518
+#, php-format
+msgid "Activate %2$s"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1560
+msgid "Upgrade message from the plugin author:"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1579
+msgid "Install"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1585
+msgid "Update"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1588
+msgid "Activate"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1608
+msgid "No plugins were selected to be installed. No action taken."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1610
+msgid "No plugins were selected to be updated. No action taken."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1644
+msgid "No plugins are available to be installed at this time."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1646
+msgid "No plugins are available to be updated at this time."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1737
+msgid "No plugins were selected to be activated. No action taken."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1760
+msgid "No plugins are available to be activated at this time."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:1868
+msgid "Plugin activation failed."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2017
+#, php-format
+msgid "Updating Plugin %1$s (%2$d/%3$d)"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2019
+#, php-format
+msgid "An error occurred while installing %1$s: <strong>%2$s</strong>."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2020
+#, php-format
+msgid "The installation of %1$s failed."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2023
+msgid ""
+"The installation and activation process is starting. This process may take a "
+"while on some hosts, so please be patient."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2024
+#, php-format
+msgid "%1$s installed and activated successfully."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2025
+msgid "All installations and activations have been completed."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2026
+#, php-format
+msgid "Installing and Activating Plugin %1$s (%2$d/%3$d)"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2028
+msgid ""
+"The installation process is starting. This process may take a while on some "
+"hosts, so please be patient."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2029
+#, php-format
+msgid "%1$s installed successfully."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2030
+msgid "All installations have been completed."
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/class-tgm-plugin-activation.php:2031
+#, php-format
+msgid "Installing Plugin %1$s (%2$d/%3$d)"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/tgm-admin-config.php:25
+msgid "One Click Demo Import"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/tgm-admin-config.php:31
+msgid "Clubio Core"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/tgm-admin-config.php:38
+msgid "WooCommerce"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/tgm-admin-config.php:43
+msgid "Contact Form 7"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/tgm-admin-config.php:48
+msgid "WPBakery Visual Composer"
+msgstr ""
+
+#: inc/libs/tgm-plugin-activation/tgm-admin-config.php:54
+msgid "WP Reset"
+msgstr ""
+
+#: template-parts/footer/footer-widgets.php:9
+msgid "Footer"
+msgstr ""
+
+#: template-parts/navigation/navigation-top.php:8
+#: template-parts/navigation/navigation-tt-top.php:8
+msgid "Theme Header Navigation"
+msgstr ""
+
+#: template-parts/page/content-front-page-panels.php:31
+#: template-parts/page/content-front-page.php:32
+#, php-format
+msgid "Continue reading<span class=\"screen-reader-text\"> \"%s\"</span>"
+msgstr ""
+
+#: template-parts/post/content-none.php:15
+#, php-format
+msgid ""
+"Ready to publish your first post? <a href=\"%1$s\">Get started here</a>."
+msgstr ""
+
+#: template-parts/post/content-none.php:17
+msgid ""
+"It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps "
+"searching can help."
+msgstr ""
+
+#: template-parts/post/content.php:48 template-parts/post/content.php:55
+msgctxt "post"
+msgid "Featured"
+msgstr ""
+
+#: template-parts/post/navigation-block.php:28
+msgid "Previous Post"
+msgstr ""
+
+#: template-parts/post/navigation-block.php:33
+msgid "Next Post"
+msgstr ""
+
+#: woocommerce/cart/cart-totals.php:25
+msgid "Cart Totals"
+msgstr ""
+
+#: woocommerce/cart/cart-totals.php:28 woocommerce/cart/cart-totals.php:29
+msgid "Subtotal"
+msgstr ""
+
+#: woocommerce/cart/cart-totals.php:43 woocommerce/cart/cart-totals.php:44
+msgid "Shipping"
+msgstr ""
+
+#: woocommerce/cart/cart-totals.php:56
+#, php-format
+msgid "(estimated for %s)"
+msgstr ""
+
+#: woocommerce/cart/cart-totals.php:74 woocommerce/cart/cart-totals.php:75
+#: woocommerce/cart/mini-cart.php:79
+msgid "Total"
+msgstr ""
+
+#: woocommerce/cart/cross-sells.php:21
+msgid "You May Be Interested In&hellip;"
+msgstr ""
+
+#: woocommerce/cart/mini-cart.php:65
+msgid "Remove this item"
+msgstr ""
+
+#: woocommerce/cart/mini-cart.php:89
+msgid "No products in the cart."
+msgstr ""
+
+#: woocommerce/single-product/product-image.php:39
+msgid "Awaiting product image"
+msgstr ""
+
+#: woocommerce/single-product/rating.php:31
+#, php-format
+msgid "%s customer review"
+msgid_plural "%s customer reviews"
+msgstr[0] ""
+msgstr[1] ""

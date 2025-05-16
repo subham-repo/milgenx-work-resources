@@ -1,0 +1,1 @@
+<div class="wpem-alert wpem-alert-danger"><?php _e( 'You haven\'t made any registrations yet!', 'wp-event-manager-registrations' ); ?></div>

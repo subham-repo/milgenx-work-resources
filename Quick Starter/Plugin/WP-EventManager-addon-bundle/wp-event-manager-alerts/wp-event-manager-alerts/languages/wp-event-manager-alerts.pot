@@ -1,0 +1,408 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: WP Event Manager - Event Alerts\n"
+"POT-Creation-Date: 2019-08-02 19:58+0530\n"
+"PO-Revision-Date: 2019-08-02 19:58+0530\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.3\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: wp-event-manager-alerts.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+
+#: admin/wp-event-manager-alerts-settings.php:47
+msgid "Event Alerts"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:54
+msgid "Alert Email Content"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:55
+msgid ""
+"Enter the content for your email alerts. Leave blank to use the default "
+"message. The following tags can be used to insert data dynamically:"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:56
+msgid "The users display name in WP"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:57
+#: admin/wp-event-manager-alerts-settings.php:61
+msgid "The name of the alert being sent"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:58
+msgid "A sentance explaining if an alert will be stopped automatically"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:59
+msgid "The date this alert will next be sent"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:60
+msgid "The url to your alerts page"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:69
+msgid "Alert Duration"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:70
+msgid ""
+"Enter the number of days before alerts are automatically disabled, or leave "
+"blank to disable this feature. By default, alerts will be turned off for a "
+"search after 90 days."
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:76
+msgid "Alert Matches"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:77
+msgid "Send alerts with matches only"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:78
+msgid ""
+"Only send an alert when events are found matching its criteria. When "
+"disabled, an alert is sent regardless."
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:84
+msgid "Alerts Page ID"
+msgstr ""
+
+#: admin/wp-event-manager-alerts-settings.php:85
+msgid ""
+"So that the plugin knows where to link users to view their alerts, you must "
+"select the page where you have placed the [event_alerts] shortcode."
+msgstr ""
+
+#: autoupdater/gam-plugin-updater.php:408
+#, php-format
+msgid ""
+"A licence key for %1$s could not be found. Maybe you forgot to enter a "
+"licence key when setting up %2$s."
+msgstr ""
+
+#: autoupdater/templates/activated-key.php:2
+#, php-format
+msgid "Your licence for <strong>%s</strong> has been activated. Thanks!"
+msgstr ""
+
+#: autoupdater/templates/deactivated-key.php:2
+#, php-format
+msgid "Your licence for <strong>%s</strong> has been deactivated."
+msgstr ""
+
+#: autoupdater/templates/key-input.php:4
+msgid "Licence"
+msgstr ""
+
+#: autoupdater/templates/key-input.php:7
+msgid ""
+"Enter your licence key and email and hit return. A valid key is required for "
+"automatic updates."
+msgstr ""
+
+#: autoupdater/templates/key-notice.php:2
+msgid "Hide notice"
+msgstr ""
+
+#: autoupdater/templates/key-notice.php:3
+#, php-format
+msgid ""
+"<a href=\"%s\">Please enter your licence key</a> in the plugin list below to "
+"get updates for \"%s\"."
+msgstr ""
+
+#: autoupdater/templates/key-notice.php:4
+#, php-format
+msgid "Lost your key? <a href=\"%s\">Retrieve it here</a>."
+msgstr ""
+
+#: autoupdater/templates/ms-update.php:6
+#, php-format
+msgid ""
+"There is a new version of %1$s available. <a target=\"_blank\" class="
+"\"thickbox\" href=\"%2$s\">View version %3$s details</a> or <a href=\"%4$s"
+"\">update now</a>."
+msgstr ""
+
+#: core/wp-event-manager-alerts-notifier.php:25
+msgid "Once Weekly"
+msgstr ""
+
+#: core/wp-event-manager-alerts-notifier.php:29
+msgid "Once every fortnight"
+msgstr ""
+
+#: core/wp-event-manager-alerts-notifier.php:59
+#, php-format
+msgid "Event Alert Results Matching \"%s\""
+msgstr ""
+
+#: core/wp-event-manager-alerts-notifier.php:222
+msgid ""
+"No events were found matching your search. Login to your account to change "
+"your alert criteria"
+msgstr ""
+
+#: core/wp-event-manager-alerts-notifier.php:239
+#, php-format
+msgid "This event alert will automatically stop sending after %s."
+msgstr ""
+
+#: external/elementor-widgets/elementor-event-alert-dashboard.php:36
+#: external/elementor-widgets/elementor-event-alert-dashboard.php:90
+msgid "Event Alert Dashboard"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:49
+msgid "Please name your alert"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:67
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:117
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:152
+msgid "Invalid Alert"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:144
+#, php-format
+msgid "%s has been %s"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:144
+#: templates/my-alerts.php:103
+msgid "Enabled"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:144
+#: templates/my-alerts.php:103
+msgid "Disabled"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:158
+#, php-format
+msgid "Your %s have been deleted"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:164
+#, php-format
+msgid "%s has been triggered"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:180
+msgid "You need to be signed in to manage your alerts."
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:189
+msgid "Your alerts have been updated"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:273
+#, php-format
+msgid "Events matching your \"%s\" alert:"
+msgstr ""
+
+#: shortcodes/wp-event-manager-alerts-shortcodes.php:288
+msgid "No events found"
+msgstr ""
+
+#: templates/alert-form.php:3 templates/my-alerts.php:9
+#: templates/my-alerts.php:28
+msgid "Alert Name"
+msgstr ""
+
+#: templates/alert-form.php:5
+msgid "Enter a name for your alert"
+msgstr ""
+
+#: templates/alert-form.php:9
+msgid "Keyword"
+msgstr ""
+
+#: templates/alert-form.php:11
+msgid "Optionally add a keyword to match events against"
+msgstr ""
+
+#: templates/alert-form.php:16
+msgid "Event Region"
+msgstr ""
+
+#: templates/alert-form.php:28
+msgid "Any region"
+msgstr ""
+
+#: templates/alert-form.php:35 templates/my-alerts.php:17
+#: templates/my-alerts.php:84
+msgid "Location"
+msgstr ""
+
+#: templates/alert-form.php:37
+msgid "Optionally define a location to search against"
+msgstr ""
+
+#: templates/alert-form.php:43 templates/my-alerts.php:12
+#: templates/my-alerts.php:73
+msgid "Categories"
+msgstr ""
+
+#: templates/alert-form.php:55
+msgid "Any category"
+msgstr ""
+
+#: templates/alert-form.php:63 templates/my-alerts.php:15
+#: templates/my-alerts.php:79
+msgid "Tags"
+msgstr ""
+
+#: templates/alert-form.php:75
+msgid "Any tag"
+msgstr ""
+
+#: templates/alert-form.php:82
+msgid "Event Type"
+msgstr ""
+
+#: templates/alert-form.php:84
+msgid "Any event type"
+msgstr ""
+
+#: templates/alert-form.php:94
+msgid "Email Frequency"
+msgstr ""
+
+#: templates/alert-form.php:97 templates/my-alerts.php:93
+msgid "Daily"
+msgstr ""
+
+#: templates/alert-form.php:98 templates/my-alerts.php:96
+msgid "Weekly"
+msgstr ""
+
+#: templates/alert-form.php:99
+msgid "Fortnightly"
+msgstr ""
+
+#: templates/alert-form.php:106
+msgid "Save alert"
+msgstr ""
+
+#: templates/content-email_event_listing.php:55
+#, php-format
+msgid "Location: %s"
+msgstr ""
+
+#: templates/content-email_event_listing.php:57
+#, php-format
+msgid "Organizer: %s"
+msgstr ""
+
+#: templates/my-alerts.php:2
+#, php-format
+msgid ""
+"Your event alerts are shown in the table below. Your alerts will be sent to "
+"%s."
+msgstr ""
+
+#: templates/my-alerts.php:3 wp-event-manager-alerts.php:132
+msgid "Add alert"
+msgstr ""
+
+#: templates/my-alerts.php:10 templates/my-alerts.php:66
+msgid "Keywords"
+msgstr ""
+
+#: templates/my-alerts.php:18 templates/my-alerts.php:90
+msgid "Frequency"
+msgstr ""
+
+#: templates/my-alerts.php:19 templates/my-alerts.php:103
+msgid "Status"
+msgstr ""
+
+#: templates/my-alerts.php:20 templates/my-alerts.php:104
+msgid "Date Created"
+msgstr ""
+
+#: templates/my-alerts.php:34
+msgid "Show Results"
+msgstr ""
+
+#: templates/my-alerts.php:38
+msgid "Email"
+msgstr ""
+
+#: templates/my-alerts.php:42
+msgid "Edit"
+msgstr ""
+
+#: templates/my-alerts.php:46
+msgid "Enable"
+msgstr ""
+
+#: templates/my-alerts.php:46
+msgid "Disable"
+msgstr ""
+
+#: templates/my-alerts.php:50
+msgid "Delete"
+msgstr ""
+
+#: templates/my-alerts.php:99
+msgid "Fornightly"
+msgstr ""
+
+#: templates/my-alerts.php:108
+msgid "Currently you have no alerts"
+msgstr ""
+
+#: templates/single-event-alert-link.php:4
+msgid "Alert me like this event"
+msgstr ""
+
+#: wp-event-manager-alerts.php:37
+msgid "WP Event Manager is require to use WP Event Manager - Event Alerts"
+msgstr ""
+
+#: wp-event-manager-alerts.php:113
+msgid "Are you sure you want to delete this alert?"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "WP Event Manager - Event Alerts"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.wp-eventmanager.com/product-category/plugins/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid ""
+"Allow users to subscribe to event alerts for their searches. Once "
+"registered, users can access a 'My Alerts' page which you can create with "
+"the shortcode [event_alerts]."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "WP Event Manager"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://www.wp-eventmanager.com/"
+msgstr ""

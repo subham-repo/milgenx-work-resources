@@ -1,0 +1,11 @@
+1.0.3
+- Updated Boldlab Core plugin to 1.0.3
+- Fixed the Google Map behavior
+- Minor code improvements
+
+1.0.2
+- Updated Boldlab Core plugin to 1.0.2
+- Minor improvements
+
+1.0.1
+- Updated Boldlab Core plugin to 1.0.1

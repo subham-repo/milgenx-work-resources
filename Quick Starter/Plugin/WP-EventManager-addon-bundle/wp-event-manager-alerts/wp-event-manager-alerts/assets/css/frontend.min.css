@@ -1,0 +1,8 @@
+ul.event-alert-actions {
+    margin: 0 -5px;
+}
+ul.event-alert-actions li {
+    list-style: none;
+    display: inline-block;
+    margin: 0 5px;
+}

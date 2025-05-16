@@ -1,0 +1,130 @@
+<div class="additional-collapsibles">
+  {% if product.description %}
+  <div class="collapsible-item show_detail">
+    <div class="collapsible-item-toggle">
+      <span class="collapsible-item-heading h3">Product Description</span>
+      <span class="toggle-icon"></span>
+    </div>
+    <div class="collapsible-item-answer">
+      {{ product.description }}
+    </div>
+  </div>
+  {% endif %}
+  <div class="collapsible-item">
+    <div class="collapsible-item-toggle">
+      <span class="collapsible-item-heading h3">Additional Informations</span>
+      <span class="toggle-icon"></span>
+    </div>
+    <div class="collapsible-item-answer">
+      {% if product.metafields.custom.collar_type %}- {{ product.metafields.custom.collar_type }}<br>{% endif %}
+      {% if product.metafields.custom.season %}- {{ product.metafields.custom.season }}<br>{% endif %}
+      {% if product.metafields.custom.print_of_pattern %}- {{ product.metafields.custom.print_of_pattern }}<br>{% endif %}
+      {% if product.metafields.custom.neck %}- {{ product.metafields.custom.neck }}<br>{% endif %}
+      {% if product.metafields.custom.sleeve %}- {{ product.metafields.custom.sleeve }}<br>{% endif %}
+      {% if product.metafields.custom.sleeve_length %}- {{ product.metafields.custom.sleeve_length }}<br>{% endif %}
+      {% if product.metafields.custom.fit %}- {{ product.metafields.custom.fit }}<br>{% endif %}
+      {% if product.metafields.custom.pattern %}- {{ product.metafields.custom.pattern }}<br>{% endif %}
+      {% if product.metafields.custom.gender %}- {{ product.metafields.custom.gender }}<br>{% endif %}
+
+      {% if product.metafields.custom.gender %}<br><strong>Fabric/Material</strong><br>{{ product.metafields.custom.fabric }}{% endif %}
+    </div>
+  </div>
+  {% if product.metafields.custom.wash_care %}
+  <div class="collapsible-item">
+    <div class="collapsible-item-toggle">
+      <span class="collapsible-item-heading h3">Care Instruction</span>
+      <span class="toggle-icon"></span>
+    </div>
+    <div class="collapsible-item-answer">
+      {{ product.metafields.custom.wash_care }}
+    </div>
+  </div>
+  {% endif %}
+  <div class="collapsible-item">
+    <div class="collapsible-item-toggle">
+      <span class="collapsible-item-heading h3">Country of Origin</span>
+      <span class="toggle-icon"></span>
+    </div>
+    <div class="collapsible-item-answer">
+      <strong>India</strong>
+    </div>
+  </div>
+</div>
+<script>
+  let additionalCollapsibles = document.querySelectorAll(".additional-collapsibles .collapsible-item");
+  additionalCollapsibles.forEach(function(collapsibleItem){
+      let collapsibleToggle = collapsibleItem.querySelector(".collapsible-item-toggle");
+      collapsibleToggle.addEventListener("click", function(){
+          let collapsibleBlock = collapsibleToggle.closest(".collapsible-item");
+          if(collapsibleBlock.classList.contains("show_detail")){
+              collapsibleBlock.classList.remove("show_detail");
+          }else{
+              additionalCollapsibles.forEach(function(Item){
+                Item.classList.remove("show_detail");
+              })
+              collapsibleBlock.classList.add("show_detail");
+          }
+      })
+  })
+</script>
+<style>
+  .additional-collapsibles .collapsible-item {
+      border-bottom: 1px solid #ccc;
+  }
+  .additional-collapsibles .collapsible-item .collapsible-item-toggle { 
+    cursor: pointer; 
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .additional-collapsibles .collapsible-item .collapsible-item-answer {
+      background-color: #f5f5f5;
+  }
+  .additional-collapsibles .collapsible-item .collapsible-item-answer, 
+  .additional-collapsibles .collapsible-item .collapsible-item-toggle {
+      padding: 15px 15px;
+      transition: .3s height ease-in-out;
+  }
+  .additional-collapsibles .collapsible-item .collapsible-item-answer p:last-child {
+      margin-bottom: 0;
+  }
+  .additional-collapsibles .collapsible-item:not(.show_detail) .collapsible-item-answer {
+      padding: 0;
+      height: 0;
+      overflow: hidden;
+  }
+  .additional-collapsibles .collapsible-item.show_detail .collapsible-item-toggle span.toggle-icon:before {
+    transform: rotate(90deg);
+  }
+  .additional-collapsibles .collapsible-item.show_detail .collapsible-item-toggle span.toggle-icon:after {
+    transform: rotate(180deg);
+  }
+  .additional-collapsibles .collapsible-item .collapsible-item-toggle span.toggle-icon:before, 
+  .additional-collapsibles .collapsible-item .collapsible-item-toggle span.toggle-icon:after {
+      content: "";
+      position: absolute;
+      background-color: #000;
+      transition: transform 0.25s ease-out;
+  }
+  .additional-collapsibles .collapsible-item .collapsible-item-toggle span.toggle-icon:before {
+      top: 0;
+      left: 50%;
+      width: 2px;
+      height: 100%;
+      margin-left: -1px;
+  }
+  .additional-collapsibles .collapsible-item .collapsible-item-toggle span.toggle-icon:after {
+      top: 50%;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      margin-top: -1px;
+  }
+  .additional-collapsibles .collapsible-item .collapsible-item-toggle span.toggle-icon {
+      position: relative;
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+  }
+</style>

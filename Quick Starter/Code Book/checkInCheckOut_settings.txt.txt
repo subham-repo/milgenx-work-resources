@@ -1,0 +1,22 @@
+function checkInCheckOut_settings() {
+		let today = new Date().toISOString().slice(0, 10)
+		let checkIn_dateField = document.querySelector('input[name="Check-In"].min-today');
+		if(checkIn_dateField){
+			// Setting up default & min value of date for checkin
+			checkIn_dateField.setAttribute('min', today);
+		}
+
+		let checkOut_dateField = document.querySelector('input[name="Check-Out"]');
+		if(checkIn_dateField){
+			checkIn_dateField.addEventListener('change', function(){
+				let checkIn_date = checkIn_dateField.value;
+				// console.log({checkIn_date});
+				if(checkOut_dateField){
+					// Setting up default & min value of date for checkOut
+					checkOut_dateField.value = checkIn_date;
+					checkOut_dateField.setAttribute('min', checkIn_date);
+				}
+			})	
+		}
+	}
+ 	checkInCheckOut_settings();

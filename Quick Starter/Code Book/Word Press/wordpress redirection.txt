@@ -1,0 +1,37 @@
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+
+# BEGIN WordPress
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php [L]
+# END WordPress
+
+# Forcing 302 redirect to http to https with www
+RewriteCond !{HTTPS} off
+RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+RewriteCond %{HTTP_HOST} !^www\.
+RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Forcing 301 redirect internal url with / 
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*[^/])$ /$1/ [L,R] # <- for test, for prod use [L,R=301]
+
+RedirectMatch  301 /neuerwerbungen/(.*) /focus-on/$1
+RedirectMatch  301 /new-acquisitions/(.*) /focus-on/$1
+
+</IfModule>
+
+For Function.php 
+
+add_action( 'init',function(){
+  global $wp;
+  $current_url = home_url(add_query_arg(array(),$wp->request));
+  $last_char = substr($current_url, -1); 
+
+ if($last_char == '/' && filter_var($current_url, FILTER_VALIDATE_URL)){
+   wp_redirect( trailingslashit( $current_url ) );
+ }
+});

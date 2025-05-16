@@ -1,0 +1,23 @@
+<!-- snippets/video-shop-block.liquid -->
+{% assign video_thumbnail = featured_video_object.video_thumbnail %}
+{% if video_thumbnail %}
+  {% assign video_thumbnail = video_thumbnail | file_url %}
+{% else %}
+  {% assign video_thumbnail = "centric-portrail-placeholder.jpg" | file_url %}
+{% endif %}
+{% assign video_file = featured_video_object.video_file  %}
+<div class="shop-by-video" product-title="{{ product.title }}" {% unless template.name contains "product" %}video-file="{{ video_file | file_url }}" video-thumbnail="{{ video_thumbnail }}"{% endunless %} destination-thumb="{{ product.selected_or_first_available_variant.featured_image | img_url: "100x" }}" destination="{{ product.url }}">
+  {% if video_file != blank %}
+  <!-- Video elements goes here. -->
+  <video width="100%" height="100%" poster="{{ video_thumbnail }}" playsinline="true" loop="" muted="" data-src="{{ video_file | file_url }}">
+  </video>
+  {% endif %}
+  {% unless template.name contains "product" %}
+  <div class="info-overlay full-width">
+    <div class="shop-cart full-width">
+      <span class="shop-cart-icon" style="background-image:url({{ "cart-white.svg" | file_url }});"></span>
+    </div>
+    <span class="h3 title full-width">{% if block.settings.title != blank %}{{ block.settings.title }}{% else %}{{ product.title }}{% endif %}</span>
+  </div>
+  {% endunless %}
+</div>

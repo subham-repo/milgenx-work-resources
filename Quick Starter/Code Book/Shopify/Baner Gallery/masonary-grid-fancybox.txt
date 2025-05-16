@@ -1,0 +1,182 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+<div class="make-your-own-gallery {{ section.settings.classes }}">  
+  <div class="{% if section.settings.disable_container == false %}page-width{% endif %}">
+    <div class="own-gallery">
+      {% for block in section.blocks %}
+      
+      {% case block.type %}
+      {% when 'slide' %}
+          {% if block.settings.image != blank %}
+            <a class="own-gallery-slide" data-fancybox="gallery" href="{{ block.settings.image | img_url: "master" }}">
+              <img src="{{ block.settings.image | img_url: "800x" }}" alt="{{ block.settings.image.alt }}" loading="lazy" />
+            </a>
+          {% endif %}
+      {% endcase %}
+      {% endfor %}
+    </div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<script>
+  Fancybox.bind('[data-fancybox]', {
+    // Custom options
+  });    
+</script>
+
+{% schema %}
+{
+  "name": "Make Your Own Gallery",
+  "tag": "section",
+  "class": "slideshow spaced-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "classes",
+      "label": "Design Classes"
+    },
+    {
+      "type": "checkbox",
+      "id": "disable_container",
+      "default": false,
+      "label": "Full Width Gallery"
+    },
+    {
+      "type": "header",
+      "content": "Block/Item Style"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 20,
+      "default": 0,
+      "label": "Border Radius",
+      "step": 2,
+      "id": "block_radius"
+    },
+    {
+      "type": "range",
+      "min": 0,
+      "max": 20,
+      "default": 2,
+      "label": "Block Gap",
+      "step": 2,
+      "id": "block_gap"
+    },
+    {
+      "type": "header",
+      "content": "No.of Block/Item In Row"
+    },
+    {
+      "type": "range",
+      "min": 1,
+      "max": 5,
+      "default": 3,
+      "label": "Desktop Block Count",
+      "step": 1,
+      "id": "desk_block_count",
+      "info": "For screen size above >= 992px"
+    },
+    {
+      "type": "range",
+      "min": 1,
+      "max": 4,
+      "default": 3,
+      "label": "Tablet Block Count",
+      "step": 1,
+      "id": "tab_block_count",
+      "info": "For screen size between 601px to 991px"
+    },
+    {
+      "type": "range",
+      "min": 1,
+      "max": 3,
+      "default": 2,
+      "label": "Mobile Block Count",
+      "step": 1,
+      "id": "mob_block_count",
+      "info": "For screen size below <= 600px"
+    },
+  ],
+  "blocks": [
+     {
+       "name": "Design Sample",
+       "type": "slide",
+       "settings": [
+         {
+           "type": "image_picker",
+           "id": "image",
+           "label": "Image"
+         }
+       ]
+     }
+   ],
+  "presets": [
+    {
+      "name": "Make Your Own Gallery"
+    }
+  ]
+}
+{% endschema %}
+<style>
+  .make-your-own-gallery {
+    margin-bottom: 50px;
+  }
+  .own-gallery-slide img {
+      width: 100%;
+  }
+  p.hulk-powered-wrapper {
+    display: none;
+  }
+  .own-gallery-slide {
+    border-radius: {{ section.settings.block_radius }}px;
+    overflow: hidden;
+    outline: none;
+  }
+  .own-gallery {
+    column-gap: {{ section.settings.block_gap }}px;
+    row-gap: {{ section.settings.block_gap }}px;
+  }
+  .own-gallery-slide {
+    /* margin-left: 5px; */
+    /* margin-right: 5px; */
+    display: grid;
+    grid-template-rows: 1fr auto;
+    margin-bottom: {{ section.settings.block_gap | times: 1 }}px;
+    break-inside: avoid;
+  }
+	
+  @media(min-width: 601px){
+/*     .make-your-own-gallery .row {
+      display: flex;
+      flex-flow: revert;
+      max-width: 100%;
+      overflow-x: auto;
+      padding-bottom: 20px;
+    } */
+  }
+  @media(max-width: 600px){
+    .make-your-own-gallery .grid-item{
+      margin-top: 7.5px;
+      margin-bottom: 7.5px;
+    }
+    .own-gallery {
+      column-count: {{ section.settings.mob_block_count}};
+    }
+  }
+  @media(min-width:601px) and (max-width: 991px){
+    .own-gallery {
+      column-count: {{ section.settings.tab_block_count}};
+    }
+  }
+  @media(min-width: 992px){
+    .own-gallery {
+      column-count: {{ section.settings.desk_block_count}};
+    }
+  }
+</style>
+{% stylesheet %}
+
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

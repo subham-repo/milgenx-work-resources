@@ -1,0 +1,189 @@
+{{ 'component-card.css' | asset_url | stylesheet_tag }}
+{{ 'component-price.css' | asset_url | stylesheet_tag }}
+
+{{ 'component-slider.css' | asset_url | stylesheet_tag }}
+{{ 'template-collection.css' | asset_url | stylesheet_tag }}
+
+{% if section.settings.image_shape == 'blob' %}
+  {{ 'mask-blobs.css' | asset_url | stylesheet_tag }}
+{%- endif -%}
+
+{%- unless section.settings.quick_add == 'none' -%}
+  {{ 'quick-add.css' | asset_url | stylesheet_tag }}
+  <script src="{{ 'product-form.js' | asset_url }}" defer="defer"></script>
+{%- endunless -%}
+
+{%- if section.settings.quick_add == 'standard' -%}
+  <script src="{{ 'quick-add.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- if section.settings.quick_add == 'bulk' -%}
+  <script src="{{ 'quick-add-bulk.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'quantity-popover.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'price-per-item.js' | asset_url }}" defer="defer"></script>
+  <script src="{{ 'quick-order-list.js' | asset_url }}" defer="defer"></script>
+{%- endif -%}
+
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+<div class="color-{{ section.settings.color_scheme }} gradient section-{{ section.id }}-padding">
+  <div class="page-width">
+    {% if section.settings.title != blank %}
+      <div class="title-wrapper-with-link title-wrapper--self-padded-mobile title-wrapper--no-top-margin {{ section.settings.alignment }} mob_text-{{ section.settings.mob_alignment }}">
+        {%- unless section.settings.title == blank -%}
+        <h2 class="title {{ section.settings.heading_size }}" {% if section.settings.text-color != blank %}style="color: {{ section.settings.text-color }};"{% endif %}>
+          {{ section.settings.title | escape }}
+        </h2>
+        {%- endunless -%}
+      </div>
+    {% endif %}
+    <ul id="recently-viewed-products" class="grid product-grid grid--4-col-desktop grid--2-col-tablet-down"></ul>
+  </div>
+</div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var product = {
+      id: '{{ product.id }}',
+      title: '{{ product.title }}',
+      url: '{{ product.url }}',
+      image: '{{ product.featured_image | img_url: '400x' }}'
+    };
+
+    var recentlyViewed = JSON.parse(localStorage.getItem('recentlyViewed')) || [];
+    recentlyViewed = recentlyViewed.filter(function(item) {
+      return item.id !== product.id;
+    });
+
+    recentlyViewed.unshift(product);
+    if (recentlyViewed.length > 5) {
+      recentlyViewed.pop();
+    }
+
+    localStorage.setItem('recentlyViewed', JSON.stringify(recentlyViewed));
+
+    var recentlyViewedContainer = document.getElementById('recently-viewed-products');
+    if (recentlyViewedContainer) {
+      recentlyViewedContainer.innerHTML = recentlyViewed.map(function(item) {
+        return `
+          <li class="grid__item recently-viewed-item">
+            <a class="card card--standard card--media" href="${item.url}">
+              <img src="${item.image}" alt="${item.title}">
+              <div class="card__content">
+                <div class="card__information">
+                  <div class="card__info">
+                    <h3 class="card__heading h4">${item.title}</h3>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </li>
+        `;
+      }).join('');
+    }
+  });
+</script>
+
+<style>
+  .recently-viewed-item {
+    display: inline-block;
+    text-align: center;
+  }
+  
+  .recently-viewed-item img {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+  }
+
+  li.grid__item.recently-viewed-item a {
+      display: inline-block;
+      width: 100%;
+      text-decoration: none;
+      text-align: left;
+  }
+  .recently-viewed-item .card__heading {
+      text-transform: uppercase;
+  }
+</style>
+
+
+{% schema %}
+  {
+    "name": "Recently Viewed",
+    "settings": [
+      {
+        "type": "text",
+        "id": "title",
+        "default": "Recently Viewed",
+        "label": "Title"
+      }, 
+      {
+        "type": "select",
+        "id": "heading_size",
+        "options": [
+          {
+            "value": "h2",
+            "label": "t:sections.all.heading_size.options__1.label"
+          },
+          {
+            "value": "h1",
+            "label": "t:sections.all.heading_size.options__2.label"
+          },
+          {
+            "value": "h0",
+            "label": "t:sections.all.heading_size.options__3.label"
+          }
+        ],
+        "default": "h1",
+        "label": "t:sections.all.heading_size.label"
+      },
+      {
+        "type": "color_scheme",
+        "id": "color_scheme",
+        "label": "t:sections.all.colors.label",
+        "info": "t:sections.all.colors.has_cards_info",
+        "default": "scheme-1"
+      },
+      {
+        "type": "header",
+        "content": "t:sections.all.padding.section_padding_heading"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_top",
+        "default": 36
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "t:sections.all.padding.padding_bottom",
+        "default": 36
+      }
+    ],
+    "presets": [
+      {
+        "name": "Recently Viewed"
+      }
+    ]
+  }
+{% endschema %}

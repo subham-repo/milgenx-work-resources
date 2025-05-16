@@ -1,0 +1,261 @@
+<section class="Section Section--spacingNormal">
+{%- if section.settings.divider -%}<div class="section--divider">{%- endif -%}
+<div class="container">
+  {%- if section.settings.title != blank -%}
+    <header class="SectionHeader SectionHeader--center">
+      <h2 class="SectionHeader__Heading Heading u-h1">{{ section.settings.title }}</h2>
+    </header>
+  {% endif %}
+</div> 
+  <div class="image-grids container" onChange="playPromo()" data-flickity='{"autoPlay": true, "autoPlay": 3000, "wrapAround": true, "contain": true, "prevNextButtons": true, "adaptiveHeight": false, "pageDots": false, "freeScroll": true, "draggable": true
+}'>
+    {%- liquid
+      assign grid_item_width = 'medium-up--one-third'
+      case section.blocks.size
+        when 1
+          assign grid_item_width = 'medium-up--one-half'
+        when 2
+          assign grid_item_width = 'medium-up--one-half'
+        when 4
+          assign grid_item_width = 'medium-up--one-quarter'
+      endcase
+    -%}
+    {%- for block in section.blocks -%}
+
+
+      {%- if section.blocks.size == 5 and forloop.index < 3 -%}
+        {%- assign column_width = 'medium-up--one-half' -%}
+      {%- else -%}
+        {%- assign column_width = grid_item_width -%}
+      {%- endif -%}
+
+    {% if block.type == 'text_block' %}
+        {% if block.settings.image != blank %}
+        <div class="image-wrap text-spacing" >
+          {%- assign img_url = block.settings.image | img_url: '300x'  -%}
+          <img loading="lazy" class="lazyload" 
+              src="{{ img_url }}"
+              alt="{{ block.settings.image.alt }}">
+          {% if block.settings.caption != blank %}<span class="caption">{{block.settings.caption}}</span>{% endif %}
+          {% if block.settings.button_link != blank %}<a target="_blank" href="{{ block.settings.button_link }}"></a>{% endif %}
+        </div>
+        {% endif %}
+      {% elsif block.type == 'Video' %}
+      <div index="{{ forloop.index }}" class="promotion-slide text-center" id="#{{ block.settings.product.title | downcase }}">
+          <div class="prmotion-media" width="{{ block.settings.productBanner.width }}" height="{{ block.settings.productBanner.height }}" >
+            {%- if block.settings.video_url contains 'youtube.com/watch' -%}
+            {%- assign video_id = block.settings.video_url | split: 'v=' -%}
+            {%- assign video_id = video_id[1] | split: '&' | first -%}
+              
+            <div
+                 id="YouTubeVideo-{{ section.id }}"
+                 class="video-div"
+                 data-type="youtube"
+                 data-video-id="{{ video_id }}"></div>
+            {%- endif -%}
+      
+            {%- if block.settings.video_url contains 'youtu.be/' -%}
+            {%- assign video_id = block.settings.video_url | split: '.be/' -%}
+            {%- assign video_id = video_id[1] | split: '&' | first -%}
+            <div
+                 id="YouTubeVideo-{{ section.id }}"
+                 class="video-div"
+                 data-type="youtube"
+                 data-video-id="{{ video_id }}"></div>
+            {%- endif -%}
+      
+            {%- if block.settings.video_url contains 'vimeo.com' -%}
+            {%- assign video_id = block.settings.video_url | split: '.com/' -%}
+            {%- assign video_id = video_id[1] | split: '/' | first -%}
+            <div
+                 id="Vimeo-{{ section.id }}"
+                 class="video-div"
+                 data-type="vimeo"
+                 data-video-id="{{ video_id }}"></div>
+            {%- endif -%}
+      
+            {%- if block.settings.video_url contains '.mp4' or block.settings.video_url contains '.MP4' and section.settings.enableVideo == true -%}
+            <video
+                   preload="none"      
+                   loading="eager" 
+                   id="Mp4Video-{{ section.id }}"
+                   class="video video-div lazy"
+                   video-src="{{ block.settings.video_url }}" 
+                   data-type="mp4" 
+                   poster="{{ block.settings.image | img_url: "master"}}" 
+                   width="{{ block.settings.image.width }}" 
+                   height="{{ block.settings.image.height }}" 
+                   loop muted playsinline autoplay controls controlsList="nodownload"></video>
+            <!--                 <span 
+      mute-src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/36/assets/mute.png?v=1653391706" 
+      volume-src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/36/assets/volume.png?v=1653391706" class="audio-control"><img width="20" height="20" src="https://cdn.shopify.com/s/files/1/0137/0292/2286/t/36/assets/mute.png?v=1653391706"></span> -->
+            {%- endif -%}
+            {% if block.settings.button_link != blank %}<a target="_blank" href="{{ block.settings.button_link }}" aria-label="FireBoltt Instafeed of {{block.settings.caption}}"></a>{% endif %}
+            {% if block.settings.caption != blank %}<span class="caption">{{block.settings.caption}}</span>{% endif %}
+          </div>
+      </div>
+{% endif %}
+    {%- endfor -%}
+    
+  </div>
+ 
+  {% comment %}
+  <div class="btn-row text-center">
+    <a href="{{ shop.url }}/pages/meet-our-firecrackers" class="Button Button--primary">See All FireCrackers</a>
+  </div>
+  {% endcomment %}
+{%- if section.settings.divider -%}</div>{%- endif -%}
+</section>
+<style>
+  .spotted_on{
+/*       background-color:{{section.settings.color_background}}; */
+      {% if section.settings.image_background %}background-image:url({{section.settings.image_background | img_url: "master"}});{% endif %}
+      background-size:contain;
+      background-repeat: no-repeat;
+    background-position: center;
+  }
+  .spotted_on.dark .section-header * {
+    color: {{section.settings.color_text}};
+  }
+  .spotted_on.dark a.btn {
+    border-color: #fff;
+  }      
+  .spotted_on .btn-row {
+    margin-top: 35px;
+  }
+  .spotted_on.dark .flickity-button{
+     border: 1px solid #fff;   
+  }      
+  .image-grids.page-width .section-header h3 {
+    margin-bottom: 0;
+  }
+  .image-grids.page-width .section-header {
+    margin-bottom: 30px;
+  }      
+</style>
+
+{% schema %}
+  {
+    "name": "Spotted On",
+    "class": "shopify-section--bordered spotted_on image_block dark",
+    "settings": [
+      {
+        "type": "color",
+        "id": "color_background",
+        "label": "Background",
+        "default": "#f9f9f9"
+      }, 
+      {
+        "type": "color",
+        "id": "color_text",
+        "label": "Text Color",
+        "default": "#000"
+      }, 
+      {
+        "type": "image_picker",
+        "id": "image_background",
+        "label": "Background Image"
+      }, 
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Heading"
+      },
+      {
+        "type": "select",
+        "id": "align_text",
+        "label": "Text alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Centered"
+          }
+        ]
+      },
+      {
+        "type": "checkbox",
+        "id": "divider",
+        "label": "Show section divider",
+        "default": false
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text_block",
+        "name": "Column",
+        "settings": [
+          {
+            "type": "checkbox",
+            "id": "enable_image",
+            "label": "Show image",
+            "default": true
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "button_link",
+            "label": "Link"
+          },
+          {
+            "type": "text",
+            "id": "caption",
+            "label": "Caption"
+          }
+        ]
+      },
+      {
+        "type": "Video",
+        "name": "Video block",
+        "settings": [
+          {
+            "type": "text",
+            "id": "video_url",
+            "label": "Background video link",
+            "info": "Supports YouTube, .MP4 and Vimeo. Not all features supported by Vimeo. [Learn more](https://archetypethemes.co/blogs/motion/how-do-i-add-background-videos)"
+          },
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "button_link",
+            "label": "Link"
+          },
+          {
+            "type": "text",
+            "id": "caption",
+            "label": "Caption"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Spotted On",
+        "category": "Text",
+        "blocks": [
+          {
+            "type": "text_block"
+          },
+          {
+            "type": "text_block"
+          },
+          {
+            "type": "text_block"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

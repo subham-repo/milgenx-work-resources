@@ -1,0 +1,6 @@
+=================================================================
+/------------------- Command Line Tutorials --------------------/
+=================================================================
+
+https://www.maketecheasier.com/command-prompt-manage-files/
+https://en.wikibooks.org/wiki/Windows_Batch_Scripting/File_and_Directory_Management

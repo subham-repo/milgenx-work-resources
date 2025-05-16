@@ -1,0 +1,96 @@
+<script>
+	var responsive_body = 992;
+	
+	function check_screen(){
+		if($(window).width() < responsive_body){
+			$("body").addClass("responsive-body");
+			$("nav .navbar-nav ").each(function(){
+				$(this).find('li.menu-item-has-children').append('<span class="menu-toggle fa fa-angle-down"></span>');
+				// $('li.menu-item-has-children .menu-toggle:not(:first-child)').remove();
+			})
+			console.log("responsive-body");
+		}else{
+			$("body").removeClass("responsive-body");
+			$("nav .navbar-nav ").each(function(){
+				$(this).find('li.menu-item-has-children').children('.menu-toggle').remove();
+			})
+			console.log("desktop-body");
+		}
+	}
+	
+	$(window).resize(function(){
+		// check_screen();
+	});
+	
+	$(document).ready(function(){
+		check_screen();
+		$('.menu-toggle').on('click', function(){
+			$(this).parent('li.menu-item-has-children').toggleClass('open');
+		})
+	});
+	
+</script>
+
+<style>
+.responsive-body li.menu-item-has-children{
+	position: relative;
+}
+.responsive-body li.menu-item-has-children span.menu-toggle {
+    position: absolute;
+    right: 10px;
+    width: 30px;
+    height: 47px;
+	cursor: pointer;
+	top: 0;
+	font-size: 20px;
+}
+.responsive-body  .custom-nav .col-nav .navbar-nav li a{
+	width: Calc(100% - 30px);
+	display: flex;
+
+}
+body:not(.responsive-body) header nav .sub-menu {
+	width: 100%;
+	max-width: 260px;
+}
+.responsive-body li.menu-item-has-children span.menu-toggle:before {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    justify-content: center;
+	transition: transform .2s ease-in-out;
+}
+.responsive-body li.menu-item-has-children.open ul.sub-menu {
+    position: relative;
+    display: block;
+    width: Calc(100% + 30px);
+    margin-left: -15px;
+    margin-top: 10px;
+    box-shadow: unset;
+}
+.responsive-body li.menu-item-has-children.open ul.sub-menu li {
+    background-color: #fff;
+}
+.responsive-body li.menu-item-has-children.open ul.sub-menu li a {
+    color: #000 !important;
+}
+.responsive-body li.menu-item-has-children.open ul.sub-menu li a:hover , .responsive-body li.menu-item-has-children ul.sub-menu li.current_page_item a{
+    color: #f2a706 !important
+}
+.responsive-body .custom-nav .col-nav {
+    justify-content: flex-end;
+    overflow-y: scroll;
+    height: 100%;
+    max-height: 60vh;
+}
+.responsive-body  .navbar.custom-nav {
+    padding: 15px 0px;
+	box-shadow: 0 0 10px 0 rgba(0,0,0,.2);
+}
+.responsive-body  header nav .sub-menu li:first-child {
+    border-top: 1px solid #25d1f3;
+}
+.responsive-body li.menu-item-has-children.open span.menu-toggle:before {
+    transform: rotate(180deg);
+}
+</style>

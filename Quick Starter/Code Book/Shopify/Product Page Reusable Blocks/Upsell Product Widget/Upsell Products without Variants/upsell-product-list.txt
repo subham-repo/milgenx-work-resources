@@ -1,0 +1,201 @@
+{% assign upselllist = product.metafields.custom.upsell_products.value %}
+{% assign upselllistCount = product.metafields.custom.upsell_products.size %}
+{% assign collection_handle = upsellCollection | default: "stools" %}
+{% if upselllist %}
+<div class="product-upsell-wrapper">
+  <b class="heading">{{ block.settings.title | default: "Complete Your Set" }}</b>
+  <div class="product-upsell">
+    {% for upsellProduct in upselllist limit: 3 %}
+      {% assign upsellProduct = all_products[upsellProduct] %}
+      {% unless upsellProduct.handle == product.handle %}
+      <div class="upsell-item">
+        <div class="upsell-item-banner">
+          <a href="{{ upsellProduct.url }}"><img src="{{ upsellProduct.featured_image | img_url: "180x" }}" alt="{{ product.title }}" width="100" height="100" /></a>
+        </div>
+        <div class="upsell-item-info">
+          {% assign p_title = upsellProduct.title | split: ' - ' %}
+          <strong><a href="{{ upsellProduct.url }}">{{- p_title | last -}}</a></strong>
+          <span>
+            {{- upsellProduct.selected_or_first_available_variant.price 
+            | money_without_trailing_zeros 
+            | replace: ",", "" 
+            | replace: ".", "" -}}
+          </span>
+          <form method="post" action="/cart/add" id="product_form_{{ upsellProduct.selected_or_first_available_variant.id }}" accept-charset="UTF-8" class="upsellproduct-form product-form product-form--payment-button" enctype="multipart/form-data">
+          <input type="hidden" name="form_type" value="product">
+          <input type="hidden" name="utf8" value="✓">
+          <input type="hidden" name="quantity" value="1">
+          <input type="hidden" name="product-id" value="{{ upsellProduct.id }}">
+          <input type="hidden" name="id" value="{{ upsellProduct.selected_or_first_available_variant.id }}">
+          {% if upsellProduct.available %}
+          <button type="button" onclick="addToCart({{ upsellProduct.selected_or_first_available_variant.id }}, 1, event);" name="add" btn-text="Add to Cart" class="ProductForm__AddToCart btn btn--full btn-theme"><span>Add to Cart</span></button>
+          {% else %}
+          <b>Sold Out</b>
+          {% endif %}
+          </form>
+
+          
+
+          {% comment %}
+          <form method="post" action="/cart/add" id="AddToCartForm-template--18811183235286__main" accept-charset="UTF-8" class="product-form   product-form--payment-button" enctype="multipart/form-data"><input type="hidden" name="form_type" value="product"><input type="hidden" name="utf8" value="✓">
+              <select name="id" id="ProductSelect-template--18811183235286__main" class="product-form__variants no-js">
+                  <option selected="selected" data-sku="P29-BK" value="44784397353174">
+                      Default Title - $49.00 USD
+                  </option>
+              </select>
+              <div class="product-form__quantity-submit pt-1">
+                   <div class="product-form__item product-form__item--submit ">
+                    <button type="submit" name="add" id="AddToCart-template--18811183235286__main" class="btn btn--full btn-theme product-form__cart-submit product-form__cart-submit--outline">
+                      <span id="AddToCartText-template--18811183235286__main">
+                          Add to Cart
+                      </span>
+                    </button>
+                  </div>
+              </div>
+            <input type="hidden" name="product-id" value="8257021182166"><input type="hidden" name="section-id" value="template--18811183235286__main">
+          </form>
+          {% endcomment %}
+        </div>
+      </div>
+      {% endunless %}
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<script>
+  // Function to add a product to the cart
+  function addToCart(variantId, quantity = 1, e) {
+    // Ensure the variantId is valid
+    if (!variantId) {
+        console.error("Variant ID is required to add a product to the cart.");
+        return;
+    }
+  
+    // Access the button element
+    const button = e.target;
+  
+    // Change the button text to "Adding..."
+    button.textContent = "Adding...";
+    button.disabled = true; // Disable the button to prevent multiple clicks
+  
+    // Prepare the payload
+    const data = {
+        id: variantId,
+        quantity: quantity,
+    };
+  
+    // Send the AJAX request
+    fetch("/cart/add.js", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+    })
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Failed to add product to cart. " + response.statusText);
+            }
+            return response.json();
+        })
+        .then((data) => {
+            console.log("Product added to cart:", data);
+            // Change the button text to "Added to Cart"
+            button.textContent = "Added to Cart";
+  
+            // Optionally, re-enable the button after a delay
+            setTimeout(() => {
+                // button.textContent = "Add to Cart";
+                // button.disabled = false;
+            }, 2000); // Reset after 2 seconds
+        })
+        .catch((error) => {
+            console.error("Error adding product to cart:", error);
+            // Change the button text to indicate an error
+            button.textContent = "Error Adding";
+  
+            // Re-enable the button to allow retry
+            setTimeout(() => {
+                button.textContent = "Add to Cart";
+                button.disabled = false;
+            }, 2000); // Reset after 2 seconds
+        });
+  }
+
+  // Example usage: Replace `123456789` with a valid variant ID
+  const variantId = 123456789; // Replace with the actual variant ID
+  const quantity = 2; // Change the quantity as needed
+  // addToCart(variantId, quantity);
+
+</script>
+
+<style>
+  .product-upsell {
+      display: flex;
+      /* flex-flow: row; */
+      column-gap: 15px;
+      /* row-gap: 15px; */
+  }
+  .product-upsell .upsell-item .upsell-item-banner a {
+      display: inline-block;
+      width: auto;
+  }
+  .product-upsell .upsell-item .upsell-item-banner a:hover img { transform: scale(1.2); }
+  .product-upsell .upsell-item .upsell-item-banner img { width: 100%; transition: .3s all ease-in-out; min-height: 130px; object-fit: contain; object-position: center; }
+  /* @media(min-width: 481px){
+    .product-upsell {
+        flex-flow: row;
+    }
+    .product-upsell .upsell-item .upsell-item-info {
+        margin-top: 10px;
+    }
+  } */
+  /* @media(max-width: 480px){
+    .product-upsell {
+        flex-flow: column;
+    }
+    .product-upsell .upsell-item {
+        display: flex;
+        column-gap: 15px;
+        align-items: center;
+    }
+    .product-upsell .upsell-item .upsell-item-banner {
+        max-width: 100px;
+    }
+  } */
+  
+  /* .product-upsell .upsell-item {
+      flex: 1;
+  } */
+  .product-upsell .upsell-item .upsell-item-info {
+      display: flex;
+      flex-flow: column;
+      row-gap: 5px;
+      font-size: 12px;
+      line-height: normal;
+      width: 100%
+  }
+  .product-upsell .upsell-item .upsell-item-info button {
+      font-size: 12px;
+      padding: 8px 10px !important;
+      margin-top: 0 !important;
+  }
+  .product-upsell-wrapper .heading {
+      margin-bottom: 10px;
+      display: inline-block;
+  }
+  .product-upsell .upsell-item .upsell-item-banner {
+      border-radius: 6px;
+      overflow: hidden;
+      box-shadow: 0 0 4px 0 rgba(0, 0, 0, .2);
+      background-color: #fcfcfc;
+      display: inline-block;
+  }
+  @media(max-width: 543px){
+    .product-upsell{
+      white-space: nowrap;
+        overflow-x: auto;
+    }
+  }
+</style>

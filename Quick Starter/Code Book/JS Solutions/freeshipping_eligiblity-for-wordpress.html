@@ -1,0 +1,43 @@
+<script>
+  function freeshipping_eligiblity(){
+      var target_cart = parseInt(40);
+      var current_cart = jQuery('.cart-subtotal').find('.woocommerce-Price-amount.amount').text();
+      var cart_amt =  parseFloat(current_cart.replace('$', ''));
+      var target_away = parseFloat(target_cart - cart_amt);;
+      var target_away_amt = parseFloat(target_away_amt);
+
+      var destination = jQuery('tr.woocommerce-shipping-totals.shipping').find('td[data-title="Shipping"]');
+      var raw_data = '<span class="shipping_away">You are <span class="away_cart">$'+target_away.toFixed(2)+'</span> away from free shipping!</span>';
+	  
+      // console.log('target_away_amt:' + typeof(target_away_amt) + target_away_amt);
+      // console.log('target_cart:' + typeof(target_cart) + target_cart);
+      // console.log('target_away:' + typeof(target_away) + target_away);
+      // console.log('cart_amt:' + typeof(current_cart) + cart_amt);
+
+     	
+      // destination.append(raw_data);
+      
+      if(parseInt(cart_amt) <=  target_cart){
+          destination.append(raw_data);
+      }else{}
+  }
+  freeshipping_eligiblity();
+
+  jQuery(document).ajaxSuccess(function(event,jqXHR,options) {
+	setTimeout(function(){
+	  freeshipping_eligiblity();
+      jQuery('span.shipping_away').prev('span.shipping_away').remove();
+    }, 1000);
+    console.log('Raam');
+  });
+</script>
+
+<style>
+  span.shipping_away {
+      color: #000;
+      font-weight: 700;
+  }
+  span.shipping_away span.away_cart {
+      color: #f77fb4;
+  }
+</style>

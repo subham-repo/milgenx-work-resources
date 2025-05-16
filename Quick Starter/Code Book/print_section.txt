@@ -1,0 +1,22 @@
+function printPageArea(areaID) {
+    var printContents = areaID.firstElementChild.innerHTML;
+    var originalContents = document.body.innerHTML;
+
+    document.body.innerHTML = printContents;
+ 
+    window.print();
+
+    document.body.innerHTML = originalContents;
+}
+// printDiv(gv_list_42)
+// printPageArea(gv_list_42)
+
+jQuery(document).ready(function(){
+	jQuery('.gv-list-container.gv-list-view').find('.gv-list-view').each(function(){
+	    var gvList_id = jQuery(this).attr('id');
+	    // console.log('gvList_id: '+ gvList_id);
+
+	    var print_button = '<div class="gv-list-print"><button class="gv_print" onclick="printPageArea('+gvList_id+');">Get A Print <i class="fa fa-print" aria-hidden="true"></i></button></div>'
+	    jQuery(this).append(print_button);
+	})
+})

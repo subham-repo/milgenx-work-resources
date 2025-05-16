@@ -1,0 +1,11 @@
+<video id="header-video" loop autoplay muted>
+  <source src="/wp-content/uploads/2019/03/Vanfest_LogoAnimation_20190304.mp4" type="video/mp4">
+</video>
+<script>
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+videoEl = document.getElementById('header-video')
+sleep(2000);
+videoEL.play();
+</script>

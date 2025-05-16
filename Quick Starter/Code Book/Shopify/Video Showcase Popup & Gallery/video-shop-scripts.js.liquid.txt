@@ -1,0 +1,102 @@
+window.addEventListener("load", function(){
+  let shopVideos = document.querySelectorAll(".shop-by-video");
+  shopVideos.forEach(function(shopVideo){
+    shopVideo.addEventListener("mouseenter", function(){
+      if(!shopVideo.classList.contains("playing")){
+        
+        shopVideos.forEach(function(otherVideo){
+          otherVideo.querySelector("video").removeAttribute('src');
+          otherVideo.querySelector("video").pause();
+        })
+        
+        let videoEle = shopVideo.querySelector('video');
+        videoEle.setAttribute('src', videoEle.getAttribute('data-src'));
+        if(!shopVideo.classList.contains("playing")){ videoEle.play(); }
+        videoEle.onplay = (event) => { if(!shopVideo.classList.contains("playing")){ shopVideo.classList.add("playing"); } };
+        videoEle.onpause = (event) => { if(shopVideo.classList.contains("playing")){ shopVideo.classList.remove("playing"); } };
+      }
+    })
+
+    shopVideo.addEventListener("click", function(){
+      let videoFile = shopVideo.getAttribute("video-file");
+      let videoThumbnail = shopVideo.getAttribute("video-thumbnail");
+      if(videoFile && videoThumbnail){
+        openStory(videoFile, videoThumbnail);
+      }
+    })
+  });
+  
+  function decode(str) {
+    let txt = new DOMParser().parseFromString(str, "text/html");
+    return txt.documentElement.textContent;
+  }
+  
+  function adjustPopupHeight(){
+    let windowHeight = window.innerHeight;
+    let serveStoryParent = document.querySelector(".serve-story-wrapper");
+    serveStoryParent.style.height = windowHeight+"px";
+  }
+  
+  function openStory(vidUrl, vidPoster){
+    let storyLink = event.target.closest(".shop-by-video").getAttribute("destination");
+    let storyThumb = event.target.closest(".shop-by-video").getAttribute("destination-thumb");
+    let storyTitle = event.target.closest(".shop-by-video").getAttribute("product-title");
+    
+    let storyVideo = event.target.closest(".shop-by-video").querySelector("video");
+    
+    // let storyLink = "#";
+    let vidSrc = vidUrl;
+    let vidThumb = vidPoster;
+  
+    let productHandle = storyLink.split("/");
+    let storyStructure = "";
+    if(vidSrc && vidThumb){
+      storyStructure += '<div class="story-item m-auto"><video poster="'+vidThumb+'" playsinline="true" loop src="'+vidSrc+'"></video></div>';
+    }
+    
+    // if(data != undefined){
+    //   let storyAssets = data;
+    //   if(storyAssets.length > 0){
+    //     storyAssets.forEach(function(storyAsset, index){
+    //       storyStructure += '<div class="story-item"><img src="'+storyAsset+'" alt="item-'+index+'" /></div>';
+    //     })
+    //   }  
+    // }
+  
+        
+    let storyPopup = '<div class="serve-story-wrapper"><span class="trigger-close"><svg width="28" height="28" fill="#ffffff" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="m4.707 3.293-1.4141 1.4141 7.293 7.293-7.293 7.293 1.4141 1.4141 7.293-7.293 7.293 7.293 1.4141-1.4141-7.293-7.293 7.293-7.293-1.4141-1.4141-7.293 7.293-7.293-7.293z"/></svg></span><div class="serve-story-media">'+storyStructure+'</div><div class="serve-story-action"><a href="'+storyLink+'?utm_source=website&utm_medium=story&utm_campaign='+productHandle[productHandle.length - 1]+'" class="shop-item-block"><img width="65" height="65" src="'+storyThumb+'" ><span class="shop-info-block"><strong>'+storyTitle+'</strong><span class="btn">Shop Now</span></span></a></div></div>';
+    document.querySelector("body").insertAdjacentHTML("beforeend", storyPopup);
+    document.querySelector("html").classList.add("disable-scroll");
+  
+  
+    let serveStoryParent = document.querySelector(".serve-story-wrapper");
+    let serveStoryMedia = serveStoryParent.querySelector(".serve-story-media");
+    if(serveStoryMedia){
+      // var flkty = new Flickity( serveStoryMedia, {
+      //   // options
+      //   cellAlign: 'left',
+      //   contain: false,
+      //   pageDots: true,
+      //   fade: true,
+      //   autoPlay: true
+      // });  
+    }
+  
+    let triggerClose = serveStoryParent.querySelector(".trigger-close");
+    triggerClose.addEventListener("click", function(){
+      serveStoryParent.remove();
+      document.querySelector("html").classList.remove("disable-scroll");
+    })
+    document.addEventListener('keydown', evt => {
+        if (evt.key === 'Escape') {
+          serveStoryParent.remove();
+          document.querySelector("html").classList.remove("disable-scroll");
+        }
+    });
+  
+    adjustPopupHeight();
+    serveStoryParent.querySelector('.serve-story-media .story-item video').play();
+  }
+  
+  window.addEventListener("resize", function(){ adjustPopupHeight() })
+})

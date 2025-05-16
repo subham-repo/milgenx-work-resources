@@ -1,0 +1,187 @@
+<div class="banner-screen-tab-view">
+  {% for block in section.blocks %}
+    <div handle="screen-handle--{{ block.settings.name | handle }}" class="banner-screen-tab">
+      <div class="banner-screen-media">
+        {% if block.settings.video != blank %}
+          {{ block.settings.video | video_tag }}
+        {% else %}
+          {{ block.settings.banner | image_url: width: 1990 | image_tag: loading: "lazy", class: "banner-screen-photo"  }}
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+  <div class="banner-screen-nav-body">
+    <div class="banner-screen-nav">
+      <span class="h5"></span>
+      <div class="banner-screen-navigations">
+        {% for block in section.blocks %}
+          <span target="screen-handle--{{ block.settings.name | handle }}" class="banner-screen-navigation h2 {% if forloop.first %}current-tab{% endif %}">{{ block.settings.name }}</span>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function onElementInView(elementSelector, callback) {
+    const target = document.querySelector(elementSelector);
+  
+    if (!target) return;
+  
+    const observer = new IntersectionObserver((entries, observerInstance) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          callback(entry.target);
+          // Uncomment below to trigger only once:
+          // observerInstance.unobserve(entry.target);
+        }
+      });
+    }, {
+      root: null,          // Use the viewport
+      rootMargin: '0px',   // No offset
+      threshold: 0.5         // Trigger when even 1px is visible
+    });
+  
+    observer.observe(target);
+  }
+
+  let bannerScreens = document.querySelectorAll(".banner-screen-tab-view .banner-screen-tab");
+  let bannerNavigations = document.querySelectorAll(".banner-screen-nav .banner-screen-navigations span.banner-screen-navigation");
+  
+  bannerScreens.forEach(function(bannerScreen){
+    // ✅ Example Usage:
+    onElementInView(`div[handle=${bannerScreen.getAttribute("handle")}]`, function() {
+      console.log('DIV entered viewport:', '');
+      let currentTabHandle = bannerScreen.getAttribute("handle");
+      bannerNavigations.forEach(function(bannerNavigation){
+        if(bannerNavigation.getAttribute("target") == currentTabHandle){
+          bannerNavigations.forEach(function(bannerNavigationItem){bannerNavigationItem.classList.remove("current-tab")})
+          bannerNavigation.classList.add("current-tab")
+        }
+        bannerNavigation.addEventListener("click", function(){
+          let targetScreen = document.querySelector(`div[handle=${bannerNavigation.getAttribute("target")}]`);
+          targetScreen.scrollIntoView({ behavior: "smooth", block: "start", inline: "nearest" });
+        })
+      })
+      // You can also trigger animations, load content, etc. here.
+    });
+  })
+ 
+
+</script>
+
+<style>
+  .banner-screen-tab-view {
+      position: relative;
+      width: 100%;
+      max-width: 100%;
+      height: auto;
+      display: flex;
+      flex-flow: column;
+  }
+  .banner-screen-tab-view .banner-screen-tab {
+      width: 100vw;
+      height: 100vh;
+      background-color: #636262;
+  }
+  .banner-screen-tab-view .banner-screen-tab .banner-screen-media {
+    position: relative;
+    overflow: hidden;
+  }
+  .banner-screen-tab-view .banner-screen-tab .banner-screen-media:before {
+      content: '';
+      width: 100%;
+      height: 100%;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #00000073;
+      position: absolute;
+  }
+  .banner-screen-tab-view .banner-screen-tab .banner-screen-media {
+      width: 100%;
+      height: 100%;
+  } 
+  .banner-screen-tab-view .banner-screen-tab .banner-screen-media img, 
+  .banner-screen-tab-view .banner-screen-tab .banner-screen-media video {
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+  }
+  .banner-screen-nav {
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      align-items: center;
+      position: sticky;
+      top: 40vh;
+      margin-top: 40vh;
+      padding: 50px 20px;
+  }
+  .banner-screen-nav .banner-screen-navigations {
+      display: flex;
+      flex-flow: column;
+      justify-content: center;
+      text-align: center;
+  }
+  .banner-screen-nav-body {
+      display: flex;
+      flex-flow: column;
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+  }
+  .banner-screen-nav .banner-screen-navigations span.banner-screen-navigation:not(.current-tab) { color: #969A99; }
+  .banner-screen-nav .banner-screen-navigations span.banner-screen-navigation.current-tab { color: #ffffff; }
+  .banner-screen-nav .banner-screen-navigations span.banner-screen-navigation { cursor: pointer; }
+</style>
+
+{% schema %}
+  {
+    "name": "Banner Screen View",
+    "tag": "section",
+    "class": "banner-screen-tab-view",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "banner-screen",
+        "name": "Banner Screen",
+        "settings": [
+          {
+            "type": "text",
+            "id": "name",
+            "label": "Name"
+          },
+          {
+            "type": "image_picker",
+            "id": "banner",
+            "label": "Banner"
+          },
+          {
+            "type": "video",
+            "id": "video",
+            "label": "Video"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Banner Screen View"
+      }
+    ]
+  }
+{% endschema %}

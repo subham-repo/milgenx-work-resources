@@ -1,0 +1,26 @@
+<script type="text/javascript">
+	jQuery.fn.isInViewport = function() {
+		// console.log(jQuery(this).offset().top);
+	    var elementTop = jQuery(this).offset().top;
+	    var elementBottom = elementTop + jQuery(this).outerHeight();
+
+	    var viewportTop = jQuery(window).scrollTop();
+	    var viewportBottom = viewportTop + jQuery(window).height();
+
+	    return elementBottom > viewportTop && elementTop < viewportBottom;
+	};
+	jQuery('main').find('section').each(function(){
+	    var sec_id = jQuery(this).attr('id');
+	    jQuery(window).on('resize scroll', function() {
+	        if (jQuery('#'+sec_id).isInViewport()) {
+	            // console.log(sec_id);
+	            jQuery('.section_mover .mover_wrapper').find('a').each(function(){
+	               if(jQuery(this).attr('href') == '#'+sec_id){
+	                    jQuery(this).addClass('active').siblings().removeClass('active');
+	                    // console.log('....');
+	                }
+	            })
+	        }
+	    });
+	})
+</script>

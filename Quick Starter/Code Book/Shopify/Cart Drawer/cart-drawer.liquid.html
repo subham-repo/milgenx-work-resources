@@ -1,0 +1,19 @@
+{{ 'cart-drawer.css' | asset_url | stylesheet_tag }}
+{{ 'cart-drawer.js' | asset_url | script_tag }}
+
+<section class="drawer" id="drawer-name" data-drawer-target>
+  <div class="drawer__overlay" data-drawer-close tabindex="-1"></div>
+  <div class="drawer__wrapper">
+    <div class="drawer__header">
+      <div class="drawer__title">
+        Continue Shopping
+      </div>
+      <button class="drawer__close" data-drawer-close aria-label="Close Drawer"></button>
+    </div>
+    <div class="drawer__content" id="cart__drawer">
+      <div id="cart__drawer_items">
+      </div>
+      <div id="cart__drawer_footer" style="margin-top: 50px"></div>
+    </div>
+  </div>
+</section>

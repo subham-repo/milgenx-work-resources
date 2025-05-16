@@ -1,0 +1,105 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+
+<div class="container countdown">
+  <h3 id="headline">Fin de l'offre dans :</h3>
+  <div id="countdown">
+    <ul>
+      <li style="display:none;"><span id="days" ></span>days</li>
+      <li><span id="hours"></span>Heures</li>
+      <li><span id="minutes"></span>Minutes</li>
+      <li><span id="seconds"></span>Secondes</li>
+    </ul>
+  </div>
+
+</div>
+<script>
+  jQuery(document).ready(function(){
+    var duration = moment.duration({
+      'minutes': 30,
+      'seconds': 00
+
+    });
+
+    var timestamp = new Date(0, 0, 0, 2, 10, 30);
+    var interval = 1;
+    var timer = setInterval(function() {
+      timestamp = new Date(timestamp.getTime() + interval * 1000);
+
+      duration = moment.duration(duration.asSeconds() - interval, 'seconds');
+      var min = duration.minutes();
+      var sec = duration.seconds();
+
+      sec -= 1;
+      if (min < 0) return clearInterval(timer);
+      if (min < 10 && min.length != 2) min = '0' + min;
+      if (sec < 0 && min != 0) {
+        min -= 1;
+        sec = 59;
+      } else if (sec < 10 && length.sec != 2) sec = '0' + sec;
+
+      $('.countdown #hours').text('00');
+      $('.countdown #minutes').text(min);
+      $('.countdown #seconds').text(sec);
+
+
+      if (min == 0 && sec == 0)
+        clearInterval(timer);
+
+
+    }, 1000);
+
+    
+
+  })
+</script>
+
+
+<style>
+
+
+
+#countdown h1 {
+  font-weight: normal;
+  letter-spacing: .125rem;
+  text-transform: uppercase;
+}
+
+#countdown li {
+  display: inline-block;
+  font-size: 1em;
+  list-style-type: none;
+  padding: 1em;
+  text-transform: uppercase;
+}
+
+#countdown li span {
+  display: block;
+  font-size: 2.5rem;
+}
+
+
+
+#content {
+  display: none;
+  padding: 1rem;
+}
+
+h1#headline {
+    text-align: center;
+}
+
+@media all and (max-width: 768px) {
+ #countdown h1 {
+    font-size: 1.5rem;
+  }
+  
+  #countdown li {
+    padding: .75rem;
+  }
+  
+ #countdown li span {
+    font-size: 2.375rem;
+  }
+}
+
+</style>

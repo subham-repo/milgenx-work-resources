@@ -1,0 +1,156 @@
+function nested_categories(){ ?>
+<?php
+    ob_start();
+    $taxonomy = 'category';
+    $categories = get_categories( array(
+        'orderby' => 'name',
+        'order'   => 'ASC'
+    ) );
+    echo '<h2 class="widget-title">Categories</h2>';
+    echo "<ul class='cat-list'>";
+        foreach( $categories as $category ) {
+            $parent_cat_arg = array(
+                'hide_empty' => false, 
+                'parent' => $category->term_id, 
+                'orderby' => 'name',
+                'order'   => 'ASC' 
+            );
+            $parent_cat = get_terms('category',$parent_cat_arg);// Parent Category
+            if(count($parent_cat) > 0){
+                $have_child = "have-child";
+            }else{
+                $have_child = "";
+            }
+            // print_r($category->category_parent);
+            if($category->category_parent == 0){                
+                echo '<li class='.$have_child.'>';   
+                echo '<span class="catt-inner">';
+                echo '<a href="' . get_category_link($category->term_id) . '">' . $category->name . '</a>';
+                if(count($parent_cat) > 0){
+                    echo '<span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path d="M12 17.414 3.293 8.707l1.414-1.414L12 14.586l7.293-7.293 1.414 1.414L12 17.414z"/></svg></span>';
+                }
+                echo '</span>';
+
+                if(count($parent_cat) > 0){echo "<ul class='cat-list child'>";}
+                foreach ($parent_cat as $catVal) {
+                $child_arg = array( 'hide_empty' => false, 'parent' => $catVal->term_id );
+                $child_cat = get_terms( 'category', $child_arg );
+                if(count($child_cat) > 0){
+                    $have_grand_child = "have-child";
+                }else{
+                    $have_grand_child = "";
+                }
+                echo '<li class='.$have_grand_child.'>';
+                echo '<span class="catt-inner">';
+                echo '<a href="'.get_category_link($catVal->term_id) .'">'.$catVal->name.'</a>';
+                if(count($child_cat) > 0){
+                    echo '<span class="toggle-icon"><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"><path d="M12 17.414 3.293 8.707l1.414-1.414L12 14.586l7.293-7.293 1.414 1.414L12 17.414z"/></svg></span>';
+                }
+                echo '</span>';
+                echo '</li>';
+                    if(count($child_cat) > 0){echo "<ul class='cat-list grand-child'>";}
+                    foreach( $child_cat as $child_term ) {
+                        echo '<li><span class="catt-inner"><a href="'.get_category_link($child_term->term_id) .'">'.$child_term->name . '</a></span></li>'; // Grand Child Category
+                    }
+                    if(count($child_cat) > 0){echo '</ul>';}
+                }
+                if(count($parent_cat) > 0){echo "</ul>";}
+                echo '</li>';
+            }else{
+                // do nothing
+                // echo "<pre>";
+                // print_r($category); 
+                // echo "</pre>";   
+            }
+        } 
+    echo "</ul>";
+    $output_string = ob_get_contents();
+    ob_end_clean();
+	return $output_string;
+}
+add_shortcode('nested-categories', 'nested_categories');
+
+<script>
+
+// Widget Category Toggle Controller
+let catChildLists = document.querySelectorAll("ul.cat-list li.have-child");
+catChildLists.forEach(function(catChildList){
+    let catChildListToggle = catChildList.querySelector("span.toggle-icon");
+	let cattInner = catChildList.querySelector(".catt-inner");
+    catChildListToggle.addEventListener("click", function(){
+        if(catChildList.classList.contains("show-child")){
+            catChildList.classList.remove("show-child")
+        }else{
+            catChildList.classList.add("show-child")
+        }
+    })
+})
+</script>
+
+<style>
+ul.cat-list {
+    margin-left: 0;
+    margin-bottom: 0;
+}
+ul.cat-list li {
+    list-style: none;
+}
+ul.cat-list.child {
+    padding-left: 15px;
+}
+
+li.have-child.show-child ul.cat-list.grand-child {
+    padding: 5px 10px;
+    background-color: #ccc;
+    border-radius: 4px;
+}
+li.have-child.show-child ul.cat-list.child {
+    background-color: #eee;
+    border-radius: 4px;
+}
+li.have-child:not(.show-child) ul.cat-list.child, 
+ul.cat-list.child li.have-child:not(.show-child) ul.cat-list.grand-child, 
+ul.cat-list.child li.have-child:not(.show-child)+ul.cat-list.grand-child{
+    display: none;
+}
+
+span.toggle-icon {
+    display: inline-flex;
+    border-radius: 4px;
+    width: 24px;
+    height: 24px;
+	justify-content: center;
+    align-items: center;
+	cursor: pointer;
+}
+li.have-child {
+    display: inline-flex;
+    align-items: center;
+	justify-content: space-between;
+    width: 100%;
+	flex-wrap: wrap;
+}
+li.have-child span.catt-inner {
+    width: 100%;
+    display: inline-flex;
+    justify-content: space-between;
+}
+ul.cat-list {
+    width: 100%;
+    max-width: 300px;
+}
+span.toggle-icon, span.toggle-icon svg {
+	fill: #fff;
+    transition: .3s transform ease-in-out;
+}
+li.have-child.show-child span.toggle-icon{
+	background-color: #000;
+}
+li.have-child:not(.show-child) span.toggle-icon{
+	background-color: var(--ast-global-color-0);
+}
+li.have-child.show-child span.toggle-icon svg {
+    transform: rotate(180deg);
+    fill: #fff;
+}
+</style>

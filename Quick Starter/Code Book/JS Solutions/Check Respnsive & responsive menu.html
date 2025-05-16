@@ -1,0 +1,49 @@
+jQuery(window).resize(function(){
+		if (jQuery(window).width() < 767){
+			jQuery(".navigation-top").addClass("reponsive-menu");
+		}
+		else{
+			jQuery(".navigation-top").removeClass("reponsive-menu");
+		}
+	});
+
+	if (jQuery(window).width() < 767){
+		jQuery(".navigation-top").addClass("reponsive-menu");
+	}
+	else{
+		jQuery(".navigation-top").removeClass("reponsive-menu");
+	}
+
+	
+	jQuery(document).ready(function(){
+
+		jQuery("#resp_menu").on("click", function(){
+			if(jQuery(".navigation-top").hasClass("menu-open")){
+				jQuery(".navigation-top").removeClass("menu-open");
+			}else{
+				jQuery(".navigation-top").addClass("menu-open");
+			}
+		});
+
+	});
+	
+	if(jQuery('header').hasClass('responsive-menu')){
+		jQuery(function() {
+		 jQuery("li.menu-item-has-children").on("click", function(e) {
+			 if(jQuery(this).hasClass('has-submenu')){
+				 jQuery(this).removeClass('has-submenu');
+			 } else {
+				jQuery(this).addClass("has-submenu").siblings('li.menu-item-has-children').removeClass('has-submenu'); 
+			 }
+			 e.stopPropagation()
+		  });
+		  jQuery(document).on("click", function(e) {
+			if (jQuery(e.target).is("li.menu-item-has-children.has-submenu") === false) {
+			  jQuery("li.menu-item-has-children").removeClass("has-submenu");
+			}
+			else if(jQuery("li.menu-item-has-children").hasClass('.has-submenu')){
+				jQuery("li.menu-item-has-children.has-submenu").removeClass("has-submenu");
+			}
+		  });
+		});
+	}

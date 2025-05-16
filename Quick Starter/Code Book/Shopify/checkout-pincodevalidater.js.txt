@@ -1,0 +1,26 @@
+<script>
+  console.log('Checkout Pincode Validater Initialized');
+	
+  function validatePincode(pincode){
+    let un_servicedpincodes = [744201,744202,744203,744204,744205,744207,744208,744209,744210,744211,744301,744302,744303,744304,323232,518026,518116,518319,520000,521324,521329,521358,521391,521444,521452,521504,523102,523106,523114,523124,523125,523153,523180,523277,523290,524006,524010,524218,524342,524343,524345,530000,530034,531202,531230,532102,532122,532123,532124,532125,532126,532128,532145,532148,532168,532265,532407,532470,532557,532582,533137,533156,533224,533230,533243,533265,533321,533347,533348,533349,533350,533351,533352,533384,533482,535124,535126,535342,535350,629664,790003,790103,790105,790106,790116,791003,791105,791118,792051,792055,792061,792101,781000,123555];
+    let un_servicedResponse = "Sorry, Currently we're not serving in your area";
+	let checkout_button = document.querySelector('.step__footer button[type="submit"]');
+    
+    if(un_servicedpincodes.includes(pincode)){
+      alert(un_servicedResponse);
+      checkout_button.setAttribute('disabled',true);
+      checkout_button.style.opacity = .5;
+    }else{
+      checkout_button.removeAttribute('disabled');
+      checkout_button.style.opacity = 1;
+    }
+  }
+//   validatePincode(744202);
+  
+  let pincode_field = document.querySelector('#checkout_shipping_address_zip');
+  
+  pincode_field.addEventListener('change', function(entered_pin){
+    let pindcode = parseInt(this.value);
+    validatePincode(pindcode)
+  })
+</script>

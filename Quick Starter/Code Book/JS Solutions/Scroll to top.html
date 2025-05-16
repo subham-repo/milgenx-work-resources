@@ -1,0 +1,30 @@
+jQuery(document).ready(function(){
+		jQuery(window).scroll(function(){
+		var sticky = jQuery('header'),
+		scroll = jQuery(window).scrollTop();
+
+		if (scroll >= 50) sticky.addClass('scrolled');
+		else sticky.removeClass('scrolled');
+		});
+	});
+	
+	jQuery(document).on('click', '.scrolltop a', function (event) {
+		event.preventDefault();
+
+		jQuery('html, body').animate({
+			scrollTop: jQuery(jQuery.attr(this, 'href')).offset().top
+		}, 500);
+	});
+	
+	jQuery(window).scroll(function(){
+		if (jQuery(this).scrollTop() > 150) {
+			jQuery('.scrolltop').fadeIn();
+		} else {
+			jQuery('.scrolltop').fadeOut();
+		}
+	}); 
+
+	jQuery('.scrolltop').click(function(){
+		jQuery("html, body").animate({ scrollTop: 0 }, 600);
+		return false;
+	});

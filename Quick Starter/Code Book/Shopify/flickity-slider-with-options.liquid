@@ -1,0 +1,197 @@
+<!-- CSS -->
+<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css"></link>
+
+<!-- JavaScript -->
+<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+
+{%- liquid
+    assign show_mobile_slider = false
+    if section.settings.swipe_on_mobile == true
+      assign show_mobile_slider = true
+    endif
+  
+    assign show_tab_slider = false
+    if section.settings.swipe_on_tab == true
+      assign show_tab_slider = true
+    endif
+  
+    assign show_desktop_slider = false
+    if section.settings.enable_desktop_slider == true
+      assign show_desktop_slider = true
+    endif
+  -%}
+
+<div id="Slider-{{ section.id }}" class="slider-row {% if section.settings.enable_slider  %}init-flickity-{{ section.id }} {% if show_desktop_slider == false %}no-swipe-desktop{% endif %} {% if show_tab_slider == false %}no-swipe-tab{% endif %} {% if section.settings.swipe_on_mobile == false %}no-swipe-mobile{% endif %}{% endif %}">
+     <!-- Render Slide Elements Here -->
+</div>     
+
+<script>
+  {% if show_mobile_slider == true  or show_desktop_slider == true %}
+    function initializeFlickity{{ section.index }}(elemTarget){
+
+      function videoControls(target){
+        let slides = target.cells;
+        slides.forEach(function(slide){
+          let element = slide.element;
+          setTimeout(function(){
+            if(element.querySelector("video")){
+              element.querySelector("video").pause();
+              element.querySelector("video").removeAttribute("src");   
+
+              slides.forEach(function(elem, idx, slides){
+                if (idx === slides.length - 1){ 
+                      // console.log("Last callback call at index " + idx + " with value " + elem );
+                    if(element.classList.contains("is-selected")){
+                      element.querySelector("video").setAttribute("src", element.querySelector("video").getAttribute("video-src"));
+                      element.querySelector("video").play(); 
+                    }
+                  }
+              });
+            }
+          }, 500)
+        })
+      }
+      
+      let elem = elemTarget;
+      console.log(elem)
+      let options = { 
+        freeScroll: true,
+        wrapAround: {% if section.settings.slider_mode == 'center' or section.settings.show_arrows %}true {% else %}{{ section.settings.enable_autoplay }}{% endif %}, 
+        imagesLoaded: false, 
+        lazyLoad: true, 
+        adaptiveHeight: false, 
+        cellAlign: '{{ section.settings.slider_mode }}', 
+        continuousAutoPlay: true, 
+        // groupCells: false, 
+        // watchCSS: false, 
+        contain: false, 
+        prevNextButtons: {{ section.settings.show_arrows }}, 
+        pageDots: {{ section.settings.show_dot }}, 
+        {% if section.settings.enable_autoplay == true %}autoPlay: {{ section.blocks.size }}000, {% endif %}
+        dragThreshold: 8, 
+        {% if section.settings.light_arrows == true %}arrowShape: {"x0": 20, "x1": 60, "y1": 40, "x2": 60, "y2": 35, "x3": 25},{% endif %}
+        selectedAttraction: 0.2,
+        friction: 0.8,
+        on: {
+          ready: function() {
+            // console.log('Flickity is ready');
+            videoControls(this)
+          },
+          change: function( index ) {
+            // console.log( 'Slide changed to' + index );
+            // console.log(this)
+            videoControls(this)
+          }
+        }
+      }
+
+      var flkty = new Flickity(elem, options);
+      
+      if(document.querySelector(elem).classList.contains("no-swipe-mobile") == true){
+        console.log("no-swipe-mobile");
+        if(matchMedia('(max-width:749px)').matches){
+            var flkty = new Flickity(elem, options)
+            flkty.destroy()
+        }
+      }
+
+      if(document.querySelector(elem).classList.contains("no-swipe-tab") == true){
+        console.log("no-swipe-desktop "+elem);
+        if(matchMedia('(min-width:750px) and (max-width:1200px)').matches){
+            var flkty = new Flickity(elem, options)
+            flkty.destroy()
+        }
+      }
+      
+      if(document.querySelector(elem).classList.contains("no-swipe-desktop") == true){
+        console.log("no-swipe-desktop "+elem);
+        if(matchMedia('(min-width:1201px)').matches){
+            var flkty = new Flickity(elem, options)
+            flkty.destroy()
+        }
+      }
+    }
+    document.addEventListener("DOMContentLoaded", function(){
+      initializeFlickity{{ section.index }}(".init-flickity-{{ section.id }}")
+    })
+    window.addEventListener("resize", function(){
+      initializeFlickity{{ section.index }}(".init-flickity-{{ section.id }}")
+    })
+  {% endif %}
+</script>
+
+
+<!-- Schema JSON -->
+
+  {
+    "type": "header",
+    "content": "Slider Settings"
+  },
+  {
+    "type": "checkbox",
+    "id": "enable_slider",
+    "label": "Enable Slider",
+    "default": false
+  },
+  {
+    "type": "checkbox",
+    "id": "enable_desktop_slider",
+    "label": "Enable Desktop Slider",
+    "default": false
+  },
+  {
+    "type": "checkbox",
+    "id": "swipe_on_tab",
+    "default": false,
+    "label": "Enable Tab View Slider"
+  },
+  {
+    "type": "checkbox",
+    "id": "swipe_on_mobile",
+    "default": false,
+    "label": "Enable Mobile Slider"
+  },
+  {
+    "type": "checkbox",
+    "id": "show_dot",
+    "default": false,
+    "label": "Enable Dots"
+  },
+  {
+    "type": "checkbox",
+    "id": "show_arrows",
+    "default": false,
+    "label": "Enable Arrows"
+  },
+  {
+    "type": "checkbox",
+    "id": "light_arrows",
+    "default": false,
+    "label": "Light Arrows"
+  },
+  {
+    "type": "checkbox",
+    "id": "enable_autoplay",
+    "default": false,
+    "label": "Enable Autoplay"
+  },
+  {
+    "type": "select",
+    "id": "slider_mode",
+    "options": [
+      {
+        "value": "left",
+        "label": "Left"
+      },
+      {
+        "value": "center",
+        "label": "Center"
+      },
+      {
+        "value": "right",
+        "label": "Right"
+      }
+    ],
+    "default": "left",
+    "label": "Slider Cell Alignment"
+  },

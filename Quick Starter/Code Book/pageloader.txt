@@ -1,0 +1,16 @@
+<div id="overlay"><img src="/wp-content/uploads/2018/07/asfa_voting.gif" /></div>
+jQuery(window).load(function(){
+   // PAGE IS FULLY LOADED  
+   // FADE OUT YOUR OVERLAYING DIV
+   jQuery('#overlay').fadeOut();
+});
+#overlay{
+  position:fixed;
+  z-index:99999;
+  top:0;
+  left:0;
+  bottom:0;
+  right:0;
+  background:#fff;
+  transition: 1s 0.4s;
+}

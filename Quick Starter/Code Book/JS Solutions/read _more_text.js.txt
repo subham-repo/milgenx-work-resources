@@ -1,0 +1,46 @@
+function read_more_feature(){
+    var read_more_text_container = jQuery('.read_more_text');
+    read_more_text_container.each(function(){
+    var read_more_text_content = jQuery(this).find('p').text();
+
+    jQuery(this).attr('read_more_text_content', read_more_text_content);
+
+    var read_more_text_port = jQuery(this).find('p');
+    var read_more_text_storage = jQuery(this).attr('read_more_text_content');
+    var read_more_text_count = jQuery(this).attr('read_more_text_content').length;
+
+    var read_more_character_limit = 200;
+    var less_word = read_more_text_storage.substring(0, read_more_character_limit)+'..';
+
+        if(!jQuery(this).hasClass('less_words')){
+            read_more_text_port.text(less_word);
+            jQuery(this).addClass('less_words');
+            console.log({less_word});
+        }
+
+        if(!jQuery(this).hasClass('read_more_enabled')){
+            jQuery(this).append('<span class="read_more_action less_word">Read More</span>');
+            jQuery(this).addClass('read_more_enabled')   
+        }
+
+        var read_more_action = jQuery(this).find('.read_more_action');
+        read_more_action.on('click', function(){
+            if(jQuery(this).hasClass('less_word')){
+                read_more_text_port.text(read_more_text_storage);
+                jQuery(this).addClass('more_word');
+                jQuery(this).removeClass('less_word');
+                jQuery(this).text('Read Less');
+            }else if(jQuery(this).hasClass('more_word')){
+                read_more_text_port.text(less_word);
+                jQuery(this).addClass('less_word');
+                jQuery(this).removeClass('more_word');
+                jQuery(this).text('Read More');
+            }
+
+        })
+
+    })
+
+}
+
+read_more_feature();

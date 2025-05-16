@@ -1,0 +1,10 @@
+#customize-theme-controls #accordion-section-clubio_activate .accordion-section-title{
+    color:#ff1a43 !important;
+}
+
+#customize-theme-controls #accordion-section-clubio_general .accordion-section-title,
+#customize-theme-controls #accordion-panel-theme_settings_colors .accordion-section-title,
+#customize-theme-controls #accordion-panel-clubio_fonts .accordion-section-title,
+#customize-theme-controls #accordion-section-clubio_g_fonts_section .accordion-section-title{
+    color:#7B16D9 !important;
+}

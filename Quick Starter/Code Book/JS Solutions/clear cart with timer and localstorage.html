@@ -1,0 +1,138 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js" integrity="sha512-qTXRIMyZIFb8iQcfjXWCO8+M5Tbc38Qi5WzdPOYZHIlZpzBHG3L3by84BBBOiRGiEb7KKtAOAs5qYdUiZiQNNQ==" crossorigin="anonymous"></script>
+
+<script>
+  function cartReservation(e){
+    var cart_availability_counter = jQuery('.cart_availability_counter');
+    var cart_availability = '<span class="cart_availability_ribbon">Dein Warenkorb ist reserviert für:&nbsp;<strong class="cart_timer"></strong></span>';
+    cart_availability_counter.html(cart_availability); 
+    jQuery('.header_cart_counter_responsive').css('display', 'flex');
+
+    localStorage.setItem("cart_reservation", "enabled");
+
+    function clearCart(){
+      $.ajax({
+        type: "POST",
+        url: '/cart/clear.js',
+        success: function(){
+          console.log('You cleared the cart!');
+          location.reload();
+        },
+        dataType: 'json'
+      });
+    }
+
+    var reservation_countdown = localStorage.getItem("cart_reservation_timer");
+    if(reservation_countdown){
+      var reservation_countdown_raw = reservation_countdown.split(':');	
+      var reservation_countdown_min = parseInt(reservation_countdown_raw[0]);
+      var reservation_countdown_sec = parseInt(reservation_countdown_raw[1]);	
+    }
+
+    if(reservation_countdown){
+      var minutes = parseInt(reservation_countdown_min);
+      var seconds = parseInt(reservation_countdown_sec);
+    }else{
+      var minutes = 00;
+      var seconds = 30;
+    }
+
+    var duration = moment.duration({
+      'minutes': parseInt(minutes),
+      'seconds': parseInt(seconds)
+    });
+
+
+    var timestamp = new Date(0, 0, 0, 2, 10, 30);
+    var interval = 1;
+    var timer = setInterval(function() {
+      var cart_counter_port = jQuery('body').find('.cart_availability_counter .cart_timer');
+
+      timestamp = new Date(timestamp.getTime() + interval * 1000);
+
+      duration = moment.duration(duration.asSeconds() - interval, 'seconds');
+      var min = duration.minutes();
+      var sec = duration.seconds();
+
+      sec -= 1;
+      if (min < 0) return clearInterval(timer);
+      if (min < 10 && min.length != 2) min = '0' + min;
+      if (sec < 0 && min != 0) {
+        min -= 1;
+        sec = 59;
+      } else if (sec < 10 && length.sec != 2) sec = '0' + sec;
+
+      $('.countdown #hours').text('00');
+      $('.countdown #minutes').text(min);
+      $('.countdown #seconds').text(sec);
+
+      var timer = min +':'+ sec;
+      cart_counter_port.text(timer);	
+      //               console.log(timer);
+      localStorage.setItem("cart_reservation_timer", timer);
+
+      if (min == 0 && sec == 0){
+        console.log('chchaa');
+        clearInterval();
+        console.log(localStorage.getItem("cart_reservation_timer"));
+        jQuery('.header_cart_counter_responsive').css('display', 'none');
+        clearCart();
+      }
+    }, 1000);
+  } 
+</script>
+
+
+<style>
+  #countdown h1 {
+    font-weight: normal;
+    letter-spacing: .125rem;
+    text-transform: uppercase;
+  }
+
+  #countdown li {
+    display: inline-block;
+    font-size: 1em;
+    list-style-type: none;
+    padding: 1em;
+    text-transform: uppercase;
+  }
+
+  #countdown li span {
+    display: block;
+    font-size: 2.5rem;
+  }
+
+  #content {
+    display: none;
+    padding: 1rem;
+  }
+
+  h1#headline {
+    text-align: center;
+  }
+
+  @media all and (max-width: 768px) {
+    #countdown h1 {
+      font-size: 1.5rem;
+    }
+
+    #countdown li {
+      padding: .75rem;
+    }
+
+    #countdown li span {
+      font-size: 2.375rem;
+    }
+  }
+
+</style>
+
+
+// Code in update cart function
+
+if(t.itemCount > 0){
+  cartReservation()
+}else{
+  localStorage.removeItem("cart_reservation");
+  localStorage.removeItem("cart_reservation_timer");
+}

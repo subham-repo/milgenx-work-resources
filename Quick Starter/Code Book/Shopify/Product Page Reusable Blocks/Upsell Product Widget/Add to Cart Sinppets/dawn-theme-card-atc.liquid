@@ -1,0 +1,118 @@
+// Function to add a product to the cart
+function addToCart(variantId, quantity = 1, e) {
+  if (!variantId) {
+    console.error("Variant ID is required to add a product to the cart.");
+    return;
+  }
+
+  const button = e.target;
+  button.textContent = "Adding...";
+  button.disabled = true;
+
+  const payload = {
+    items: [{ id: variantId, quantity }]
+  };
+
+  fetch("/cart/add.js", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Failed to add product to cart.");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("Product added:", data);
+      button.textContent = "Added to Cart";
+
+      // Optional Shopify performance tracking
+      if (typeof CartPerformance !== 'undefined') {
+        CartPerformance.measureFromEvent("add:user-action", e);
+      }
+
+      document.dispatchEvent(new CustomEvent('ajaxProduct:added', {
+        detail: { product: data, addToCartBtn: button }
+      }));
+
+      // Fetch updated cart sections (same logic Dawn uses)
+      return fetch(window.location.pathname + '?sections=cart-drawer,cart-icon-bubble');
+    })
+    .then((res) => res.json())
+    .then((sections) => {
+      const cartDrawerEl = document.querySelector('cart-drawer');
+      if (!cartDrawerEl) return;
+
+      cartDrawerEl.renderContents({
+        id: variantId,
+        sections: {
+          'cart-drawer': sections['cart-drawer'],
+          'cart-icon-bubble': sections['cart-icon-bubble']
+        }
+      });
+    })
+    .catch((err) => {
+      console.error("Cart Add Error:", err);
+      button.textContent = "Error Adding";
+    })
+    .finally(() => {
+      setTimeout(() => {
+        button.textContent = "Add to Cart";
+        button.disabled = false;
+      }, 2000);
+    });
+}
+
+let productForms = document.querySelectorAll(".product-card-wrapper form");
+productForms.forEach(function(productForm){
+    let upsellVariantIdField = productForm.querySelector("input[name=id]");
+    let upsellQuantityField = productForm.querySelector("input[name=quantity]");
+  
+    let upsellVariantSelect = productForm.querySelector("select");
+    if(upsellVariantSelect){
+      upsellVariantSelect.addEventListener("change", function(){
+          let upsellVariantId = upsellVariantSelect.value;
+          upsellVariantIdField.value = upsellVariantId;
+          console.log({upsellVariantId});
+      })
+    }
+
+    let addProduct = productForm.querySelector("button[type=button]");
+    addProduct.addEventListener("click", function(e){
+      let upsellVariantId = upsellVariantIdField.value;
+      let upsellQuantity = upsellQuantityField.value;
+      addToCart(upsellVariantId, upsellQuantity, e);
+    })
+})
+
+-----------------------
+
+{% capture addtocartbtn %}
+  <form method="post" action="/cart/add" id="product_form_{{ card_product.selected_or_first_available_variant.id }}" accept-charset="UTF-8" class="upsellproduct-form product-form product-form--payment-button" enctype="multipart/form-data">
+    <input type="hidden" name="form_type" value="product">
+    <input type="hidden" name="utf8" value="✓">
+    <input type="hidden" name="quantity" value="1">
+    <input type="hidden" name="product-id" value="{{ card_product.id }}">
+    <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
+
+    {% comment %}
+      {% if card_product.variants.size > 1 %}
+      <select>
+        {% for variant in card_product.variants %}
+          <option value="{{ variant.id }}">{{ variant.title }}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+    {% endcomment %}
+    {% comment %}
+      {%- for option in upsellProduct.options_with_values -%}
+        {% for value in option.values %}
+          {{ value }}
+        {% endfor %}
+      {% endfor %}
+    {% endcomment %}
+    <button type="button" {% comment %}onclick="addToCart({{ upsellProduct.selected_or_first_available_variant.id }}, 1, event);"{% endcomment %} name="add" btn-text="Add to Cart" class="ProductForm__AddToCart button rounded" {% if card_product.available == false %}disabled{% endif %}><span>{% if card_product.available %}Add to Cart{% else %}<b>Sold Out</b>{% endif %}</span></button>
+  </form>
+{% endcapture %}

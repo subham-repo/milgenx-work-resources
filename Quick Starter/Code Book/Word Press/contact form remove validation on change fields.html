@@ -1,0 +1,10 @@
+<script type="text/javascript">
+	function validate_cf7(){
+		jQuery('.wpcf7-form .field-area').each(function(){
+		   jQuery(this).children('.form-field').children('.wpcf7-form-control-wrap').find('.wpcf7-form-control').on('change, blur, focus', function(){
+		            jQuery(this).next('.wpcf7-not-valid-tip').remove();
+		    })
+		})
+	}
+	validate_cf7();
+</script>

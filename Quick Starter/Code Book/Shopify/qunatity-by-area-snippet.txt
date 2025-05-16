@@ -1,0 +1,398 @@
+<!-- snippets/qunatity-by-area-snippet.liquid -->
+{% assign minQuantity = 11 %}
+{% if product.metafields.custom.wizart_shopify_calculator != blank %}
+<span class="toggle-area-calculator">
+  <svg fill="#ba2c52" height="20px" width="20px" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 460 460" xml:space="preserve">
+<g id="XMLID_241_">
+	<g>
+		<path d="M369.635,0H90.365C73.595,0,60,13.595,60,30.365v399.27C60,446.405,73.595,460,90.365,460h279.27
+			c16.77,0,30.365-13.595,30.365-30.365V30.365C400,13.595,386.405,0,369.635,0z M108.204,343.61v-43.196
+			c0-3.451,2.797-6.248,6.248-6.248h43.196c3.451,0,6.248,2.797,6.248,6.248v43.196c0,3.451-2.797,6.248-6.248,6.248h-43.196
+			C111.001,349.858,108.204,347.06,108.204,343.61z M108.204,256.61v-43.196c0-3.451,2.797-6.248,6.248-6.248h43.196
+			c3.451,0,6.248,2.797,6.248,6.248v43.196c0,3.451-2.797,6.248-6.248,6.248h-43.196C111.001,262.858,108.204,260.06,108.204,256.61
+			z M308.891,421H151.109c-11.046,0-20-8.954-20-20c0-11.046,8.954-20,20-20h157.782c11.046,0,20,8.954,20,20
+			C328.891,412.046,319.937,421,308.891,421z M208.402,294.165h43.196c3.451,0,6.248,2.797,6.248,6.248v43.196
+			c0,3.451-2.797,6.248-6.248,6.248h-43.196c-3.451,0-6.248-2.797-6.248-6.248v-43.196
+			C202.154,296.963,204.951,294.165,208.402,294.165z M202.154,256.61v-43.196c0-3.451,2.797-6.248,6.248-6.248h43.196
+			c3.451,0,6.248,2.797,6.248,6.248v43.196c0,3.451-2.797,6.248-6.248,6.248h-43.196C204.951,262.858,202.154,260.06,202.154,256.61
+			z M345.548,349.858h-43.196c-3.451,0-6.248-2.797-6.248-6.248v-43.196c0-3.451,2.797-6.248,6.248-6.248h43.196
+			c3.451,0,6.248,2.797,6.248,6.248v43.196h0C351.796,347.061,348.999,349.858,345.548,349.858z M345.548,262.858h-43.196
+			c-3.451,0-6.248-2.797-6.248-6.248v-43.196c0-3.451,2.797-6.248,6.248-6.248h43.196c3.451,0,6.248,2.797,6.248,6.248v43.196h0
+			C351.796,260.061,348.999,262.858,345.548,262.858z M354,149.637c0,11.799-9.565,21.363-21.363,21.363H127.364
+			C115.565,171,106,161.435,106,149.637V62.363C106,50.565,115.565,41,127.364,41h205.273C344.435,41,354,50.565,354,62.363V149.637
+			z"/>
+	</g>
+</g>
+</svg>How much do I need?</span>
+<div class="area-calculator" style="display:none;" unit-price="{{ variant_price | money_without_currency }}">
+  <h3>Calculate how many tiles I need:</h3>
+  <span class="close">
+    <svg class="svg-icon" style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M810.65984 170.65984q18.3296 0 30.49472 12.16512t12.16512 30.49472q0 18.00192-12.32896 30.33088l-268.67712 268.32896 268.67712 268.32896q12.32896 12.32896 12.32896 30.33088 0 18.3296-12.16512 30.49472t-30.49472 12.16512q-18.00192 0-30.33088-12.32896l-268.32896-268.67712-268.32896 268.67712q-12.32896 12.32896-30.33088 12.32896-18.3296 0-30.49472-12.16512t-12.16512-30.49472q0-18.00192 12.32896-30.33088l268.67712-268.32896-268.67712-268.32896q-12.32896-12.32896-12.32896-30.33088 0-18.3296 12.16512-30.49472t30.49472-12.16512q18.00192 0 30.33088 12.32896l268.32896 268.67712 268.32896-268.67712q12.32896-12.32896 30.33088-12.32896z"></svg>
+  </span>
+  <div class="length-type-switcher">
+    <div class="dimension-box length-type btn-container">
+      <label class="switch btn-color-mode-switch">
+        <input type="checkbox" id="change_length_unit" value="1">
+        <label for="change_length_unit" data-on="Inches" data-off="Feet" class="btn-color-mode-switch-inner"></label>
+      </label>
+    </div>
+  </div>
+  <div class="qc-form-area">
+    <div class="qc-form-field">
+      <label for="areain-length">Length</label>
+      <input class="form-input" id="areain-length" name="areain-length" type="number" value="0" min="0" />
+      <small class="annotation">Feet</small>
+    </div>
+    <div class="qc-form-field">
+      <label for="areain-breadth">Width</label>
+      <input class="form-input" id="areain-breadth" name="areain-breadth" type="number" value="0" min="0" />
+      <small class="annotation">Feet</small>
+    </div>
+  </div>
+  <button type="button" id="calculate-area" class="button button--primary">Calculate</button>
+    
+  <div class="extra-info">
+    {% comment %}  
+    <div class="cover-break">
+      <input type="checkbox" id="add-cover-break" class="checkbox cover-break-cbox" name="add_cover_break" value="1">
+      <label class="grout-label" for="add-cover-break">
+        <span>Add 10% more to cover cuts and waste (recommended)</span>
+      </label>
+    </div>
+    {% endcomment %}
+    <div class="message"></div>
+    <div class="total-price">
+      <span class="label">Total Price:</span>
+      <span class="price-box">$<span class="price">{% comment %}{{ product.price | money_without_currency | times: minQuantity }}{% endcomment %}0</span></span>
+    </div>
+  </div> 
+  <div class="qc-form-area quantity-detector">
+    <div class="qc-form-field">
+      <label for="areain-sq">Area in SQ ft.</label>
+      <input class="form-input" id="areain-sq" type="number" value="{{ product.metafields.custom.wizart_shopify_calculator }}" coverage-per-unit="{{ product.metafields.custom.wizart_shopify_calculator }}" min="10" />
+    </div>
+    <div class="qc-form-field">
+      <label for="quantity">Quantity</label>
+      <input class="form-input" id="quantity" name="quantity" type="number" placeholder="Min: {{ minQuantity }}" value="" min="{{ minQuantity }}" disabled/>
+    </div>
+  </div>
+</div>
+<script>
+  
+  window.addEventListener("load", function(){})
+    let areaCalculator = document.querySelector(".area-calculator");
+    let areaCalculatorSubmit = areaCalculator.querySelector("#calculate-area");
+    let is_length_unit = document.querySelector("input#change_length_unit");
+    let selectedValue = "Feet";
+
+    let qcForm = document.querySelector(".qc-form-area.quantity-detector");
+    let mainformm = document.querySelector(".quantity__input");
+    let qcAreaField = qcForm.querySelector("#areain-sq");
+    let coveragePerUnit = qcAreaField.getAttribute("coverage-per-unit");
+    let qcQuantityMainField = document.querySelector(".quantity__container input[name='quantity']");
+    let qcQuantityField = qcForm.querySelector("input[name='quantity']");
+
+    let toggleAreaCalculator = document.querySelector(".toggle-area-calculator");
+    let toggleAreaClose = areaCalculator.querySelector(".close");
+
+    function selectBulkVariant(){
+      let productFormInput = document.querySelector('.product-form__input[data-name="pack-of"]');
+      let quantityVarinats = productFormInput.querySelectorAll("label");
+      quantityVarinats.forEach(function(quantityVarinat){
+          let variant = quantityVarinat.querySelector("input[type='radio']");
+          let variantName = variant.getAttribute("value");
+          if(variantName == "Above 10"){
+              if(variant.checked != true){
+                  variant.click();
+                  let unitPrice = variant.getAttribute("data-price");
+                  areaCalculator.setAttribute("unit-price", unitPrice);
+              }
+          }
+      })
+    }
+
+    function checkBulkVariant(){
+      let productFormInput = document.querySelector('.product-form__input[data-name="pack-of"]');
+      let bulkVariant = productFormInput.querySelector("input[value='Above 10']");
+      if(bulkVariant){
+        bulkVariant.parentNode.closest('.product-form__label').style.visibility = "hidden";
+        console.log("Bulk Variant Initiated!");
+      }else{
+        areaCalculator.remove();
+        toggleAreaCalculator.remove();
+      }
+    }
+    checkBulkVariant()
+  
+    toggleAreaCalculator.addEventListener("click", function(){
+        areaCalculator.style.display = "block";
+    })
+    toggleAreaClose.addEventListener("click", function(){
+        areaCalculator.style.display = "none";
+    })
+    // unit type change controller
+    is_length_unit.addEventListener("change", function(){
+        let annotationPorts = document.querySelectorAll("small.annotation");
+        if(is_length_unit.checked == false){ selectedValue = "Feet" }else{ selectedValue = "Inches" }
+        annotationPorts.forEach(function(annotationPort){ annotationPort.innerText = selectedValue; })
+    })
+
+    function calculateCost(quantity){
+        let productFormInput = document.querySelector('.product-form__input[data-name="pack-of"]');
+        let bulkVariant = productFormInput.querySelector("input[value='Above 10']");
+        let unitPrice = bulkVariant.getAttribute("data-price");
+        let calculatePrice = Number(unitPrice) * quantity;
+        areaCalculator.querySelector('span.price-box .price').innerText = calculatePrice;
+    }
+  
+    // Calculate On Click
+    areaCalculatorSubmit.addEventListener("click", function(){
+        let areainLength = areaCalculator.querySelector('input[name="areain-length"]').value;
+        let areainBreadth = areaCalculator.querySelector('input[name="areain-breadth"]').value;
+        let multiplyArea = Number(areainLength * areainBreadth);
+        let calculateArea = "";
+        if( selectedValue == "Feet"){
+          calculateArea = Number(multiplyArea);
+        }else if(selectedValue == "Inches"){
+          calculateArea = Number(multiplyArea / 144);
+        }
+        // Render Area in Square Feet
+        document.querySelector("#areain-sq").value = calculateArea.toFixed(2);
+      
+        let quantity = Math.ceil(calculateArea / coveragePerUnit);
+        calculateQuantity(quantity)
+
+        let message = "";
+        if(quantity > 10){
+          message = "You need <strong>"+quantity+"</strong> Tiles."
+        }else{
+          message = "<strong>Please add correct values. The minimum calculated quantity should be 10+</strong>."
+        }
+        areaCalculator.querySelector('.extra-info .message').innerHTML = message;
+        console.log({calculateArea, selectedValue});
+    })
+
+    function calculateQuantity(value){
+      console.log("Qunatity Inherited: "+ value);
+      if(value > 10){
+        // change variant when quantity is more that 10
+        selectBulkVariant()
+        qcQuantityField.value = value;
+        $('.quantity__input').val(value);
+        calculateCost(value);
+      }else{
+        qcQuantityField.value = 0;
+        $('.quantity__input').val(0);
+        calculateCost(0);
+      }
+    }
+    
+    qcAreaField.addEventListener("change", function(){
+        console.log("qcAreaField Changed")
+        let quantity = Math.ceil(qcAreaField.value / coveragePerUnit);
+        calculateQuantity(quantity)
+        console.log({coveragePerUnit, quantity})
+    })
+
+  
+</script>
+<style>
+  .extra-info {
+      font-size: 15px;
+      letter-spacing: .5px;
+      margin-top: 15px;
+  }
+  .extra-info .message {
+      font-weight: 500;
+  }
+  .extra-info .message strong {
+      color: #ba2c52;
+  }
+  .extra-info .total-price {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      font-weight: 600;
+      font-size: 14px;
+      margin-top: 10px;
+  }
+  .extra-info .cover-break input[type="checkbox"] {
+      display: block !important;
+      width: 14px;
+      height: 14px;
+      position: relative;
+      clip: unset;
+      background: inherit;
+      padding: unset;
+      appearance: auto;
+      margin-right: 10px;
+  }
+  .extra-info .total-price span.price-box {
+      margin-left: 10px;
+      display: flex;
+  }
+  .extra-info .cover-break {
+      display: flex;
+      align-items: center;
+  }
+  .toggle-area-calculator {
+      font-size: 12px;
+      font-weight: 500;
+      letter-spacing: .5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+  }
+  .toggle-area-calculator svg {
+      margin-right: 5px !important;
+      fill: #ba2c52;
+  }
+  button.button.button--primary {
+      border-radius: 5px;
+  }
+  .area-calculator .close {
+      display: inline-block;
+      position: absolute;
+      z-index: 1;
+      right: -4px;
+      top: 50%;
+      margin-top: -7px;
+      top: 0;
+      margin: 0;
+      cursor: pointer;
+  }
+  .area-calculator .dimension-box.btn-container {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+  }
+  .area-calculator .dimension-box.btn-container .btn-color-mode-switch {
+      display: inline-block;
+      margin: 0;
+      position: relative;
+  }
+  .area-calculator .qc-form-area {
+      margin-bottom: 0;
+  }
+  .area-calculator .dimension-box.btn-container label {
+      font-size: 13px;
+      font-weight: 500;
+  }
+  .area-calculator .dimension-box.btn-container .btn-color-mode-switch input[type=checkbox] {
+      cursor: pointer;
+      width: 50px;
+      height: 25px;
+      opacity: 0;
+      position: absolute;
+      top: 0;
+      z-index: 1;
+      margin: 0;
+  }
+  .area-calculator .dimension-box.btn-container .btn-color-mode-switch>.btn-color-mode-switch-inner {
+      margin: 0;
+      width: 140px;
+      height: 30px;
+      background: #fff;
+/*       border: 1px solid #d3d3d3; */
+/*       border-radius: 3px; */
+      overflow: hidden;
+      position: relative;
+      transition: all .3s ease;
+      display: block;
+      font-size: 10px;
+      line-height: 14px;
+      cursor: pointer;
+  }
+  .area-calculator .dimension-box.btn-container .btn-color-mode-switch input[type=checkbox]:checked+label.btn-color-mode-switch-inner:before {
+      content: attr(data-off);
+      right: auto;
+      left: 20px;
+  }
+  
+  .area-calculator .dimension-box.btn-container .btn-color-mode-switch>.btn-color-mode-switch-inner:before {
+      content: attr(data-on);
+      position: absolute;
+      top: 7px;
+      right: 20px;
+  }
+  .area-calculator .dimension-box.btn-container .btn-color-mode-switch input[type=checkbox]:checked+label.btn-color-mode-switch-inner:after {
+      content: attr(data-on);
+      left: 68px;
+      color: #fff;
+  }
+  
+  .area-calculator .dimension-box.btn-container .btn-color-mode-switch>.btn-color-mode-switch-inner:after {
+      content: attr(data-off);
+      width: 65px;
+      height: 20px;
+      background: #ba2c52;
+      border-radius: 3px;
+      position: absolute;
+      left: 0px;
+      top: 4px;
+      text-align: center;
+      transition: all .3s ease;
+      padding: 4px 0;
+      color: #fff;
+  }
+  .area-calculator {
+      background-color: #fff;
+      padding: 10px 0px;
+    align-items: flex-start;
+      flex-flow: column;
+      position: relative;
+      margin-bottom: 15px;
+/*       box-shadow: 0 0 2px 0 rgba(0,0,0,.2); */
+  }
+  .area-calculator .close {
+      display: inline-block;
+      position: absolute;
+      z-index: 1;
+      right: 5px;
+      top: 5px;
+      font-size: 16px;
+  }
+  .area-calculator .close svg {
+      margin-right: 0 !important;
+  }
+  .area-calculator h3 {
+      margin-top: 0;
+  }
+  .qc-form-area .qc-form-field small.annotation {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      opacity: .8;
+      border-bottom: 1px solid #ba2c52;
+  }
+  input[type='radio'], input[type='checkbox'] {
+      accent-color: #ba2c52;
+  }
+  .qc-form-area {
+      width: 100%;
+      display: flex;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+      margin-left: -5px;
+      margin-right: -5px;
+  }
+  .qc-form-area .qc-form-field {
+      flex: 1;
+      margin: 0 5px;
+  }
+  .qc-form-area .qc-form-field input[type="number"] {
+      -webkit-appearance: textfield;
+      -moz-appearance: textfield;
+      margin: 0;
+      background-image: unset;
+      border-radius: 4px;
+      border-color: #ba2c52;
+      padding: 7.5px 10px;
+  }
+.quantity_selector {
+    display: none;
+}
+
+</style>
+{% endif %}  

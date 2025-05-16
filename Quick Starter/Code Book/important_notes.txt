@@ -1,0 +1,727 @@
+﻿https://www.sighting.com/wp-admin/
+
+admin
+
+X~!q.Tj{ZfnL
+
+https://prnt.sc/i7jfet
+
+*********************http:// to https://************************
+
+RewriteEngine On
+RewriteCond %{HTTPS} off
+RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+*********************http:// to https:// ends ************************
+
+******************make new admin user on function.php*************
+
+	function wpb_admin_account(){
+	$user = 'Username';
+	$pass = 'Password';
+	$email = 'email@domain.com';
+	if ( !username_exists( $user )  && !email_exists( $email ) ) {
+	$user_id = wp_create_user( $user, $pass, $email );
+	$user = new WP_User( $user_id );
+	$user->set_role( 'administrator' );
+	} }
+	add_action('init','wpb_admin_account');
+
+******************make new admin user on function.php ends*************
+
+*********************** custom post print function with while loop***********************************
+function home_course() {
+	$args = array(
+		'post_type'=> 'course',
+		'post_status'=> 'publish',
+		'posts_per_page' => 3,
+		);
+
+	$the_query = new WP_Query( $args ); 
+	if ( $the_query->have_posts() ) :
+		while ( $the_query->have_posts() ) : $the_query->the_post();
+	$sr_img = get_the_post_thumbnail_url();
+	$postTitle = get_the_title();
+	$postcontent = get_the_content();
+	
+	$itemConetnt .= '<div class="col-md-4 course_block">
+						<img src="'.$sr_img.'" />
+						<h1>'.$postTitle.'</h1>
+						<p>'.$postcontent.'</p>
+					</div>';
+endwhile;
+endif;
+return $itemConetnt;
+} 
+add_shortcode('home-course', 'home_course');
+
+
+================================
+
+function latest_events() {
+	$args = array(
+		'post_type'=> 'tribe_events',
+		'post_status'=> 'publish',
+		'posts_per_page' => 3,
+		);
+
+	$the_query = new WP_Query( $args ); 
+	if ( $the_query->have_posts() ) :
+		while ( $the_query->have_posts() ) : $the_query->the_post();
+	$sr_img = get_the_post_thumbnail_url();
+	$id = get_the_ID();
+	$postTitle = get_the_title();
+	$postcontent = get_the_content();
+	$trim_data = substr($postcontent,'0','100').'...';
+	$strip_data = strip_tags($trim_data);
+	$getLink = get_the_permalink(); 
+	$short_date = get_post_meta($id,"_EventStartDate",true);
+	$short_end_time = get_post_meta($id,"_EventEndDate",true);
+	$date = date('F j',strtotime($short_date));
+	$starttime = date('g:i',strtotime($short_date));
+	$endtime = date('g:i a',strtotime($short_end_time));
+	$event_date_time = $date .' @ '.$starttime.'-'.$endtime;
+	
+	$itemConetnt .= '<div class="col-md-4 blog_block">
+						<a class="desc" href="'.$getLink.'" >
+						<div class="desc_inner">
+								<h5>'.$postTitle.'</h5>
+								<strong>'.$event_date_time.'</strong>
+								<p>'.$strip_data.'</p>
+								<span class="more_link" href="'.$getLink.'" >Read More</span>
+						</div>
+						</a>
+					</div>';
+endwhile;
+endif;
+return $itemConetnt;
+} 
+add_shortcode('latest_events', 'latest_events');
+
+********************************************* custom post print function ends***************************
+
+******************************star rating with numeric value***********************************
+<style>
+    .stars-container {
+ position: relative;
+ display: inline-block;
+ color: transparent;
+}
+
+.stars-container:before {
+ position: absolute;
+ top: 0;
+ left: 0;
+ content: '★★★★★';
+ color: lightgray;
+}
+
+.stars-container:after {
+ position: absolute;
+ top: 0;
+ left: 0;
+ content: '★★★★★';
+ color: gold;
+ overflow: hidden;
+}
+
+.stars-0:after { width: 0%; }
+.stars-10:after { width: 10%; }
+.stars-20:after { width: 20%; }
+.stars-30:after { width: 30%; }
+.stars-40:after { width: 40%; }
+.stars-50:after { width: 50%; }
+.stars-60:after { width: 60%; }
+.stars-70:after { width: 70%; }
+.stars-80:after { width: 80%; }
+.stars-90:after { width: 90%; }
+.stars-100:after { width: 100; }
+    </style>
+    <div><span class="stars-container stars-0">★★★★★</span></div>
+    <script>
+    $(function() {
+ function addScore(score, $domElement) {
+   $("<span class='stars-container'>")
+     .addClass("stars-" + score.toString())
+     .text("★★★★★")
+     .appendTo($domElement);
+ }
+
+ addScore(100, $("#fixture"));
+});
+    </script>
+    Generated: <div id="fixture"></div>
+******************************star rating with numeric value ends***********************************
+
+******************************important links******************************
+https://www.amazon.in/Escaro-Casual-Dress-Shoes-ES2079GN_TAN_8/dp/B01NH2ZUG5/ref=sr_1_99_sspa?s=shoes&ie=UTF8&qid=1509439448&sr=1-99-spons&nodeID=1983573031&psd=1&psc=1
+
+https://www.amazon.in/Sassie-Tassel-Glossy-Slipon-Loafer/dp/B075FSBTJT/ref=pd_sbs_309_11?_encoding=UTF8&refRID=5EM1TFWK394GT9991B1J
+
+https://www.amazon.in/Alberto-Torresi-Mens-Formal-Shoes/dp/B01MZFJKVE/ref=pd_sbs_309_18?_encoding=UTF8&refRID=913X8T70KBS0JGPM2TKV
+
+https://www.amazon.in/Woodland-Mens-Leather-Formal-Shoe/dp/B010A7C974/ref=pd_sbs_309_10?_encoding=UTF8&refRID=B5M3PJKWMBDP5D671W1S&th=1
+
+https://wordpress.stackexchange.com/questions/195425/display-featured-products-through-custom-loop-in-woocommerce-on-template-page
+	
+****************************important links ends*********************
+
+********************ADD AND REMOVE CLASS****************
+
+jQuery('.toggle_btn').click( function() {
+    jQuery(".seagate").toggleClass("highlight");
+} );
+
+*******************CLASS ENDS****************
+
+****************hide and show on hover********************
+$(".panel-heading").hover(
+ function() {
+    $('.panel-collapse').collapse('show');
+  }, function() {
+    $('.panel-collapse').collapse('hide');
+  }
+);
+
+****************hide and show on hover ends********************
+
+*******************cache code for pagespeed********************
+
+# BEGIN WpFastestCache
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTPS} =on
+RewriteCond %{HTTP_HOST} ^http://staging.technocratshorizons.com/regiscapital/
+# Start WPFC Exclude
+# End WPFC Exclude
+# Start_WPFC_Exclude_Admin_Cookie
+RewriteCond %{HTTP:Cookie} !wordpress_logged_in_[^\=]+\=admin|Rick\sR.
+# End_WPFC_Exclude_Admin_Cookie
+RewriteCond %{HTTP_HOST} ^www.sighting.com
+RewriteCond %{HTTP_USER_AGENT} !(facebookexternalhit|WhatsApp|Mediatoolkitbot)
+RewriteCond %{REQUEST_METHOD} !POST
+RewriteCond %{REQUEST_URI} !(\/){2}$
+RewriteCond %{REQUEST_URI} \/$
+RewriteCond %{QUERY_STRING} !.+
+RewriteCond %{HTTP:Cookie} !comment_author_
+RewriteCond %{HTTP:Cookie} !wp_woocommerce_session
+RewriteCond %{HTTP:Cookie} !safirmobilswitcher=mobil
+RewriteCond %{HTTP:Profile} !^[a-z0-9\"]+ [NC]
+RewriteCond %{DOCUMENT_ROOT}/wp-content/cache/all/$1/index.html -f [or]
+RewriteCond /home/sighting/public_html/wp-content/cache/all/$1/index.html -f
+RewriteRule ^(.*) "/wp-content/cache/all/$1/index.html" [L]
+</IfModule>
+<FilesMatch "index\.(html|htm)$">
+AddDefaultCharset UTF-8
+<ifModule mod_headers.c>
+FileETag None
+Header unset ETag
+Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+Header set Pragma "no-cache"
+Header set Expires "Mon, 29 Oct 1923 20:30:00 GMT"
+</ifModule>
+</FilesMatch>
+# END WpFastestCache
+# BEGIN GzipWpFastestCache
+<IfModule mod_deflate.c>
+AddType x-font/woff .woff
+AddType x-font/ttf .ttf
+AddOutputFilterByType DEFLATE image/svg+xml
+AddOutputFilterByType DEFLATE text/plain
+AddOutputFilterByType DEFLATE text/html
+AddOutputFilterByType DEFLATE text/xml
+AddOutputFilterByType DEFLATE text/css
+AddOutputFilterByType DEFLATE text/javascript
+AddOutputFilterByType DEFLATE application/xml
+AddOutputFilterByType DEFLATE application/xhtml+xml
+AddOutputFilterByType DEFLATE application/rss+xml
+AddOutputFilterByType DEFLATE application/javascript
+AddOutputFilterByType DEFLATE application/x-javascript
+AddOutputFilterByType DEFLATE application/x-font-ttf
+AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+AddOutputFilterByType DEFLATE font/opentype font/ttf font/eot font/otf
+</IfModule>
+# END GzipWpFastestCache
+# BEGIN LBCWpFastestCache
+<FilesMatch "\.(ico|pdf|flv|jpg|jpeg|png|gif|webp|js|css|swf|x-html|css|xml|js|woff|woff2|ttf|svg|eot)(\.gz)?$">
+<IfModule mod_expires.c>
+AddType application/font-woff2 .woff2
+ExpiresActive On
+ExpiresDefault A0
+ExpiresByType image/webp A2592000
+ExpiresByType image/gif A2592000
+ExpiresByType image/png A2592000
+ExpiresByType image/jpg A2592000
+ExpiresByType image/jpeg A2592000
+ExpiresByType image/ico A2592000
+ExpiresByType image/svg+xml A2592000
+ExpiresByType text/css A2592000
+ExpiresByType text/javascript A2592000
+ExpiresByType application/javascript A2592000
+ExpiresByType application/x-javascript A2592000
+ExpiresByType application/font-woff2 A2592000
+</IfModule>
+<IfModule mod_headers.c>
+Header set Expires "max-age=2592000, public"
+Header unset ETag
+Header set Connection keep-alive
+FileETag None
+</IfModule>
+</FilesMatch>
+# END LBCWpFastestCache
+
+
+## EXPIRES CACHING ##
+<IfModule mod_expires.c>
+ExpiresActive On
+ExpiresByType image/jpg "access plus 1 year"
+ExpiresByType image/jpeg "access plus 1 year"
+ExpiresByType image/gif "access plus 1 year"
+ExpiresByType image/png "access plus 1 year"
+ExpiresByType text/css "access plus 1 month"
+ExpiresByType application/pdf "access plus 1 month"
+ExpiresByType text/x-javascript "access plus 1 month"
+ExpiresByType application/x-shockwave-flash "access plus 1 month"
+ExpiresByType image/x-icon "access plus 1 year"
+ExpiresDefault "access plus 2 days"
+</IfModule>
+## EXPIRES CACHING ##
+
+# BEGIN WordPress
+<IfModule mod_rewrite.c>
+RewriteEngine On
+RewriteBase /regiscapital/
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /regiscapital/index.php [L]
+</IfModule>
+
+# END WordPress
+
+<IfModule mod_deflate.c>
+  # Compress HTML, CSS, JavaScript, Text, XML and fonts
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/rss+xml
+  AddOutputFilterByType DEFLATE application/vnd.ms-fontobject
+  AddOutputFilterByType DEFLATE application/x-font
+  AddOutputFilterByType DEFLATE application/x-font-opentype
+  AddOutputFilterByType DEFLATE application/x-font-otf
+  AddOutputFilterByType DEFLATE application/x-font-truetype
+  AddOutputFilterByType DEFLATE application/x-font-ttf
+  AddOutputFilterByType DEFLATE application/x-javascript
+  AddOutputFilterByType DEFLATE application/xhtml+xml
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE font/opentype
+  AddOutputFilterByType DEFLATE font/otf
+  AddOutputFilterByType DEFLATE font/ttf
+  AddOutputFilterByType DEFLATE image/svg+xml
+  AddOutputFilterByType DEFLATE image/x-icon
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE text/plain
+  AddOutputFilterByType DEFLATE text/xml
+
+  # Remove browser bugs (only needed for really old browsers)
+  BrowserMatch ^Mozilla/4 gzip-only-text/html
+  BrowserMatch ^Mozilla/4\.0[678] no-gzip
+  BrowserMatch \bMSIE !no-gzip !gzip-only-text/html
+  Header append Vary User-Agent
+</IfModule>
+
+
+<ifModule mod_gzip.c>
+mod_gzip_on Yes
+mod_gzip_dechunk Yes
+mod_gzip_item_include file .(html?|txt|css|js|php|pl)$
+mod_gzip_item_include handler ^cgi-script$
+mod_gzip_item_include mime ^text/.*
+mod_gzip_item_include mime ^application/x-javascript.*
+mod_gzip_item_exclude mime ^image/.*
+mod_gzip_item_exclude rspheader ^Content-Encoding:.*gzip.*
+</ifModule>
+
+*******************cache code for pagespeed ends********************
+
+*********************Creating Custom Single Post Templates in WordPress**************
+add folder in theme and create template named wpb-single-post.php (themes/Divi/single)
+and in template put code
+
+
+<?php
+/*
+ * Template Name: Featured Article
+ * Template Post Type: post, page, product
+ */
+  
+ get_header();  ?>
+
+***********************Creating Custom Single Post Templates in WordPress ENDS****************
+
+*************woocommerce menu cart total and money code**********************
+<a class="cart-customlocation" href="<?php echo wc_get_cart_url(); ?>" title="<?php _e( 'View your shopping cart' ); ?>"><?php echo sprintf ( _n( '%d item', '%d items', WC()->cart->get_cart_contents_count() ), WC()->cart->get_cart_contents_count() ); ?> - <?php echo WC()->cart->get_cart_total(); ?></a>
+*************woocommerce menu cart total and money code ends**********************
+
+*************woocommerce minicart dropdown starts**********************
+
+function woocommerce_mini_cart( $args = array() ) {
+
+   $defaults = array(
+     'list_class' => '',
+   );
+
+   $args = wp_parse_args( $args, $defaults );
+
+   wc_get_template( 'cart/mini-cart.php', $args );
+ }
+function remove_item_from_cart() {
+   $cart = WC()->instance()->cart;
+   $id = $_POST['product_id'];
+   $cart_id = $cart->generate_cart_id($id);
+   $cart_item_id = $cart->find_product_in_cart($cart_id);
+
+   if($cart_item_id){
+      $cart->set_quantity($cart_item_id, 0);
+      return true;
+   }
+   return false;
+   }
+    
+    
+    add_shortcode( 'cart_mini', 'cart_mini' );
+function cart_mini() {
+    ob_start();
+    ?>
+    <div class="min_cart_header">
+                <a class="cart-customlocation" data-toggle="collapse" data-target="#mincart"><i class="fa fa-shopping-cart" aria-hidden="true"></i><?php if(WC()->cart->get_cart_contents_count()!=0) { ?>
+                <span><?php echo sprintf ( _n( '%d', '%d', WC()->cart->get_cart_contents_count() ), WC()->cart->get_cart_contents_count() ); ?></span> <?php } else { echo "<span>0</span>";} ?></a>
+                    <div class="min_cart collapse" id="mincart">
+                        <?php woocommerce_mini_cart( $args ); ?>
+                    </div>
+    
+                </div>
+        <?php
+    $contentSortcode = ob_get_contents( );
+    ob_get_clean( );
+    return $contentSortcode;
+}
+
+
+*************woocommerce minicart dropdown starts**********************
+
+**********************************auto play video on all browser**********************************
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial;
+    font-size: 17px;
+}
+
+#myVideo {
+    position: fixed;
+    right: 0;
+    bottom: 0;
+    min-width: 100%; 
+    min-height: 100%;
+}
+
+.content {
+    position: fixed;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #f1f1f1;
+    width: 100%;
+    padding: 20px;
+}
+
+#myBtn {
+    width: 200px;
+    font-size: 18px;
+    padding: 10px;
+    border: none;
+    background: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+#myBtn:hover {
+    background: #ddd;
+    color: black;
+}
+</style>
+</head>
+<body>
+
+<video autoplay muted loop id="myVideo">
+  <source src="rain.mp4" type="video/mp4">
+  Your browser does not support HTML5 video.
+</video>
+
+<div class="content">
+  <h1>Heading</h1>
+  <p>Lorem ipsum dolor sit amet, an his etiam torquatos. Tollit soleat phaedrum te duo, eum cu recteque expetendis neglegentur. Cu mentitum maiestatis persequeris pro, pri ponderum tractatos ei. Id qui nemore latine molestiae, ad mutat oblique delicatissimi pro.</p>
+  <button id="myBtn" onclick="myFunction()">Pause</button>
+</div>
+
+<script>
+var video = document.getElementById("myVideo");
+var btn = document.getElementById("myBtn");
+
+function myFunction() {
+  if (video.paused) {
+    video.play();
+    btn.innerHTML = "Pause";
+  } else {
+    video.pause();
+    btn.innerHTML = "Play";
+  }
+}
+</script>
+
+</body>
+</html>
+
+
+**********************************auto play video on all browser ends**********************************/
+
+/**********************add body class on frontend************************/
+
+function my_plugin_body_class($classes) {
+	global $current_user;
+    $classes[] = $current_user->roles[0];
+    return $classes;
+	
+}
+
+add_filter('body_class', 'my_plugin_body_class');
+
+/**********************add body class on frontend ends************************/
+
+
+/**********************add body class on admin************************/
+
+function my_admin_body_class($classes) {
+	global $current_user;
+    $classes.= $current_user->roles[0];
+    return $classes;
+	
+}
+
+add_filter('admin_body_class', 'my_admin_body_class');
+
+/**********************add body class on admin ends************************/
+
+/*************************remove dashboard metaboxes**************************/
+
+function wpse28782_remove_menu_items() {
+	global $current_user;	
+    if($current_user->roles[0] == 'group_leader'):        
+		remove_meta_box( 'dashboard_activity', 'dashboard', 'side' );
+		remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
+		remove_meta_box( 'wpe_dify_news_feed', 'dashboard', 'side' );
+    endif;
+}
+add_action( 'admin_menu', 'wpse28782_remove_menu_items',999 );
+
+/*************************remove dashboard metaboxes ends**************************/
+
+/***************stop working of lms url in group leader**********************/
+
+function redirect_to_dashboard()
+{
+	global $current_user;
+	
+    if($current_user->roles[0] == 'group_leader' && $_GET['post_type'] == 'sfwd-essays')
+	{		
+		wp_redirect(site_url('wp-admin')); exit;
+	}
+}
+add_action('init','redirect_to_dashboard');
+
+/***************stop working of lms url in group leader ends**********************/
+
+
+/***************add css for admin**********************/
+function my_custom_fonts() {
+  echo '<style>
+    .group_leader #adminmenu li#toplevel_page_learndash-lms ul.wp-submenu.wp-submenu-wrap li:nth-child(3), .group_leader  #adminmenu li#toplevel_page_learndash-lms ul.wp-submenu.wp-submenu-wrap li:nth-child(2) {
+    display: none;
+}
+  </style>';
+}
+add_action('admin_head', 'my_custom_fonts');
+/***************add css for admin ends**********************/
+
+/***************add script before ajax**********************/
+function testing(){
+echo '	<script>setTimeout(function () {
+			jQuery(".chosen-single span").text(function () {
+			return jQuery(this).text().replace("Select", ""); 
+		});             
+    }, 50);
+</script>';
+}
+
+if($_REQUEST['action'] == "woo_vpf_get_terms")
+{
+    testing();
+}
+/***************add script before ajax**********************/
+
+/****************site works on perticular ip***********************/
+function get_ip_address()
+
+    {
+    
+         $ipaddress = '';
+    
+       if ($_SERVER['HTTP_CLIENT_IP'])
+    
+           $ipaddress = $_SERVER['HTTP_CLIENT_IP'];
+    
+       else if($_SERVER['HTTP_X_FORWARDED_FOR'])
+    
+           $ipaddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    
+       else if($_SERVER['HTTP_X_FORWARDED'])
+    
+           $ipaddress = $_SERVER['HTTP_X_FORWARDED'];
+    
+       else if($_SERVER['HTTP_FORWARDED_FOR'])
+    
+           $ipaddress = $_SERVER['HTTP_FORWARDED_FOR'];
+    
+       else if($_SERVER['HTTP_FORWARDED'])
+    
+           $ipaddress = $_SERVER['HTTP_FORWARDED'];
+    
+       else if($_SERVER['REMOTE_ADDR'])
+    
+           $ipaddress = $_SERVER['REMOTE_ADDR'];
+    
+       else
+    
+           $ipaddress = 'UNKNOWN';    return $ipaddress;
+    
+    }
+
+    function ip_block()
+    {
+        $ip = get_ip_address();
+        if($ip!="112.196.85.52")
+        {
+            die();
+        }
+    }
+
+    add_action('init','ip_block');
+/******************	site works on perticular ip ends *************************/
+add_shortcode("shortcodeFORourservices", "functionFORourservices");
+function functionFORourservices()
+{ ?>
+<div class="row">
+    <?php $the_query = new WP_Query( 'posts_per_page=3' );
+    $i = 0;
+    while ($the_query -> have_posts()) : $the_query -> the_post(); ?>
+    <?php if($i==0){ ?>
+        <div class="col-12">
+            <?php echo get_the_post_thumbnail(); ?>
+            <div class="post_info">
+                <h4><a href="<?php echo get_the_permalink(); ?>"><?php echo get_the_title(); ?></a><h4>
+            </div>
+        </div>
+    <?php
+    $i++;
+
+    } else { ?>
+    <div class="col-12 col-sm-6">
+        <?php echo get_the_post_thumbnail(); ?>
+        <div class="post_info">
+            <h4><a href="<?php echo get_the_permalink(); ?>"><?php echo get_the_title(); ?></a><h4>
+        </div>
+    </div>
+
+    <?php }
+    endwhile;
+    wp_reset_postdata();
+    ?>
+</div>
+<?php }
+
+================condition run if current user bought specific products start ====================
+<?php 
+global $current_user;
+
+if ( is_user_logged_in() && $current_user->roles[0]!='administrator' ) 
+{
+	global $wpdb, $current_user;
+	$user_id = get_current_user_id();
+	if ( wc_customer_bought_product( $current_user->user_email, $current_user->ID, 17841 ) )
+	{	?>
+		<style>ul#menu-user-sidebar-menu li.menu-item-18143{display:block;}</style>
+		<?php
+	}	
+	else
+	{	?>
+		<style>ul#menu-user-sidebar-menu li.menu-item-18143{display:none;}</style>
+		<?php
+	}
+	
+	if ( wc_customer_bought_product( $current_user->user_email, $current_user->ID, 17846 ) and wc_customer_bought_product( $current_user->user_email, $current_user->ID, 17835 ) and wc_customer_bought_product( $current_user->user_email, $current_user->ID, 21666 ) and wc_customer_bought_product( $current_user->user_email, $current_user->ID, 21663 ) and wc_customer_bought_product( $current_user->user_email, $current_user->ID, 22442 ) and wc_customer_bought_product( $current_user->user_email, $current_user->ID, 17834 ) )
+	{	?>
+		<style>ul#menu-user-sidebar-menu li#menu-item-18142{display:block;}</style>
+		<?php
+	}
+	else
+	{	?>
+		<style>ul#menu-user-sidebar-menu li#menu-item-18142{display:none;}</style>
+		<?php
+	}
+	if ( wc_customer_bought_product( $current_user->user_email, $current_user->ID, 22442 ) )
+	{	?>
+		<style>ul#menu-user-sidebar-menu li#menu-item-22455{display:block;}</style>
+		<?php
+	}
+	else
+	{	?>
+		<style>ul#menu-user-sidebar-menu li#menu-item-22455{display:none;}</style>
+		<?php
+	}
+}
+?>
+
+================condition run if current user bought specific products ends ====================
+
+===========check color of element and give to another elemnt ============
+================condition if color of element and give to another element ====================
+
+jQuery('blockquote').each(function(){
+			var theColorIs = jQuery(this).children('i.fa').css("color");
+				if(theColorIs){
+					jQuery(this).find('h5').children("i.fa").css("color", theColorIs);
+				} else {
+					jQuery(this).find('h5').children("i.fa").css("color", "#c1c0c0");
+			}
+		})
+
+================condition if color of element and give to another element ====================
+
+
+
+
+
+
+
+
+

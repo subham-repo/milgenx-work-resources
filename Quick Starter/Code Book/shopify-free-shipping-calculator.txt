@@ -1,0 +1,46 @@
+function free_shipping_calculator(cart){
+  console.log({cart});
+  var msg_port = jQuery('#CartDrawer .drawer__scrollable')
+  
+  var original_total_price = cart.total_price;
+  var total_price = original_total_price/100;
+var currency = cart.currency;
+
+  var elGBP_total = 60;
+  var elUSD_total = 90;
+  var elEUR_total = 90;
+
+var diff = 0;
+  if(currency == 'GBP'){
+	diff = elGBP_total - total_price;
+    	var symbol = '£';
+      compare_value = elGBP_total;
+  }else if(currency == 'EUR'){
+  	diff = elEUR_total - total_price;
+    	var symbol = 'EUR';
+      compare_value = elEUR_total;
+  }else if(currency == 'USD'){
+  	diff = elUSD_total - total_price;
+    	var symbol = '$';
+      compare_value = elUSD_total;
+  }
+  
+  var msg_unqualify = '<span class="freeshipp_eligibility" style="color:#570D0D;">Add ' +symbol+' '+diff.toFixed(2)+ ' More to Get Free Shipping</span>';
+  var msg_qualify = '<span class="freeshipp_eligibility" style="color:black;">You Quailfy For Free Shipping</span>';
+
+  if(total_price > compare_value){
+  	console.log(msg_qualify);
+    	jQuery('.freeshipp_eligibility').remove();
+    	msg_port.prepend(msg_qualify);
+  }else{
+  	console.log(msg_unqualify);
+    	jQuery('.freeshipp_eligibility').remove();
+      msg_port.prepend(msg_unqualify);
+  }
+
+  console.log({total_price, currency});
+}
+
+$.getJSON('/cart.js').then(function(cart) {
+  free_shipping_calculator(cart);
+})

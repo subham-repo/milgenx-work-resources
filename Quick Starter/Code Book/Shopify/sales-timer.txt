@@ -1,0 +1,154 @@
+{% if product.tags contains 'OnDeal' %}
+<div class="sales-timer" {% if product.selected_or_first_available_variant.available %} {% else %} style="visibility:hidden;" {% endif %}>
+  <div class="sales-timer-label">
+    <span><img src="{{ 'fire-icon.png' | file_url }}" alt="fire-icon" /></span>
+    <strong>Flash Sales</strong>
+  </div>
+  <div class="sales-timer-display">
+    <div class="sales-timer-display-label">
+      Ending in:
+    </div>
+    <div class="sales-timer-running">
+      <div id="clockdiv">
+        <div>
+          <span class="hours"></span>
+          <div class="smalltext">Hours</div>
+        </div>
+        <div>
+          <span class="minutes"></span>
+          <div class="smalltext">Minutes</div>
+        </div>
+        <div>
+          <span class="seconds"></span>
+          <div class="smalltext">Seconds</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function(){
+      let sales_timer = document.querySelector('.sales-timer');
+      let color_swatches = document.querySelectorAll('label.color-swatch');
+      color_swatches.forEach(function(color_swatch){
+          color_swatch.addEventListener('click', function(){
+              if(color_swatch.classList.contains('disabled')){
+                  sales_timer.style.visibility = 'hidden';
+              }else{
+                sales_timer.style.visibility = 'visible';
+              }
+          })
+      })
+  });
+  
+  const dayEnd = new Date();
+  dayEnd.setHours(23, 59, 59, 999);
+  console.log(dayEnd);
+  
+  var deadline = dayEnd;
+  var x = setInterval(function() {
+  var now = new Date().getTime();
+  var t = deadline - now;
+  var days = Math.floor(t / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((t%(1000 * 60 * 60 * 24))/(1000 * 60 * 60));
+  var minutes = Math.floor((t % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((t % (1000 * 60)) / 1000);
+  document.getElementById("clockdiv").innerHTML = {% comment %}"<div><span>"+days +"</span><small>d</small></div>" +{% endcomment %} "<div><span>"+hours +"</span><small>h</small></div>" + "<div><span>"+minutes +"</span><small>m</small></div>" + "<div><span>"+seconds +"</span><small>s</small></div>";
+      if (t < 0) {
+          clearInterval(x);
+          document.getElementById("clockdiv").innerHTML = "EXPIRED";
+      }
+  }, 1000);
+
+  console.log({deadline});
+  
+</script>
+
+<style>
+  .sales-timer {
+    display: inline-flex;
+    background-color: #e7e7e7;
+    border-radius: 6px;
+    box-shadow: 0 0 2px 0 rgb(0 0 0 / 10%);
+    flex-wrap: wrap;
+  }
+  @media(min-width:1201px){
+    .sales-timer {
+      justify-content: space-between;
+    }
+    .sales-timer .sales-timer-label, .sales-timer .sales-timer-display {
+      padding: 10px 15px;
+    }
+  }
+  @media (min-width: 1200px){
+    .sales-timer {
+       font-size: 14px; 
+    }
+  }
+  @media(max-width:1200px){
+    .sales-timer {
+      justify-content: center;
+      padding: 5px 0;
+    }
+    .sales-timer .sales-timer-label, .sales-timer .sales-timer-display {
+      padding: 5px 12px;
+    }
+    .sales-timer .sales-timer-label span{
+      display: none;
+    }
+  }
+  .sales-timer .sales-timer-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sales-timer .sales-timer-label span {
+    background-color: #000;
+    border-radius: 4px;
+    width: 26px;
+    height: 26px;
+    margin-right: 10px;
+    padding: 3px;
+  }
+  .sales-timer .sales-timer-label span img {
+    object-fit: contain;
+  }
+  .sales-timer-display .sales-timer-running div#clockdiv > div {
+    display: inline-flex;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .sales-timer-display {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sales-timer-display .sales-timer-running div#clockdiv {
+    display: inline-flex;
+    align-items: center;
+  }
+  .sales-timer-display .sales-timer-running div#clockdiv .smalltext {
+    display: none;
+  }
+  @media(min-width:601px){
+    .sales-timer-display .sales-timer-running div#clockdiv > div {
+      background-color: #303030;
+      color: #fff;
+      border-radius: 4px;
+      margin-left: 5px;
+      min-width: 43px;
+      padding: 2px 5px;
+      text-align: center;
+    }
+  }
+  @media(max-width:600px){
+    .sales-timer-display .sales-timer-running div#clockdiv > div {
+      margin-left: 5px;
+      font-weight: bold;
+      min-width: 28px;
+      text-align: center;
+    }
+  }
+</style>
+{% endif %}

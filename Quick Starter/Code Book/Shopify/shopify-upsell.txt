@@ -1,0 +1,153 @@
+{% assign prd = all_products["stacey-dash-sticker-pack"] %}
+
+<div class="upsell-checkbox">
+  <label>
+    <input type="checkbox" id="upsell-checkbox" dataId="{{prd.selected_or_first_available_variant.id}}">
+    <span class="blkprt">ADD <a id="popup_link" data-modal="modal-popup" data-block=".lid-popup" href="javascript:void(0);">{{prd.title}}</a> FOR {{prd.price | money}}</span>  
+  </label>
+</div>
+<style>
+  .upsell-checkbox{width: 100%;display: inline-block;vertical-align: top;padding: 5px;font-size: 0.6875em;color: #4c4c4c;text-transform: uppercase;font-weight: 600;margin-bottom: 4px;font-family: "IBM Plex Sans",sans-serif;}
+  .upsell-checkbox label{display: inline-block;vertical-align: top;font-size: 16px;font-weight: bold;color: #000;}
+  .upsell-checkbox input{margin: 0 8px 0 0;min-height: auto;}
+  .upsell-checkbox a{display: inherit;color: #c62537;text-decoration: underline;}
+  .modall .product-form__item{text-align: center;}
+  .modall{display: none;position: fixed;z-index: 999;padding-top: 100px;left: 0;top: 0;width: 100%; height: 100%; overflow: auto; background-color: rgb(0,0,0); background-color: rgba(0,0,0,0.4);}
+  .modall-content {background-color: #fefefe;margin: auto;padding: 20px;border: 1px solid #888;width: 65%;position: relative;}
+  .modall-content .product-des{font-size: 16px;}
+  .close {color: #aaaaaa;float: right;font-size: 28px;font-weight: bold;margin-top: -25px;margin-right: -15px;cursor: pointer;}
+  .close:hover,.close:focus {color: #000;text-decoration: none;cursor: pointer;}
+  
+  .modal-popup.lid-popup.modal-visible {z-index: 9999999999;}
+  .left-popup {display: inline-flex;width: 54%;padding: 30px;vertical-align: top;}
+  .right-popup{display: inline-block;}
+/*   .revstr {  display: inline-block;float: left;width: 50%;padding: 30px;} */
+  .atc-btn {margin-top: 20px;margin-bottom: 20px;}
+  .modal-popup.lid-popup.modal-visible .modal-body { background-color: rgba(0, 0, 0, 0.47); position: relative; inset: 0px;z-index: 9998;cursor: pointer;}
+
+  /* .revstr {display: inline-block;float: left;width: 50%;padding: 0px;} */
+  .modal-popup.lid-popup.modal-visible #top_reviews {display: block;}
+  .product-title h2 {font-weight: bold;margin: 0;font-size: 25px;text-align: center;}
+  .price-regular-pop span {display: block !important;text-align: center;font-size: 1.125em;font-weight: 600;}
+
+  .product-des{margin-top:10px;}
+  
+  
+  @media (max-width: 991px) {
+    .popup-product-box .left-product-images {width: 100%;}
+    .popup-product-box .popup-product-detail { width: 100%;margin-top: 15px;}
+    .left-popup { width: 100%;padding: 20px 0; float:none;}
+    .revstr {width: 100%;}
+  }
+
+  @media screen and (min-width: 768px){
+    #AddToCartpopup {min-height: 46px;border-radius: 0;font-family: "IBM Plex Sans",sans-serif;font-size: 0.875em;text-transform: uppercase;font-weight: 600;background-color: #000000 !important;color: #fff;}
+  }
+
+  @media screen and (max-width: 1018px){
+    #AddToCartpopup {min-height: 46px;border-radius: 0;font-family: "IBM Plex Sans",sans-serif;font-size: 0.875em;text-transform: uppercase;font-weight: 600;background-color: #000000 !important;color: #fff;width: 100%;}
+    .productdescriptionmodal {width: 100%;}
+    .modall-content {width: 80%;}
+    .left-popup {text-align: center;}
+span.blkprt {
+    font-size: 14px !important;
+}
+  }
+  
+  @media screen and (min-width: 768px) {
+    .right-popup{display: inline-block;width: 45%;padding-top: 150px !important;}
+
+  }
+span.blkprt {
+    font-size: 16px;
+}
+  .product-qty-pop.mobile-hide {text-align: center;display: inline-table;}
+  .productdescriptionmodal .description_accordion {padding: 0 !important;}
+  .productdescriptionmodal .description_accordion > ul.accordion li.icon__scroll a::after {transform: unset;}
+  .left-product-images {display: none;}
+  #AddToCartpopup {margin-top: 10px;}
+  .trust-badgepop {width: 100%;margin-top: 10px;}
+  .revstr button{width:100%;}
+  
+  .swatch.clearfix.swatch-size.lid_popup_swatch {display: none;}
+</style>
+
+
+<div id="myModall" class="modall">
+  <!-- Modal content -->
+  <div class="modall-content">
+    <span class="close">&times;</span>
+    <div class="left-popup">
+     <img src="{{prd.featured_image | img_url: '480x'}}" alt="{{prd.title}}">
+
+    </div>
+    
+    <div class="right-popup">
+      
+      <div class="product-title"><h2>{{prd.title}}</h2></div>
+      <div class="price-regular-pop"><span>{{prd.price | money}}</span></div>
+
+     <div class="revstr" style="text-align: center;">
+        <div class="productdescriptionmodal">
+          <div class="product-des"> {{prd.description}}</div>
+        </div>
+        <button type="button" id="AddToCartpopup" data-prdId="{{ prd.selected_or_first_available_variant.id }}" >ADD TO CART</button> 
+      </div>
+      <div class="trust-badgepop">
+        <img src="https://cdn.shopify.com/s/files/1/0262/3275/files/UNDER-ATC.png?v=1594569433">
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<script>
+// Get the modal
+var modal = document.getElementById("myModall");
+
+// Get the button that opens the modal
+var btn = document.getElementById("popup_link");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {modal.style.display = "block";}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {modal.style.display = "none";}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {modal.style.display = "none";}
+}
+
+
+$(document).on('click', '#AddToCartpopup', function () {
+if ($('#upsell-checkbox').is(':checked')) {
+  $('.product-form__cart-submit').click();
+    setTimeout(function() { 
+  $('#myModall').hide();
+  }, 500);
+}
+});
+
+
+$(document).on('click', '.product-form__cart-submit', function () {
+if ($('#upsell-checkbox').is(':checked')) {
+    setTimeout(function() { 
+
+  var idd =  $('#AddToCartpopup').attr('data-prdId');
+ jQuery.ajax({
+        type: "POST",
+        url: '/cart/add.js',
+        data: 'quantity=1&id='+idd,
+        async: false
+      });
+window.location.href = '/cart';
+
+    }, 1000);
+}
+});
+</script>

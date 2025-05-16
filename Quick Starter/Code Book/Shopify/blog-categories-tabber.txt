@@ -1,0 +1,147 @@
+<section class="full-width section-spacing fix-top-padding" style="padding-top:0;">
+  <div class="container">
+  <div class="tab-navigation">
+    <button class="btn btn-small active" id="all-blogs">All Blogs</button>
+    {% for block in section.blocks %}
+    {%- assign blog = blogs[block.settings.blog] -%}
+      <button class="btn btn-small" id="{{ blog.title | downcase | replace : " ", "-" }}">{{ blog.title }}</button>
+    {% endfor %}
+  </div>
+
+  <div class="blog-wrapper full-width" for="all-blogs" style="display:block;">
+    {% if section.blocks.size > 0 %}
+    <div class="row">
+      {% for block in section.blocks %}
+        {%- assign blog = blogs[block.settings.blog] -%}
+        {% for article in blog.articles %}
+        <div class="article-grid-item col-12 col-md-6 col-lg-3 {% comment %}{% if forloop.first %}featured-post col-md-12 col-lg-12{% else %}{% endif %}{% endcomment %}">
+          {% render "article-grid-item", article:article, loopIndex: forloop.index %}
+        </div>
+        {% endfor %}
+      {% endfor %}
+    </div>
+    {% else %}
+      <h2 class="text-center">Coming Soon</h2>
+    {% endif %}
+  </div>
+  {% for block in section.blocks %}
+  {%- assign blog = blogs[block.settings.blog] -%}
+  <div class="blog-wrapper full-width" for="{{ blog.title | downcase | replace : " ", "-" }}" style="display:none;">
+    
+    {% if blog.articles.size > 0 %}
+      <div class="row">
+      {% for article in blog.articles %}
+        <div class="article-grid-item col-12 col-md-6 col-lg-3 {% comment %}{% if forloop.first %}featured-post col-md-12 col-lg-12{% else %}{% endif %}{% endcomment %}">
+          {% render "article-grid-item", article:article, loopIndex: forloop.index %}
+        </div>
+      {% endfor %}
+      </div>
+    {% else %}
+      <h2 class="text-center">Coming Soon</h2>
+    {% endif %}
+  </div>
+  {% endfor %}
+  </div>
+</section>
+
+
+<script>
+  let tabNavigations = document.querySelectorAll(".tab-navigation button");
+  let tabWrappers = document.querySelectorAll(".blog-wrapper");
+  
+  tabNavigations.forEach(function(tabNavigation){
+      tabNavigation.addEventListener("click", function(){
+          let idName = tabNavigation.getAttribute("id");
+          if(!tabNavigation.classList.contains("active")){
+              tabNavigations.forEach(function(tabNavigationItem){
+                  tabNavigationItem.classList.remove("active")
+              })
+              tabNavigation.classList.add("active");
+          }
+          console.log({idName});
+          tabWrappers.forEach(function(tabWrapper){
+              let forNav = tabWrapper.getAttribute("for");
+              if(forNav == idName){
+                  tabWrapper.style.display = 'block';
+                  document.querySelector(".tab-navigation").scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+              }else{
+                  tabWrapper.style.display = 'none';
+              }
+          })
+      })
+  })
+</script>
+
+<style>
+  .page-heading {
+      margin-top: 30px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  .tab-navigation button.btn.active, .tab-navigation button.btn.active:hover {
+      background-color: #ea1c24;
+      border-color: #ea1c24;
+      color: #fff;
+  }
+  .tab-navigation {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+  }
+  .tab-navigation button.btn:hover {
+      color: #ea1c24;
+      border-color: #ea1c24;
+  }
+  .tab-navigation button.btn {
+      font-size: 10px;
+      padding: 10px 15px;
+      margin: 5px;
+      white-space: nowrap;
+      transition: .3s all ease-in-out;
+  }
+  section.blog-wrapper:not(:first-child) {
+      padding-top: 0;
+  }
+  section.blog-wrapper:not(:first-child) .page-meta-content {
+      margin-top: 0;
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Main Blog Section",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "text_block",
+        "name": "Column",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Heading"
+          },
+          {
+            "type": "blog",
+            "id": "blog",
+            "label": "Blog"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Main Blog Section",
+        "category": "Blogs"
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

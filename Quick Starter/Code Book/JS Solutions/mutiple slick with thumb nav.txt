@@ -1,0 +1,30 @@
+jQuery('.project_slider').each(function(key, item) {
+
+		var project_banner_slider_id = jQuery(this).find('.project_banner_slider').attr('id');
+		var project_thumnb_nav_id = jQuery(this).find('.project_thumnb_nav').attr('id');
+
+		console.log({project_banner_slider_id, project_thumnb_nav_id });
+
+		jQuery('#'+project_banner_slider_id).slick({
+			infinite: true,
+			slidesToShow: 1,
+			slidesToScroll: 1,
+			arrows: true,
+			// focusOnSelect: true,
+			asNavFor: '#'+project_thumnb_nav_id,
+			prevArrow:"<button type='button' class='slick-arrow slick-prev pull-left'><i class='fa fa-angle-left' aria-hidden='true'></i></button>",
+			nextArrow:"<button type='button' class='slick-arrow slick-next pull-right'><i class='fa fa-angle-right' aria-hidden='true'></i></button>"
+		});	
+
+		jQuery('#'+project_thumnb_nav_id).slick({
+		  infinite: true,
+		  slidesToShow: 5,
+		  slidesToScroll: 1,
+		  arrows: false,
+		  centerMode: true,
+		  focusOnSelect: true,
+		  centerPadding: '0px',
+		  asNavFor: '#'+project_banner_slider_id
+		});	
+
+	});

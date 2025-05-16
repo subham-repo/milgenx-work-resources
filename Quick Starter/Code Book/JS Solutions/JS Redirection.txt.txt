@@ -1,0 +1,3 @@
+if (window.location.href.indexOf("/pages/afro") > -1) {
+      document.location.href = '/pages/afro-landing-page';
+    }

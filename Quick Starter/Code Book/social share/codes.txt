@@ -1,0 +1,5 @@
+function cs_social_share(){
+    get_template_part('template-parts/social-share');
+}
+add_shortcode('cs-social-share', 'cs_social_share');
+

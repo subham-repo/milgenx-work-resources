@@ -1,0 +1,24 @@
+function showActiveOptions(){
+  let product_form__inputs = document.querySelectorAll('.product-form__input');
+  product_form__inputs.forEach(function(product_form__input){
+      let product_form__input_group = product_form__input.querySelector('.option-container');
+      let statusPort = product_form__input.querySelector('.form__label .selected-value');
+      console.log(product_form__input_group);
+      if(product_form__input_group){
+          let optionBtns = product_form__input_group.querySelectorAll('input[type="radio"]');
+          console.log(product_form__input_group)
+          optionBtns.forEach(function(optionBtn){
+              let optionValue = optionBtn.value;
+              if(optionBtn.checked){
+                  console.log({optionValue})
+                  statusPort.innerText = optionValue;
+              }
+          })
+      }
+  })
+}  
+showActiveOptions();
+let productForm = document.querySelector('#product-form-installment');  
+productForm.addEventListener('change', function(){
+  showActiveOptions();
+}) 

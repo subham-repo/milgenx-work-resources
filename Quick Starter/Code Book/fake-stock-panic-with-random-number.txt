@@ -1,0 +1,31 @@
+<div id="stock-alert" class="stock-alert" style="visibility:hidden;">
+  <strong>UPPDATERING:</strong> Begränsat lager! - <span class="available-stock"></span> stycken tillgängliga
+</div>
+<style>
+  .stock-alert {
+    text-align: center;
+    font-size: 12px;
+    width: 100%;
+    padding: 12px 15px;
+    background: #fbeae5;
+    color: #ae2700;
+    border-radius: 3px;
+    margin-top: 10px;
+    line-height: 18px;
+}
+</style>
+<script>
+  window.addEventListener("load", function(){
+    function generateRandom(){
+      let randowNumber = Math.floor(Math.random() * 10);
+      if(randowNumber > 2){
+         document.querySelector("#stock-alert .available-stock").textContent = randowNumber;
+        document.querySelector("#stock-alert").style.visibility = "visible"; 
+      }
+    }
+    generateRandom();
+    setInterval(function(){
+      generateRandom();
+    }, 15000);
+  })
+</script>

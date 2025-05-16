@@ -1,0 +1,16 @@
+Shopify v2 product type filter on collection page 
+  <div class="prdtype-by">
+              <label for="prdtype">Type</label> 
+              <select name="ptype" id="PType">
+                <option data-tag="/collections/all" >{{ 'All Type' }}</option>
+                
+                {%- for product_type in collections['all'].all_types -%}
+                {% if product_type != blank %}
+                {%- assign product_typeh = product_type -%}
+                {% assign curAct = collection.current_type | handleize  | remove: "39-s-" %}
+                {% assign ptAct = product_type | handleize | replace: "s-", "-" %}
+                <option {% if curAct == ptAct %}selected="selected"{% endif %} data-tag="/collections/types?q={{ product_typeh }}" >{{ product_type }}</option>
+                {% endif %}
+                {%- endfor -%}
+              </select>
+            </div>

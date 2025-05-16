@@ -1,0 +1,101 @@
+<section class="sticky-cta-page">
+  <div class="page-width container-sm">
+    <div class="grid">
+      <div class="header grid__item one-whole">
+        {%- render 'header-logo-block', section: section -%}
+        <button class="close_model" onclick="toggle_ctaOverScreen();"><span>Close</span> <img width="20" height="20" src="https://info.kinexmedia.com/wp-content/themes/understrap-child-master/img/close-32.png" alt="close-model" style="margin-left: 10px;"></button>
+      </div>
+    </div>
+    <!-- Add Content Here -->
+  </div>
+</section> 
+
+<style>
+  html.show-sticky-cta-page{
+    overflow: hidden;
+  }
+  html.show-sticky-cta-page section.sticky-cta-page {
+    height: 100%;
+    border-radius: 0;
+    opacity: 1;
+  }
+  html.show-sticky-cta-page body.unloading:before{
+  	display:none;
+  }
+	
+  .site-header__logo a {
+    color: #000;
+    border: none;
+  }
+  section.sticky-cta-page {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    z-index: 999999;
+    transition: .3s all ease-in-out;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+  html:not(.show-sticky-cta-page) section.sticky-cta-page {
+    height: 0;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    opacity: 0;
+  }
+  section.sticky-cta-page .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  section.sticky-cta-page .header a.navbar-brand {
+    display: inline-block;
+    max-width: 180px;
+  }
+  section.sticky-cta-page .header button.close_model {
+    border-style: none;
+    background-color: transparent;
+    font-size: 20px;
+    letter-spacing: .5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+  }
+</style>
+<script>
+  let moveback = false;
+  let cta_hashAddress = '#order_history'
+  function toggle_ctaOverScreen(moveback){
+    // Use onclick="toggle_ctaOverScreen()" to toggle cta popup
+    // console.log({moveback});
+    let site_container = document.querySelector('html');
+    let sticky_cta_page_class = 'show-sticky-cta-page';
+
+    if(site_container.classList.contains(sticky_cta_page_class)){
+      if(moveback == true){
+        window.location.hash = '';
+        site_container.classList.remove(sticky_cta_page_class);
+      }else{
+        site_container.classList.remove(sticky_cta_page_class);
+        history.pushState(null, null, '#');
+      }
+    }else{
+      site_container.classList.add(sticky_cta_page_class);
+      document.querySelector('body').classList.remove('unloading');
+      history.pushState(null, null, cta_hashAddress);
+    }
+  }
+
+  if(window.location.hash == cta_hashAddress){
+    toggle_ctaOverScreen();
+  }
+
+  window.onhashchange = function() {
+    toggle_ctaOverScreen(moveback = true);
+  }
+</script> 

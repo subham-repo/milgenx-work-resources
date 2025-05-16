@@ -1,0 +1,1 @@
+{% assign pricehalf = product.price | times:50 |divided_by:100 %}{{pricehalf | money}}

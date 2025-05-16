@@ -1,0 +1,38 @@
+<div class="estimated-delivery-date"> <img src="https://cdn-icons-png.flaticon.com/512/1670/1670915.png" style="height:25px;float:left;margin-right:10px;"/>
+Get it between&nbsp;<strong><span id="fromDate"></span> - <span id="toDate"></span></strong></div>
+{{ '//cdnjs.cloudflare.com/ajax/libs/datejs/1.0/date.min.js' | script_tag }}
+<script>
+  const d = new Date();
+  let hour = d.getHours();
+
+  let minDays = 2;
+  let maxDays = 4;
+  
+  if(hour >= 13){
+    minDays = 3;
+    maxDays = 5;
+    console.log({hour, minDays, maxDays});
+  }else{
+    console.log({hour, minDays, maxDays});
+  }
+  
+  var fromDate = Date.today().addDays(minDays);
+  // if (fromDate.is().saturday() || fromDate.is().sunday()) {
+  //   fromDate = fromDate.next().monday();
+  // }
+  var toDate = Date.today().addDays(maxDays);
+  // if (toDate.is().saturday() || toDate.is().sunday()) {
+  //   toDate = toDate.next().monday();
+  // }
+  document.getElementById('fromDate').innerHTML = fromDate.toString('dddd MMMM dS');
+  document.getElementById('toDate').innerHTML = toDate.toString('dddd MMMM dS');
+</script>
+<style>
+  .estimated-delivery-date {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+</style>

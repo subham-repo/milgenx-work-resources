@@ -1,0 +1,33 @@
+<script type="text/javascript">
+function onClick_scroll(){
+	var header        = jQuery('header');
+	var header_height = header.height();
+	var offset = header_height*1.2;
+	var speed = 1000; // Durée de l'animation (en ms)
+
+	jQuery('a[href^="#"]').on('click', function() { // Au clic sur un élément
+		var page = jQuery(this).attr('href'); // Page cible
+		console.log('offset: '+offset);
+		jQuery('html, body').animate({
+		    scrollTop: jQuery(page).offset().top - offset
+	}, speed); // Go
+	return false;
+	});
+
+	var hash= window.location.hash
+
+	if ( hash == '' || hash == '#' || hash == undefined ) return false;
+	    
+		var target = jQuery(hash);
+		headerHeight = header_height;
+		target = target.length ? target : jQuery('[name=' + this.hash.slice(1) +']');
+
+		if (target.length) {
+			jQuery('html,body').stop().animate({
+			  scrollTop: target.offset().top - offset //offsets for fixed header
+			}, speed);
+		}
+
+	}
+	onClick_scroll();
+</script>

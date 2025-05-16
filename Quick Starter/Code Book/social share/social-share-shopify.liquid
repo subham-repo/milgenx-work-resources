@@ -1,0 +1,151 @@
+{% comment %} Refference: https://petragregorova.com/articles/social-share-buttons-with-custom-icons/{% endcomment %}
+
+{% assign post_id     = product.id %}
+{% assign post_title  = product.title  | remove: '"' %}
+{% assign post_link   = canonical_url  %}
+{% assign post_media  = product.featured_image | img_url: 'master' %}
+{% assign post_host   = shop.domain %}
+{% assign fb_appid    = 123456789 %}
+
+{% assign sticky_responsive = false %}
+
+{% if template contains 'product' %}
+  {% assign share_title = "Product" %}
+{% endif %}
+
+{% comment %}
+{{ post_id }}<br><br>
+{{ post_title }}<br><br>
+{{ post_link }}<br><br>
+{{ post_media }}<br><br>
+{{ post_host }}
+{% endcomment %}
+
+{% if sticky_responsive ==  true %}
+<style>
+  @media(max-width: 991px){
+    .cs_social {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      left: 0;
+      z-index: 9999999;
+      background-color: #fff;
+    }
+    .cs_social a.cs_social_item {
+      height: 60px;
+      flex: 1;
+    }
+    .cs_social_block h2.cs_social_heading.widgettitle {
+      display: none;
+    }
+  }
+</style>
+{% endif %}
+<div class="cs_social_block">
+  <h2 class="cs_social_heading widgettitle" style="display:none">Share Your Choice In Community</h2>
+  <div class="cs_social">
+    <a target="_blank" href="http://www.facebook.com/sharer/sharer.php?u={{ post_link }}&title={{ post_title }}" class="cs_social_item facebook">
+      <i class="fa fa-facebook"></i> <span>Share</span>
+    </a>
+    <a target="_blank" href="http://twitter.com/intent/tweet?text={{ post_title }}&url={{ post_link }}" class="cs_social_item twitter">
+      <i class="fa fa-twitter"></i> <span>Tweet</span>
+    </a>
+    <a target="_blank" href="http://pinterest.com/pin/create/bookmarklet/?media={{ post_media }}&url={{ post_link }}&is_video=false&description={{ post_title }}" class="cs_social_item pinterest">
+      <i class="fa fa-pinterest"></i> <span>Pin it</span>
+    </a>
+
+    <!--  <a target="_blank" href="https://plus.google.com/share?url=<?php // echo $post_link; ?>" class="cs_social_item google+">
+<i class="fa fa-google-plus"></i>
+</a> -->
+    <!--    <a target="_blank" href="http://www.linkedin.com/shareArticle?mini=true&url={{ post_link }}&title={{ post_title }}&source={{ post_host }}" class="cs_social_item linkedin">
+<i class="fa fa-linkedin"></i>
+</a> -->
+    <a target="_blank" href="mailto:?subject={{ post_title }}&body=Check out this site I came across {{ post_link }}" class="cs_social_item facebook">
+      <i class="fa fa-envelope"></i> <span> Share </span>
+    </a>
+    <a target="_blank" href="http://www.facebook.com/dialog/send?app_id={{ fb_appid }}&amp;link={{ post_link }}&amp;redirect_uri={{ post_host }}" class="cs_social_item facebook">
+      <i class="fab fa-facebook-messenger"></i> <span>Send</span>
+    </a>
+  </div>
+</div>
+<style type="text/css">
+  .blog_bottom_link_bar {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: flex-end;
+  }
+  .cs_social a.cs_social_item {
+    display: inline-flex;
+    padding: 5px;
+    border: 1px solid transparent;
+    color: var(--header-search-button-color)!important;
+      /*      background-color: #000; */
+      transition: .2s all ease-in-out;
+      text-decoration: none;
+      /*    width: 48px; */
+      height: 48px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      }
+  .cs_social a.cs_social_item span {
+    font-size: 16px;
+    padding-left: 5px;
+  }
+  @media(min-width: 768px){
+    .cs_social a.cs_social_item {
+      font-size: 24px;
+    }
+  }
+  @media(max-width: 767px){
+    .cs_social a.cs_social_item {
+      font-size: 18px;
+    }
+    .cs_social a.cs_social_item span {
+      display: none;
+    }
+    h2.cs_social_heading.widgettitle {
+      display: block !Important;
+      text-align:center;
+    }
+  }
+  
+  .cs_social a.cs_social_item:hover, .cs_social a.cs_social_item:focus {
+    /*      color: #fff;
+    background-color: #000; */
+  }
+  .cs_social {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  .blog_page_main .blog_img_social_link .blog_bottom_link_bar .blog_social_link {
+    padding: 0 !important;
+  }
+  .fa-twitter{
+    /*color: #000;*/
+  }
+  .cs_social_block {
+    /*      padding-left: 15px; */
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+  /*  a.cs_social_item.twitter {
+  background-color: #3ba9e0;
+  }
+  a.cs_social_item.pinterest {
+  background-color: #d73532;
+  }
+  a.cs_social_item.facebook {
+  background-color: #4a6ea9;
+  }
+  a.cs_social_item.linkedin {
+  background-color: #0097bd;
+  } */
+
+
+
+</style>

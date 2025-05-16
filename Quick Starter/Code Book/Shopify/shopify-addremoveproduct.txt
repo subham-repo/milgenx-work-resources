@@ -1,0 +1,33 @@
+cartLineItems.forEach(function(cartLineItem, index){
+                  let cartLineItemId = cartLineItem.id;
+                  if(cartLineItemId == freeItemVarId){
+                    haveFreeItem = true;
+                    freeItemIndex = index;
+                  }
+                  
+                  if(index == cartLineItems.length - 1){
+                    if(haveFreeItem == false && cartTotal >= 150000){
+                       jQuery.ajax({
+                          type: 'POST',
+                          url: Shopify.routes.root + 'cart/add.js',
+                          data: data = { "id": freeItemVarId, "quantity": 1 },
+                          dataType: 'json',
+                          success: function() { 
+                            console.log("cart is eligible for free sipper")
+                            window.location.reload();
+                          }
+                        }); 
+                    }else if(cartTotal < 150000 && freeItemIndex != null){
+                      jQuery.ajax({
+                        type: 'POST',
+                        url: Shopify.routes.root + 'cart/change.js',
+                        data: data = { "line": freeItemIndex, "quantity": 0 },
+                        dataType: 'json',
+                        success: function() { 
+                          console.log("cart isn't eligible for free sipper");
+                          window.location.reload();
+                        }
+                      });
+                    }
+                  }
+                })

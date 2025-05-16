@@ -1,0 +1,15 @@
+$agent = $_SERVER["HTTP_USER_AGENT"];
+
+if( preg_match('/MSIE (\d+\.\d+);/', $agent) ) {
+  echo "internet-explorer";
+} else if (preg_match('/Chrome[\/\s](\d+\.\d+)/', $agent) ) {
+  echo "chrome";
+} else if (preg_match('/Edge\/\d+/', $agent) ) {
+  echo "edge";
+} else if ( preg_match('/Firefox[\/\s](\d+\.\d+)/', $agent) ) {
+  echo "firefox";
+} else if ( preg_match('/OPR[\/\s](\d+\.\d+)/', $agent) ) {
+  echo "opera";
+} else if (preg_match('/Safari[\/\s](\d+\.\d+)/', $agent) ) {
+  echo "safari";
+}
