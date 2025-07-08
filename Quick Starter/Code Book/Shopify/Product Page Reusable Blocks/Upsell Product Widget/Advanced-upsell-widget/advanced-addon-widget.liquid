@@ -24,13 +24,15 @@
 -%}
 
 {% assign upselllist = product.metafields.custom.upsell_products.value %}
+{% assign upsellistItems = upselllist["upsell_products"].value %}
+
 {% assign upselllistCount = product.metafields.custom.upsell_products.size %}
 {% assign collection_handle = upsellCollection | default: "stools" %}
-{% if upselllist %}
+{% if upsellistItems %}
 <div class="product-upsell-wrapper">
   <b class="heading h4">{{ block.settings.title | default: "Complete Your Set" }}</b>
   <div id="Slider-{{ block.id }}"  class="product-upsell layout--{{ block.settings.layout_style }} {% if block.settings.enable_slider  %}is-flickity-slider init-flickity-{{ block.id }} {% if show_desktop_slider == false %}no-swipe-desktop{% endif %} {% if show_tab_slider == false %}no-swipe-tab{% endif %} {% if block.settings.swipe_on_mobile == false %}no-swipe-mobile{% endif %}{% endif %}">
-    {% for upsellProduct in upselllist limit: 10 %}
+    {% for upsellProduct in upsellistItems %}
       {% assign upsellProduct = all_products[upsellProduct] %}
       {% assign have-color = false %}
       {% unless upsellProduct.handle == product.handle %}
@@ -176,7 +178,7 @@
     })
     .then(() => {
       // Wait 500ms to ensure Shopify updates cart session
-      return new Promise(resolve => setTimeout(resolve, 500));
+      return new Promise(resolve => setTimeout(resolve, 50));
     })
     .then(() => fetch("/cart.js"))
     .then(res => res.json())
@@ -202,14 +204,14 @@
         setTimeout(() => {
           button.textContent = "Add to Cart";
           button.disabled = false;
-        }, 2000);
+        }, 20);
       {% endif %}
     })
     .finally(() => {
       {% if block.settings.layout_style == 'list' %}
         setTimeout(() => {
           button.disabled = false;
-        }, 2000);
+        }, 20);
       {% endif %}
     });
 }
@@ -309,7 +311,7 @@
       let options = { 
         freeScroll: true,
         wrapAround: {% if block.settings.slider_mode == 'center' or block.settings.show_arrows %}true {% else %}{{ block.settings.enable_autoplay }}{% endif %}, 
-        imagesLoaded: false, 
+        imagesLoaded: true, 
         lazyLoad: true, 
         adaptiveHeight: false, 
         cellAlign: '{{ block.settings.slider_mode }}', 
@@ -384,7 +386,7 @@
   .product-upsell .upsell-item .upsell-item-info select {
       width: 100%;
       max-width: 100%;
-      height: 30px;
+      /* height: 30px; */
       font-size: 12px;
       outline: none;
       color: #000;
@@ -398,6 +400,7 @@
   .product-upsell.flickity-enabled {
       margin-bottom: 60px;
       position: relative;
+      overflow: unset;
   }
   .product-upsell.flickity-enabled button.flickity-button {
       right: 0;
@@ -407,6 +410,8 @@
       transform: unset;
       top: unset;
       bottom: -40px;
+      outline: none;
+      box-shadow: unset;
   }
   .product-upsell.flickity-enabled button.flickity-button.previous { right: 45px; }
   .product-upsell.flickity-enabled ol.flickity-page-dots { width: auto; bottom: -35px; }
@@ -425,6 +430,7 @@
   .product-upsell.layout--list .upsell-item .upsell-item-info form {
       display: flex;
       justify-content: flex-end;
+      align-items: flex-end;
   }
   .product-upsell.layout--grid .upsell-item .upsell-item-banner { box-shadow: 0 0 2px 0 rgba(0, 0, 0, .2); }
   .product-upsell .upsell-item .upsell-item-banner a:hover img { transform: scale(1.2); }
@@ -512,7 +518,7 @@
       background-color: #b7b7b7;
       border-radius: 50%;
       pointer-events: none;
-      transition: .3s all ease-in-out;
+      transition: .0s all ease-in-out;
   }
   .product-upsell .upsell-item button.btn-switch[in-cart="true"] span {
       left: unset;

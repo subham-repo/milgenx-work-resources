@@ -1,0 +1,188 @@
+<!-- snippets/size-chart-popup-snippet.liquid -->
+
+{% assign size_chart_raw = "3XS|38|18.5|27,2XS|42|20.5|27.5,XS|44|21.25|28,S|46|22|28.5,M|48|22.75|29,L|50|23.5|29.5,XL|52|24.25|30,2XL|54|25|30.5,3XL|56|25.75|31" | split: "," %}
+
+<div class="chart-popup">
+  <div class="chart-popup-body">
+    <div class="container-navigation">
+    <p class="size-chart-table">SIZE CHART</p>
+    </div>
+    <div class="chart-container">
+      <table>
+        <tbody>
+          <tr>
+            <th>SIZE</th>
+            <th>CHEST</th>
+            <th>SHOULDER</th>
+            <th>LENGTH</th>
+          </tr>
+          {% for option in product.options_with_values %}
+            {% if option.name == "Size"  %}
+              {% for value in option.values %}
+                {% for item in size_chart_raw %}
+                  {% assign parts = item | split: "|" %}
+                  {% assign part_raw = parts[0] | downcase %}
+                  {% assign value_raw = value | downcase %}
+                  {% if part_raw == value_raw  %}
+                  <tr>
+                    <td>{{ parts[0] }}</td>
+                    <td>{{ parts[1] }}"</td>
+                    <td>{{ parts[2] }}"</td>
+                    <td>{{ parts[3] }}"</td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+              {% endfor %}
+            {% endif %}
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+  function sizeGuide(){
+    let chart_popup = document.querySelector(".chart-popup");
+    if(chart_popup.classList.contains("show") == false){
+      chart_popup.classList.add("show");
+    }else{
+      chart_popup.classList.remove("show");
+    }
+  }
+
+  // function isVisible90Percent(el) {
+  //   const rect = el.getBoundingClientRect();
+  //   const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+  
+  //   const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+  //   const elementHeight = rect.height;
+  
+  //   const visibleRatio = visibleHeight / elementHeight;
+  //   console.log({visibleHeight})
+  //   return visibleRatio > 0.25;
+  // }
+
+  function isVisibleByViewportPercentage(el, threshold = 0.95) {
+    const rect = el.getBoundingClientRect();
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+  
+    const visibleHeight = Math.min(rect.bottom, windowHeight) - Math.max(rect.top, 0);
+    const clampedVisible = Math.max(0, visibleHeight);
+  
+    const screenRatio = clampedVisible / windowHeight;
+  
+    console.log({
+      clampedVisible,
+      windowHeight,
+      screenRatio: screenRatio.toFixed(2),
+    });
+  
+    return screenRatio >= threshold;
+  }
+
+    
+  function checkVisibility() {
+    const productInfo = document.querySelector(".product__info-wrapper");
+    let chart_popup = document.querySelector(".chart-popup");
+    // console.log(productInfo)
+    if (!productInfo) return;
+  
+    if (isVisibleByViewportPercentage(productInfo)) {
+      // console.log("✅ product-info is at least 90% visible");
+      productInfo.classList.add("visible");
+    } else {
+      // console.log("🔻 product-info is less than 90% visible");
+      productInfo.classList.remove("visible");
+      if(chart_popup.classList.contains("show") == true){
+        chart_popup.classList.remove("show");
+      }
+    }
+  }
+  
+  window.addEventListener("scroll", checkVisibility);
+  window.addEventListener("resize", checkVisibility);
+  document.addEventListener("DOMContentLoaded", checkVisibility);
+
+</script>
+
+<style>
+  .chart-popup .container-navigation {
+      width: 100%;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      align-items: center;
+  }
+  .chart-popup .container-navigation p {
+      font-size: 10px;
+      color: #b4b4b4;
+  }
+  .chart-popup .chart-container {
+      width: 100%;
+      height: 35vh;
+      padding-top: 0%;
+      display: flex;
+      gap: 5px;
+      align-items: flex-start;
+      justify-content: space-between;
+  }
+  .chart-popup .chart-container table {
+      width: 100% !important;
+      height: 100%;
+      color: #888787;
+  }
+  .chart-popup .chart-container table:not([class]) td, .chart-popup .chart-container table:not([class]) th {
+      font-size: 0.65vw;
+      text-align: center;
+      padding: 0em !important;
+      border: 0.1rem solid rgba(var(--color-foreground), .2);
+      /* border: none; */
+  }
+  .chart-popup.show {
+      position: fixed;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      z-index: 9999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+  .chart-popup:not(.show){ display:none !important; }
+  @media screen and (min-width: 990px){
+    .chart-popup {
+        width: calc(33.33% - var(--grid-desktop-horizontal-spacing) * 2 / 3);
+        right: 0;
+        left: unset !important;
+        bottom: unset !important;
+        top: 20% !important;
+    }
+    .chart-popup .chart-popup-body { max-width: 280px; }
+  }
+  @media screen and (min-width: 750px) and (max-width: 989px) {
+    .chart-popup {
+        width: calc(50% - var(--grid-desktop-horizontal-spacing) * 2 / 3);
+        right: 0;
+        left: unset !important;
+        bottom: unset !important;
+        top: 7.5% !important;
+    }
+    .chart-popup .chart-popup-body { max-width: 280px; }
+  }
+  @media screen and (max-width: 749px){
+    .chart-popup .chart-popup-body { background-color: #fff; }
+    .chart-popup .chart-popup-body { max-width: 320px; }
+  }
+  @media screen and (max-width: 989px){
+    .chart-popup .chart-popup-body table:not([class]) td,  .chart-popup .chart-popup-body table:not([class]) th {
+        font-size: 10px;
+        text-align: center;
+        color: #000;
+        padding: 0 !important;
+        border: 0.1rem solid rgba(var(--color-foreground), .2);
+    }
+  }
+</style>

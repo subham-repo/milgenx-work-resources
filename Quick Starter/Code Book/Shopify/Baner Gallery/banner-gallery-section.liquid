@@ -1,0 +1,464 @@
+<!-- sections/product-banner-gallery.liquid -->
+
+<!-- CSS -->
+<link rel="stylesheet" href="https://unpkg.com/flickity@2/dist/flickity.min.css"></link>
+
+<!-- JavaScript -->
+<script src="https://unpkg.com/flickity@2/dist/flickity.pkgd.min.js"></script>
+{%- style -%}
+  .section-{{ section.id }}-padding {
+    padding-top: {{ section.settings.padding_top | times: 0.75 | round: 0 }}px;
+    padding-bottom: {{ section.settings.padding_bottom | times: 0.75 | round: 0 }}px;
+  }
+
+  @media screen and (min-width: 750px) {
+    .section-{{ section.id }}-padding {
+      padding-top: {{ section.settings.padding_top }}px;
+      padding-bottom: {{ section.settings.padding_bottom }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- liquid
+    assign show_mobile_slider = false
+    if section.settings.swipe_on_mobile == true
+      assign show_mobile_slider = true
+    endif
+  
+    assign show_tab_slider = false
+    if section.settings.swipe_on_tab == true
+      assign show_tab_slider = true
+    endif
+  
+    assign show_desktop_slider = false
+    if section.settings.enable_desktop_slider == true
+      assign show_desktop_slider = true
+    endif
+  -%}
+{% assign bannercount = 0 %}
+{% assign productBanners = product.metafields.custom.banner_gallery.value %}
+{% assign productBannerContent = productBanners["review_content"] %}
+{% assign productBannerGallery = productBanners["banner"].value %}
+{% capture banners %}
+  {% for productBanner in productBannerGallery %}
+    <div class="gallery-item">
+      {{ productBanner | image_url: width: 900 | image_tag: loading: 'lazy' }}
+    </div>
+    {% assign bannercount = bannercount | plus: 1 %}
+  {% endfor %}
+
+  {% for block in section.blocks %}
+    {% if block.settings.banner != blank %}
+    <div class="gallery-item">
+      {{ block.settings.banner | image_url: width: 900 | image_tag: loading: 'lazy' }}
+    </div>
+    {% endif %}
+  {% endfor %}
+{% endcapture %}
+{% if productBanners != blank or section.blocks.size > 0 %}
+  <div class="product-banners-section section-{{ section.id }}-padding section-layouts--{{ section.settings.layouts }}">
+    <div class="page-width">
+      {% if productBannerContent != blank or section.settings.content != blank %}
+      <div class="content {% if section.settings.overlay-content == true %}overlay-content{% endif %}">
+        {% if section.settings.content != blank %}
+          {{ section.settings.content }}
+        {% else %}
+          {{ productBannerContent | metafield_tag }}
+        {% endif %}
+      </div>
+      {% endif %}
+      <div id="Slider-{{ section.id }}" class="product-banners-gallery layouts--{{ section.settings.layouts }} {% if section.settings.enable_slider  %}init-flickity-{{ section.id }} {% if show_desktop_slider == false %}no-swipe-desktop{% endif %} {% if show_tab_slider == false %}no-swipe-tab{% endif %} {% if section.settings.swipe_on_mobile == false %}no-swipe-mobile{% endif %}{% endif %}">
+        {{ banners }}
+      </div>
+    </div>
+  </div>
+{% endif %}
+<style>
+  .product-banners-gallery:not(.flickity-enabled) {
+    display: flex;
+  }
+  .product-banners-section.section-layouts--grid-slider .content *:last-child {
+      margin-bottom: 0;
+  }
+  .metafield-rich_text_field *:last-child {
+      margin-bottom: 0;
+  }
+  .product-banners-section.section-layouts--grid-slider {
+      position: relative;
+      display: block;
+      width: 100%;
+      /* padding-bottom: 100px; */
+      /* margin-bottom: 100px; */
+  }
+  .product-banners-section.section-layouts--grid-slider .content.overlay-content {
+      position: absolute;
+      z-index: 1;
+      background-color: #fff;
+      text-align: center;
+      margin: auto;
+      left: 0;
+      right: 0;
+      top: -50px;
+      padding: 30px;
+      border: 1px solid;
+      border-radius: 10px;
+  }
+  .product-banners-section.section-layouts--grid-slider .content:not(.overlay-content){
+      padding-bottom: 20px;
+  }
+  .product-banners-section.section-layouts--grid-slider .content {
+      width: 100%;
+      text-align: center;
+      margin-left: auto;
+      margin-right: auto;
+  }
+  .gallery-item img {
+      height: 100%;
+      width: 100%;
+      object-fit: cover;
+  }
+  @media(min-width: 801px){
+    .product-banners-gallery.layouts--gallery {
+      flex-wrap: wrap;
+    }
+    .product-banners-gallery.layouts--gallery .gallery-item {
+        height: 500px;
+        border: 2px solid #fff;
+    }
+    .product-banners-gallery.layouts--gallery .gallery-item:nth-child(1), .product-banners-gallery.layouts--gallery .gallery-item:nth-child(4), .product-banners-gallery.layouts--gallery .gallery-item:nth-child(5), .product-banners-gallery.layouts--gallery .gallery-item:nth-child(7), .product-banners-gallery.layouts--gallery .gallery-item:nth-child(9) {
+        width: 35%;
+    }
+    .product-banners-gallery.layouts--gallery .gallery-item:nth-child(2), .product-banners-gallery.layouts--gallery .gallery-item:nth-child(3), .product-banners-gallery.layouts--gallery .gallery-item:nth-child(6), .product-banners-gallery.layouts--gallery .gallery-item:nth-child(8), .product-banners-gallery.layouts--gallery .gallery-item:nth-child(10) {
+        width: 65%;
+    }
+  }
+  @media(max-width: 800px){
+    .product-banners-gallery.layouts--gallery .gallery-item {
+        width: 100%;
+        min-width: calc(240px - 10px);
+        margin: 5px;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+    .product-banners-gallery {
+        overflow-y: auto;
+        padding: 30px 0;
+        /* background-color: #f0f0f0; */
+    }
+    .product-banners-section.section-layouts--grid-slider .page-width { max-width: 100%; }
+  }
+
+  .product-banners-gallery.layouts--grid-slider {
+      flex-wrap: nowrap;
+      overflow: hidden;
+      gap: 15px;
+      /* padding: 20px 15px; */
+  }
+  .product-banners-gallery.layouts--grid-slider .gallery-item {
+      height: 250px;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 0 4px 0 rgba(0, 0, 0, .2);
+  }
+  @media screen and (min-width: 990px){
+    .product-banners-gallery.layouts--grid-slider .gallery-item {
+      min-width: calc(20% - 20px);
+      width: calc(20% - 20px);
+      margin: 5px 10px;
+      min-width: 250px;
+    }
+    .product-banners-section.section-layouts--grid-slider .content {
+      max-width: 800px;
+    }
+  }
+  @media screen and (max-width: 989px){
+    .product-banners-section.section-layouts--grid-slider .content * {
+        font-size: 16px;
+    }
+  }
+  @media screen and (min-width: 801px) and (max-width: 989px) {
+    .product-banners-gallery.layouts--grid-slider .gallery-item {
+      min-width: calc(20% - 15px);
+      width: calc(20% - 15px);
+      margin: 5px 7.5px;
+      min-width: 250px;
+    }
+    .product-banners-section.section-layouts--grid-slider .content {
+      max-width: 600px;
+    }
+  }
+  @media screen and (min-width: 767px) and (max-width: 800px) {
+    .product-banners-gallery.layouts--grid-slider .gallery-item {
+      min-width: calc(33% - 10px);
+      width: calc(33% - 10px);
+      margin: 5px 5px;
+      min-width: 250px;
+    }
+    .product-banners-section.section-layouts--grid-slider .content {
+      max-width: 600px;
+    }
+  }
+  @media screen and (max-width: 767px) {
+    .product-banners-gallery.layouts--grid-slider .gallery-item {
+      min-width: calc(50% - 10px);
+      width: calc(50% - 10px);
+      margin: 5px 5px;
+      min-width: 200px;
+    }
+    .product-banners-section.section-layouts--grid-slider .content {
+      max-width: 300px;
+    }
+  }
+  .product-banners-gallery.layouts--grid-slider ol.flickity-page-dots {
+      position: relative;
+      bottom: 0;
+      margin-top: 15px;
+  }
+</style>
+
+<script>
+  {% if show_mobile_slider == true  or show_desktop_slider == true %}
+    function initializeFlickity{{ section.index }}(elemTarget){
+
+      function videoControls(target){
+        let slides = target.cells;
+        slides.forEach(function(slide){
+          let element = slide.element;
+          setTimeout(function(){
+            if(element.querySelector("video")){
+              element.querySelector("video").pause();
+              element.querySelector("video").removeAttribute("src");   
+
+              slides.forEach(function(elem, idx, slides){
+                if (idx === slides.length - 1){ 
+                      // console.log("Last callback call at index " + idx + " with value " + elem );
+                    if(element.classList.contains("is-selected")){
+                      element.querySelector("video").setAttribute("src", element.querySelector("video").getAttribute("video-src"));
+                      element.querySelector("video").play(); 
+                    }
+                  }
+              });
+            }
+          }, 500)
+        })
+      }
+      
+      let elem = elemTarget;
+      console.log(elem)
+      let options = { 
+        freeScroll: true,
+        wrapAround: {% if section.settings.slider_mode == 'center' or section.settings.show_arrows %}true {% else %}{{ section.settings.enable_autoplay }}{% endif %}, 
+        imagesLoaded: true, 
+        lazyLoad: true, 
+        adaptiveHeight: false, 
+        cellAlign: '{{ section.settings.slider_mode }}', 
+        continuousAutoPlay: true, 
+        // groupCells: false, 
+        // watchCSS: false, 
+        pauseAutoPlayOnHover: false,
+        contain: true, 
+        prevNextButtons: {{ section.settings.show_arrows }}, 
+        pageDots: {{ section.settings.show_dot }}, 
+        {% if section.settings.enable_autoplay == true %}autoPlay: 2000, {% endif %}
+        dragThreshold: 8, 
+        {% if section.settings.light_arrows == true %}arrowShape: {"x0": 20, "x1": 60, "y1": 40, "x2": 60, "y2": 35, "x3": 25},{% endif %}
+        selectedAttraction: 0.01,
+        friction: 0.15,
+        on: {
+          ready: function() {
+            // console.log('Flickity is ready');
+            videoControls(this)
+          },
+          change: function( index ) {
+            // console.log( 'Slide changed to' + index );
+            // console.log(this)
+            videoControls(this)
+          }
+        }
+      }
+
+      var flkty = new Flickity(elem, options);
+      
+      if(document.querySelector(elem).classList.contains("no-swipe-mobile") == true){
+        console.log("no-swipe-mobile");
+        if(matchMedia('(max-width:749px)').matches){
+            var flkty = new Flickity(elem, options)
+            flkty.destroy()
+        }
+      }
+
+      if(document.querySelector(elem).classList.contains("no-swipe-tab") == true){
+        console.log("no-swipe-desktop "+elem);
+        if(matchMedia('(min-width:750px) and (max-width:1200px)').matches){
+            var flkty = new Flickity(elem, options)
+            flkty.destroy()
+        }
+      }
+      
+      if(document.querySelector(elem).classList.contains("no-swipe-desktop") == true){
+        console.log("no-swipe-desktop "+elem);
+        if(matchMedia('(min-width:1201px)').matches){
+            var flkty = new Flickity(elem, options)
+            flkty.destroy()
+        }
+      }
+    }
+    document.addEventListener("DOMContentLoaded", function(){
+      initializeFlickity{{ section.index }}(".init-flickity-{{ section.id }}")
+    })
+    window.addEventListener("resize", function(){
+      initializeFlickity{{ section.index }}(".init-flickity-{{ section.id }}")
+    })
+  {% endif %}
+</script>
+
+{% schema %}
+  {
+    "name": "Product Banner Gallery",
+    "settings": [
+      {
+        "type": "select",
+        "id": "layouts",
+        "label": "Layout Options",
+        "options": [
+          {
+            "label": "Gallery",
+            "value": "gallery",
+          },
+          {
+            "label": "Grid Slider",
+            "value": "grid-slider"
+          }
+        ],
+        "default": "gallery"
+      },
+      {
+        "type": "richtext",
+        "id": "content",
+        "label": "Content"
+      },
+      {
+        "type": "checkbox",
+        "id": "overlay-content",
+        "label": "Overlay Content",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Slider Settings"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_slider",
+        "label": "Enable Slider",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_desktop_slider",
+        "label": "Enable Desktop Slider",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "swipe_on_tab",
+        "default": false,
+        "label": "Enable Tab View Slider"
+      },
+      {
+        "type": "checkbox",
+        "id": "swipe_on_mobile",
+        "default": false,
+        "label": "Enable Mobile Slider"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_dot",
+        "default": false,
+        "label": "Enable Dots"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_arrows",
+        "default": false,
+        "label": "Enable Arrows"
+      },
+      {
+        "type": "checkbox",
+        "id": "light_arrows",
+        "default": false,
+        "label": "Light Arrows"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_autoplay",
+        "default": false,
+        "label": "Enable Autoplay"
+      },
+      {
+        "type": "select",
+        "id": "slider_mode",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left",
+        "label": "Slider Cell Alignment"
+      },
+      {
+        "type": "header",
+        "content": "Section Padding"
+      },
+      {
+        "type": "range",
+        "id": "padding_top",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Padding Top",
+        "default": 40
+      },
+      {
+        "type": "range",
+        "id": "padding_bottom",
+        "min": 0,
+        "max": 100,
+        "step": 4,
+        "unit": "px",
+        "label": "Padding Bottom",
+        "default": 52
+      }
+    ],
+    "blocks": [
+      {
+        "type": "grid",
+        "name": "Grid",
+        "settings": [
+          {
+            "type": "image_picker",
+            "label": "Banner",
+            "id": "banner"
+          }
+        ]
+      }
+    ],
+    "presets": [{"name": "Product Banner Gallery"}]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

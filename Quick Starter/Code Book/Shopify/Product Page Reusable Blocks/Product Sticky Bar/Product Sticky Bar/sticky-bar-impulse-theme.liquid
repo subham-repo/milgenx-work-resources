@@ -4,9 +4,9 @@
   <div class="page-width">
     <div class="product-info">
       {% unless product.metafields.global.featured == blank %}
-      <img src="{{ product.metafields.global.featured | asset_url }}" width="60" height="60" alt="{{ product.title | escape }}" loading="lazy" class="small--hide">
+      <img src="{{ product.metafields.global.featured | asset_url }}" width="60" height="60" alt="{{ product.title | escape }}" loading="lazy" class="small--hide selection-image">
       {% else %}
-      <img src="{{ product.featured_image | product_img_url: '60x' }}" width="60" height="60" alt="{{ product.title | escape }}" loading="lazy" class="small--hide" />
+      <img src="{{ product.featured_image | product_img_url: '60x' }}" width="60" height="60" alt="{{ product.title | escape }}" loading="lazy" class="small--hide selection-image" />
       {% endunless %}
       <div class="product_info_block">
       	{% comment %}
@@ -46,19 +46,161 @@
                 -%}
 
                 {%- if block.settings.variant_style == 'button' -%}
-                  {%- render 'variant-button',
-                    block: block,
-                    product: product,
-                    form_id: form_id,
-                    section_id: section_id,
-                    option: option,
-                    forloop: forloop,
-                    variant_labels: block.settings.variant_labels,
-                    is_color: is_color,
-                    color_option_index: color_option_index,
-                    connect_to_sizechart: connect_to_sizechart,
-                    sizechart_index: sizechart_index
-                  -%}
+                  {% if block.settings.selector == option.name %}
+                    <div class="cs-variant-dropdown" style="order: 1;">
+                      <div id="custom-color-select" class="custom-select-wrapper"></div>
+  
+                      {%- render 'variant-dropdown',
+                        product: product,
+                        form_id: form_id,
+                        section_id: section_id,
+                        option: option,
+                        forloop: forloop,
+                        variant_labels: block.settings.variant_labels,
+                        isSticky: true
+                      -%}
+                    </div>
+
+                    <script>
+                    function createCustomSelect(selectId, containerId) {
+                      const select = document.getElementById(selectId);
+                      const container = document.getElementById(containerId);
+                      if (!select || !container) return;
+                    
+                      // Hide original select
+                      select.style.display = 'none';
+                    
+                      // Build custom dropdown
+                      const display = document.createElement('div');
+                      display.className = 'custom-select-display';
+                    
+                      const optionsWrapper = document.createElement('div');
+                      optionsWrapper.className = 'custom-select-options';
+                    
+                      [...select.options].forEach((option, index) => {
+                        const opt = document.createElement('div');
+                        opt.className = 'custom-select-option';
+                        opt.dataset.value = option.value;
+                    
+                        const img = document.createElement('img');
+                        img.src = option.getAttribute("data-featured-image");
+                        img.alt = option.text;
+                    
+                        const text = document.createElement('span');
+                        text.textContent = option.text;
+                    
+                        opt.appendChild(img);
+                        opt.appendChild(text);
+                        optionsWrapper.appendChild(opt);
+                    
+                        opt.addEventListener('click', () => {
+                          select.value = option.value;
+                          display.innerHTML = '';
+                          display.appendChild(img.cloneNode());
+                          display.appendChild(document.createTextNode(option.text));
+                          optionsWrapper.classList.remove('open');
+                          select.dispatchEvent(new Event('change'));
+                        });
+                    
+                        // Set default selected
+                        if (option.selected || index === 0) {
+                          display.appendChild(img.cloneNode());
+                          display.appendChild(document.createTextNode(option.text));
+                        }
+                      });
+                    
+                      display.addEventListener('click', () => {
+                        optionsWrapper.classList.toggle('open');
+                      });
+                    
+                      container.appendChild(display);
+                      container.appendChild(optionsWrapper);
+                    }
+                    
+                    // Call the function
+                    createCustomSelect('SingleOptionSelector-{{ section_id }}-{{ product.id }}-option-{{ forloop.index0 }}', 'custom-color-select');
+
+                    </script>
+
+                    <style>
+                      .custom-select-wrapper {
+                        position: relative;
+                        width: 180px;
+                        font-family: sans-serif;
+                      }
+                    .cs-variant-dropdown { display: inline-flex; }
+                      .custom-select-display, .custom-select-options { border-radius: 6px; }
+                      .custom-select-display {
+                        border: 1px solid #ccc;
+                        padding: 7px;
+                        background: #fff;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                      }
+                      #huratips-addtocart-sticky .product-info {
+                          display: flex;
+                          align-items: center;
+                          width: calc(100% - 180px);
+                      }
+                      .cs-variant-dropdown .variant-wrapper--dropdown { margin-right: 0; }
+                      div#huratips-addtocart-sticky .product_info_block { justify-content: space-between; }
+                      .custom-select-options {
+                        position: absolute;
+                        bottom: 100%;
+                        left: 0;
+                        z-index: 10;
+                        background: #fff;
+                        border: 1px solid #ccc;
+                        width: 100%;
+                        max-height: 250px;
+                        overflow-y: auto;
+                        display: none;
+                      }
+                      .custom-select-wrapper img {
+                          margin-right: 0 !important;
+                          width: 24px;
+                          height: 24px;
+                          border-radius: 50%;
+                          object-fit: cover;
+                      }
+                      .custom-select-wrapper {
+                          font-size: 12px;
+                      }
+                      .custom-select-options.open {
+                        display: block;
+                      }
+                      
+                      .custom-select-option {
+                        padding: 10px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        cursor: pointer;
+                        transition: background 0.2s ease;
+                      }
+                      
+                      .custom-select-option:hover {
+                        background: #f0f0f0;
+                      }
+
+                    </style>
+                  {% else %}
+                    {%- render 'variant-button',
+                      block: block,
+                      product: product,
+                      form_id: form_id,
+                      section_id: section_id,
+                      option: option,
+                      forloop: forloop,
+                      variant_labels: block.settings.variant_labels,
+                      is_color: is_color,
+                      color_option_index: color_option_index,
+                      connect_to_sizechart: connect_to_sizechart,
+                      sizechart_index: sizechart_index
+                    -%}
+                  {% endif %}
                 {%- elsif block.settings.variant_style == 'show-selected' -%}
                   <div index="{{ forloop.index }}" for="{{ option.name | handleize }}" class="mini-variant-option {{ option.name | handleize }}">
                     <b>{{ option.name }}:</b> <span class="value">{{ option.selected_value }}</span>
@@ -78,7 +220,7 @@
             {%- endunless -%}
           </div>
       </div>
-    </div> 
+    </div>
       <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
       <input type="hidden" name="quantity" value="1" min="1" >
       <button type="submit" class="btn add-to-cart stickybutton" {% if product.available == false %}disabled{% endif %}>
@@ -104,6 +246,10 @@
   }
   .product-block.variant-view-dropdown .variant-wrapper {
       margin: 0;
+  }
+  .variant-input:last-child label { margin-right: 0; }
+  div#huratips-addtocart-sticky .variant-wrapper--dropdown .variant-input-wrap {
+      margin-bottom: 0;
   }
   .product-block.variant-view-dropdown .variant-wrapper {
       display: block !important;
@@ -132,170 +278,80 @@
     let singleVariants = productPageWrapper.querySelector("select.product-single__variants");
 
 
-    if(singleVariants){
-      singleVariants.addEventListener("change", function(){
-        let currentVariant = singleVariants.value;
-        let currentVariantData = singleVariants.querySelector("option:checked")['label'].split("-");
-        console.log({currentVariantData})
-        let currentVariantValues = currentVariantData.shift();
-        let currentVariantPrice = currentVariantData.pop();
-  
-        let productVaraintData = currentVariantValues.split("/");
-  
-        // In Case: Show Selected
-        let miniVariants = stickyBar.querySelectorAll(".mini-variant-option");
-        if(miniVariants){
-          miniVariants.forEach(function(miniVariant, i){
-            productVaraintData.forEach(function(currentVariantValue, index){
-              // console.log({i, index});
-              if(i == index){
-                miniVariant.querySelector(".value").innerText = currentVariantValue;
-              }
-            })
+    // On Main Section Variant Change Update Sticky Bar Selection
+    singleVariants.addEventListener("change", function(){
+      let currentVariant = singleVariants.value;
+      let currentVariantData = singleVariants.querySelector("option:checked")['label'].split("-");
+      let currentVariantValues = currentVariantData.shift();
+      let currentVariantPrice = currentVariantData.pop();
+
+      let productVaraintData = currentVariantValues.split("/");
+
+      // In Case: Show Selected
+      let miniVariants = stickyBar.querySelectorAll(".mini-variant-option");
+      if(miniVariants){
+        miniVariants.forEach(function(miniVariant, i){
+          productVaraintData.forEach(function(currentVariantValue, index){
+            // console.log({i, index});
+            if(i == index){
+              miniVariant.querySelector(".value").innerText = currentVariantValue;
+            }
           })
-  
-          miniVariants.forEach(function(miniVariant){
-            miniVariant.addEventListener("click", function(){
-              productPageWrapper.scrollIntoView({ behavior: "smooth", block: "start" });
-            })
+        })
+
+        miniVariants.forEach(function(miniVariant){
+          miniVariant.addEventListener("click", function(){
+            productPageWrapper.scrollIntoView({ behavior: "smooth", block: "start" });
           })
-        }
-  
-        // In Case: Dropdown
-        let dropdownVariants = stickyBar.querySelectorAll(".product-block.variant-view-dropdown .variant-wrapper--dropdown select");
-        if(dropdownVariants){
-         dropdownVariants.forEach(function(dropdownVariant, i){
-            productVaraintData.forEach(function(currentVariantValue, index){
-              // console.log({i, index});
-              if(i == index){
-                let fieldOptions = dropdownVariant.querySelectorAll("option");
-                fieldOptions.forEach(function(fieldOption, index){
-                  let fieldValue = String(fieldOption.value).toLowerCase();
-                  console.log({fieldValue, currentVariantValue})
-                  
-                  currentVariantValue = currentVariantValue.replace(/\s+$/, '').toLowerCase();
-                  currentVariantValue = currentVariantValue.replace(" ", "");
-                  
-                  if(fieldValue === currentVariantValue || fieldValue.includes(currentVariantValue)){
-                    let optionIndex = index;
-                    dropdownVariant.selectedIndex = optionIndex;
-  
-                    let changeEvent = new Event("change", { bubbles: true });
-                    dropdownVariant.dispatchEvent(changeEvent);
-                  }
-                  // console.log({fieldValue, currentVariantValue, index})
-                })
-              }
-            })
-          }) 
-        }
-        // console.log({currentVariant, currentVariantData, currentVariantValues, currentVariantPrice});
-      })
-    }else{
-      const observer = new MutationObserver((mutations, observer) => {
-        let varSwatchKing = document.querySelector("variant-swatch-king");
-        if (varSwatchKing) {
-          observer.disconnect(); // Stop observing once the element is found
-          initVarSwatchKing(); // Run your function
-        }
-      });
-      
-      observer.observe(document.body, { childList: true, subtree: true });
-      
-      function initVarSwatchKing() {
-        let varSwatchKing = document.querySelector("variant-swatch-king");
-        if (!varSwatchKing) return;
-      
-        let varSwatchKingOptionGroups = varSwatchKing.querySelectorAll("div[sa-options-position='default'] div[option-target]");
-      
-        varSwatchKingOptionGroups.forEach(function (varSwatchKingOptionGroup) {
-          let optionTarget = varSwatchKingOptionGroup.getAttribute("option-target");
-          let swatchOptions = varSwatchKing.querySelectorAll(`div[option-target="${optionTarget}"] .swatch-view-item`);
-      
-          swatchOptions.forEach(function (swatchOption) {
-            swatchOption.addEventListener("click", function () {
-              let swatchOptValue = swatchOption.getAttribute("orig-value")?.trim().toLowerCase();
-      
-              if (dropdownVariants.length > 0) {
-                dropdownVariants.forEach(function (dropdownVariant) {
-                  if (dropdownVariant.getAttribute("data-index") == optionTarget) {
-                    let fieldOptions = dropdownVariant.querySelectorAll("option");
-                    fieldOptions.forEach(function (fieldOption, index) {
-                      let fieldValue = String(fieldOption.value).toLowerCase();
-                      if (fieldValue === swatchOptValue) {
-                        dropdownVariant.selectedIndex = index;
-                      }
-                    });
-                  }
-                });
-              }
-            });
-          });
-        });
+        })
       }
-    }
 
-    // Sync Product Sticky Bar Dropdown
-    let dropdownVariants = stickyBar.querySelectorAll(".product-block.variant-view-dropdown .variant-wrapper--dropdown select");
-    if (dropdownVariants.length > 0) {
-      dropdownVariants.forEach(function (dropdownVariant) {
-        dropdownVariant.addEventListener("change", function () {
-          // console.log("Dropdown Changed:", dropdownVariant);
-  
-          let changedOption = dropdownVariant.getAttribute("for");
-          let selectedValue = dropdownVariant.value.trim().toLowerCase();
-          let optionTarget = dropdownVariant.getAttribute("data-index");
-  
-          // console.log({ changedOption, optionTarget, selectedValue });
-  
-          // Check for variant-swatch-king
-          let varSwatchKing = document.querySelector("variant-swatch-king");
-          if (varSwatchKing) {
-            let swatchOptions = varSwatchKing.querySelectorAll(`div[option-target="${optionTarget}"] .swatch-view-item`);
-  
-            swatchOptions.forEach(function (swatchOption) {
-              let swatchOptValue = swatchOption.getAttribute("orig-value")?.trim().toLowerCase();
-              // console.log({ swatchOptValue, selectedValue });
-  
-              if (swatchOptValue === selectedValue) {
-                swatchOption.click();
-              }
-            });
-          }
-  
-          // Check for theme default swatches
-          let themeSwatch = document.querySelector(".product-block.varblock");
-          if (themeSwatch) {
-            let themeSwatchOptions = themeSwatch.querySelectorAll(`.variant-input-wrap[data-index="${optionTarget}"] div.variant-input`);
-            themeSwatchOptions.forEach(function (swatchOption) {
-              let swatchOptValue = swatchOption.getAttribute("data-value")?.trim().toLowerCase();
-              // console.log({ swatchOptValue, selectedValue });
-  
-              if (swatchOptValue === selectedValue) {
-                swatchOption.querySelector("label").click();
-              }
-            });
-
-            let themeDropDowns = themeSwatch.querySelectorAll(`.variant-input-wrap[data-index="${optionTarget}"] select`);
-            themeDropDowns.forEach(function(themeDropDown){
-              let fieldOptions = themeDropDown.querySelectorAll("option");
+      // In Case: Dropdown
+      let dropdownVariants = stickyBar.querySelectorAll(".product-block.variant-view-dropdown .variant-wrapper--dropdown select");
+      if(dropdownVariants){
+       dropdownVariants.forEach(function(dropdownVariant, i){
+          productVaraintData.forEach(function(currentVariantValue, index){
+            // console.log({i, index});
+            if(i == index){
+              let fieldOptions = dropdownVariant.querySelectorAll("option");
               fieldOptions.forEach(function(fieldOption, index){
-                let fieldValue = String(fieldOption.value).toLowerCase();
-                console.log({fieldValue, selectedValue})
-                if(fieldValue === selectedValue){
+                let fieldValue = fieldOption.value;
+                // console.log({fieldValue, currentVariantValue})
+                if(fieldValue === currentVariantValue.replaceAll(' ', '')){
                   let optionIndex = index;
-                  themeDropDown.selectedIndex = optionIndex;
-                  console.log("...");
+                  dropdownVariant.selectedIndex = optionIndex;
                 }
-                // console.log({fieldValue, selectedValue, index})
+                // console.log({fieldValue, currentVariantValue, index})
               })
-            })
-          }
+            }
+          })
+        }) 
+      }
+      console.log({currentVariant, currentVariantData, currentVariantValues, currentVariantPrice});
+    })
 
-          let formSyncedValue = singleVariants.value;
-          console.log({formSyncedValue});
-        });
-      });
+
+    // Sync Product sticky bar dropdown with variant-swatch-king
+    let dropdownVariants = stickyBar.querySelectorAll(".product-block.variant-view-dropdown .variant-wrapper--dropdown select");
+    if(dropdownVariants){
+     dropdownVariants.forEach(function(dropdownVariant, i){
+       dropdownVariant.addEventListener("change", function(){
+         let changedOption = dropdownVariant.getAttribute("for");
+         let selectedValue = String(dropdownVariant.value).toLowerCase();
+         let optionTarget  = dropdownVariant.getAttribute("data-index");
+         console.log({changedOption, optionTarget, selectedValue})
+         let varSwatchKing = document.querySelector("variant-swatch-king");
+         let swatchOptions = varSwatchKing.querySelectorAll("div[option-target="+optionTarget+"] .swatch-view-item");
+         swatchOptions.forEach(function(swatchOption){
+           let swatchOptValue = swatchOption.getAttribute("orig-value").toLowerCase();
+           console.log({swatchOptValue, selectedValue})
+           if( swatchOptValue == selectedValue ){
+             swatchOption.click();
+           }
+         })
+         varSwatchKing.querySelector("div[option-target="+optionTarget+"]");
+       })
+     })
     }
     
 
@@ -345,15 +401,15 @@ document.addEventListener("DOMContentLoaded", function () {
             const selectedOption = this.options[this.selectedIndex]; // Get selected option
             
             if (selectedOption) { 
-              // console.log("..1")
+              console.log("..")
                 const newImageSrc = selectedOption.getAttribute("data-featured-image"); // Get featured image URL
                 
                 if (newImageSrc) {
-                  // console.log("...2")
+                  console.log("...")
                     console.log("Updated Image Src:", newImageSrc); // Log new image URL
                     productImage.src = newImageSrc; // Update image src
                 } else {
-                  // console.log("....3")
+                  console.log("....")
                     console.log("No featured image found for this variant.");
                 }
             }
@@ -378,9 +434,6 @@ document.addEventListener("DOMContentLoaded", function () {
     padding: 5px 0;
     transition: .2s transform ease-in-out;
   }
-div#CartDrawer {
-    z-index: 999999;
-}
 #huratips-addtocart-sticky .product__price-savings {
     display: none;
 }
@@ -403,10 +456,10 @@ div#CartDrawer {
   body.overflow-hidden #huratips-addtocart-sticky{
     z-index: 9;
   }
-  html:not(.js-drawer-open):not(.lock-scroll) #huratips-addtocart-sticky{
+  body:not(.overflow-hidden) #huratips-addtocart-sticky{
     z-index: 9999;
   }
-  #huratips-addtocart-sticky .product-info img {
+  #huratips-addtocart-sticky .product-info img.selection-image {
     height: 40px;
     width: 40px;
     object-position: center;
@@ -420,8 +473,6 @@ div#CartDrawer {
     margin-top: 0;
     font-weight: bold;
   }
-  #huratips-addtocart-sticky select,
-  #huratips-addtocart-sticky input { color: #000; }
   #huratips-addtocart-sticky select,
   #huratips-addtocart-sticky input,
   #huratips-addtocart-sticky button{
@@ -440,13 +491,13 @@ div#CartDrawer {
       text-transform: uppercase;
       font-size: 13px;
       font-weight: 600;
-      background-image: unset;
   }
   #huratips-addtocart-sticky .page-width {
     width: 100%;
     display: flex;
     flex-flow: row;
     align-items: center;
+    column-gap: 10px;
   }
   #huratips-addtocart-sticky .button:before{
     display:none;
@@ -546,7 +597,7 @@ div#CartDrawer {
 
 <!-- Block JSON For Product Section -->
 
-{
+ {
       "type": "sticky_bar",
       "name": "Sticky Bar",
       "settings": [
@@ -573,6 +624,15 @@ div#CartDrawer {
               "value": "button"
             }
           ]
+        },
+        {
+          "type": "header",
+          "content": "Turn one variant buttons in dropdown with image."
+        },
+        {
+          "type": "text",
+          "id": "selector",
+          "label": "Selector"
         }
       ]
     },

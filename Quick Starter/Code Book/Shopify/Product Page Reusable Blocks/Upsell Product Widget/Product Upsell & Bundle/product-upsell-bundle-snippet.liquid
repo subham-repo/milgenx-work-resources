@@ -1,0 +1,474 @@
+<!-- snippets/product-upsell-snippet.liquid -->
+{% comment %}
+  Create three product list metafield with below mentioned namekey
+  upsell= upsell_product_list
+  bundle= product_bundle_list
+  bundle upsell = bundle_upsell_product
+
+  Create one metafield for offer percentage "offer_percentage" with mentioned namekey
+{% endcomment %}
+{% if block.settings.type == 'upsell' %}
+  {% assign upselllist = product.metafields.custom.upsell_product_list.value %}
+  {% assign bundleupsell = false %}
+{% elsif block.settings.type == 'bundle' %}
+  {% assign upselllist = product.metafields.custom.product_bundle_list.value %}
+  {% if product.metafields.custom.bundle_upsell_product != blank and block.settings.bundle-upsell == true %}
+    {% assign bundleupsell = true %}
+  {% endif %}
+{% endif %}
+
+{% assign upselllistcount = product.metafields.custom.upsell_products.size %}
+{% if upselllist %}
+<div class="product-upsell-wrapper">
+  <b class="heading h2" style="{% if block.settings.heading-color %}color: {{ block.settings.heading-color }}; {% endif %}">{{ block.settings.title | default: "Complete Your Set" }}</b>
+  <div upselllistcount="{{ upselllistcount }}" class="product-upsell layout-{{ block.settings.layout }} type-{{ block.settings.type }} {% if product.metafields.custom.bundle_upsell_product != blank %}have-bundle-upsell{% endif %}">
+    {% assign totalregularprice = 0 %}
+    {% assign totalcompareprice = 0 %}
+    {% for upsellproduct in upselllist limit: 3 %}
+      {% assign totalregularprice = totalregularprice | plus: upsellproduct.selected_or_first_available_variant.price  %}
+      {% if upsellproduct.selected_or_first_available_variant.compare_at_price > upsellproduct.selected_or_first_available_variant.price %}
+        {% assign totalcompareprice = totalcompareprice | plus: upsellproduct.selected_or_first_available_variant.compare_at_price  %}
+      {% endif %}
+      {% render "product-upsell-card-snippet", block: block, upsellproduct: upsellproduct, bundleupsell: false %}
+    {% endfor %}
+  </div>
+  {% if block.settings.type == 'bundle' %}
+    {% assign offer_percentage = product.metafields.custom.bundle_offer_percentage %}
+    
+    {% if offer_percentage > 0 or offer_percentage != blank %}
+      {% if block.settings.offer-type == 'percentage' %}
+        {% assign offer_percentage = 100 | minus: offer_percentage %}
+        {% assign totalregularprice = totalregularprice | divided_by: 100 | times: offer_percentage | round %}
+      {% endif %}
+
+      {% if block.settings.offer-type == 'amount' %}
+        {% assign offer_percentage = offer_percentage | times: 100 %}
+        {% assign totalregularprice = totalregularprice | minus: offer_percentage | round %}
+      {% endif %}
+    {% endif %}
+    
+    <button type="button" name="add" btn-text="Add to Cart" class="ProductForm__BundleBtn button button--full small button--primary">
+      <div><span>{% if block.settings.cta-text != blank %}{{ block.settings.cta-text }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endif %}</span> {% if totalregularprice > 0 %}<span>{{ totalregularprice | money_without_trailing_zeros }}</span>{% endif %} {% if totalcompareprice > totalregularprice %}<strike>{{ totalcompareprice | money_without_trailing_zeros }}</strike>{% endif %}</div>
+      {% if block.settings.cta-announcement != blank %}<div>{{ block.settings.cta-announcement }}</div>{% endif %}
+    </button>
+  {% endif %}
+</div>
+{% endif %}
+
+<script>
+  // Function to add a product to the cart
+  function addUpsellToCart(products, redirect, e) {
+  if (!products || !Array.isArray(products) || products.length === 0) return;
+
+  const variantId = products[0]?.id;
+  const button = e?.target;
+  if (button) {
+    button.textContent = 'Adding...';
+    button.disabled = true;
+  }
+
+  fetch('/cart/add.js', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    },
+    body: JSON.stringify({ items: products })
+  })
+    .then((res) => res.json())
+    .then(() => {
+      // 🔄 Refresh the cart drawer sections
+      return fetch('/?sections=cart-drawer,cart-icon-bubble');
+    })
+    .then((res) => res.json())
+    .then((sections) => {
+//       const cartDrawer = document.querySelector('cart-drawer');
+
+// if (cartDrawer && typeof cartDrawer.renderContents === 'function') {
+//   // Optional: pass a focusable element to restore focus manually
+//   const focusElement = document.querySelector('.cart-drawer-trigger') || document.querySelector('.drawer__close');
+
+//   cartDrawer.setActiveElement(focusElement); // ensures focus is preserved properly
+
+//   console.log(sections)
+//   cartDrawer.renderContents({
+//     id: variantId,
+//     sections: {
+//       // 'cart-drawer': sections['cart-drawer'],
+//       'cart-icon-bubble': sections['cart-icon-bubble']
+//     }
+//   });
+// }
+
+    })
+    .finally(() => {
+      if (button) {
+        button.textContent = 'Added';
+        setTimeout(() => {
+          // button.textContent = 'Add to Cart';
+          // button.disabled = false;
+          {% if bundleupsell == true %}
+            toggle_ctaOverScreen();
+            if(redirect == true){
+              window.location.href = '/checkout';
+            }
+          {% else %}
+            window.location.href = '/checkout';
+          {% endif %}
+        }, 0);
+      }
+    })
+    .catch((error) => {
+      console.error('❌ Cart add error:', error);
+      if (button) {
+        button.textContent = 'Error';
+        setTimeout(() => {
+          // button.textContent = 'Add to Cart';
+          // button.disabled = false;
+        }, 3000);
+      }
+    });
+}
+
+
+  let upsellForms = document.querySelectorAll(".product-upsell .upsell-item form");
+  let ProductForm__BundleBtn = document.querySelector(".ProductForm__BundleBtn");
+  if(ProductForm__BundleBtn){
+    ProductForm__BundleBtn.addEventListener("click", function(e){
+      let products = [];
+      upsellForms.forEach(function(upsellForm){
+        let upsellVariantIdField = upsellForm.querySelector("input[name=id]").value;
+        let upsellQuantityField = upsellForm.querySelector("input[name=quantity]").value;
+        let product = { id: upsellVariantIdField, quantity: upsellQuantityField }
+        products.push(product);
+      })
+  
+      addUpsellToCart(products, false, e);
+    })
+  }
+  
+
+  function formVarUpdate(upsellForm){
+    let upsellVariantIdField = upsellForm.querySelector("input[name=id]");
+    let upsellQuantityField = upsellForm.querySelector("input[name=quantity]");
+  
+    let upsellVariantSelect = upsellForm.querySelector("select");
+    if(upsellVariantSelect) {
+      upsellVariantSelect.addEventListener("change", function(){
+          let upsellVariantId = upsellVariantSelect.value;
+          upsellVariantIdField.value = upsellVariantId;
+          console.log({upsellVariantId});
+      })
+    }
+
+    let upsellVariantRadios = upsellForm.querySelectorAll(".size-selector input[type=radio]");
+    if(upsellVariantRadios){
+      upsellVariantRadios.forEach(function(upsellVariantRadio){
+        upsellVariantRadio.addEventListener("input", function(){
+          if(upsellVariantRadio.checked){
+            let upsellVariantId = upsellVariantRadio.value;
+            upsellVariantIdField.value = upsellVariantId;
+            console.log({upsellVariantId});
+          }
+        })
+      })
+    }
+  }
+  
+  upsellForms.forEach(function(upsellForm){
+      formVarUpdate(upsellForm)
+      let addUpsell = upsellForm.querySelector("button[type=button]");
+      let products = [];
+      if(addUpsell){
+        addUpsell.addEventListener("click", function(e){
+          let upsellVariantIdField = upsellForm.querySelector("input[name=id]");
+          let upsellQuantityField = upsellForm.querySelector("input[name=quantity]");
+          
+          let upsellVariantId = upsellVariantIdField.value;
+          let upsellQuantity = upsellQuantityField.value;
+          let product = { id: upsellVariantId, quantity: upsellQuantity }
+          products.push(product);
+          addUpsellToCart(products, true, e);
+        })
+      }
+  })
+
+  window.addEventListener("load", function(){
+    let bundleUpsellForm = document.querySelector("div#bundle-upsell");
+    console.log(bundleUpsellForm)
+    formVarUpdate(bundleUpsellForm)
+    
+    let bundleUpsellBtn = bundleUpsellForm.querySelector("button[type=button]");
+    bundleUpsellBtn.addEventListener("click", function(e){
+      let products = [];
+      let upsellVariantIdField = bundleUpsellForm.querySelector("input[name=id]");
+      let upsellQuantityField = bundleUpsellForm.querySelector("input[name=quantity]");
+      
+      let upsellVariantId = upsellVariantIdField.value;
+      let upsellQuantity = upsellQuantityField.value;
+      let product = { id: upsellVariantId, quantity: upsellQuantity }
+      products.push(product);
+      addUpsellToCart(products, true, e);
+    })
+  })
+  
+</script>
+
+<style>
+  .product-upsell-wrapper {
+      margin-top: 30px;
+  }
+  .product-upsell {
+      display: flex;
+      column-gap: 15px;
+      row-gap: 15px;
+      /* flex-wrap: wrap; */
+  }
+  .product-upsell.layout-vertical {
+      flex-flow: column;
+  }
+  .product-upsell.layout-vertical .upsell-item .upsell-item-info form .upsell-action-row {
+        justify-content: flex-start;
+        align-items: flex-start;
+    }
+  .product-upsell .upsell-item .upsell-item-info select {
+      width: 100%;
+      max-width: 100%;
+      height: 30px;
+      font-size: 12px;
+      outline: none;
+      color: #000;
+  }
+  .product-upsell .upsell-item .upsell-item-info form .upsell-action-row {
+      display: flex;
+      flex-flow: column;
+      gap: 15px;
+  }
+  .product-upsell-wrapper .ProductForm__BundleBtn {
+      width: 100%;
+      margin-top: 15px;
+      display: flex;
+      flex-flow: column;
+  }
+  
+  .product-upsell .upsell-item .upsell-item-banner a {
+      display: flex;
+      width: 100%;
+  }
+  .product-upsell .upsell-item .upsell-item-info span.upsell-item-price strike {
+      color: #919191;
+  }
+  .product-upsell .upsell-item .upsell-item-info form .upsell-action-row fieldset {
+      flex: unset;
+      margin-bottom: 0;
+  }
+  .product-upsell .upsell-item .upsell-item-info form .upsell-action-row fieldset label {
+      font-size: 10px;
+      padding: 8px 10px !important;
+      margin-top: 5px;
+      margin-right: 2px;
+  }
+  .product-upsell .upsell-item .upsell-item-banner a:hover img { transform: scale(1.2); }
+  .product-upsell .upsell-item .upsell-item-banner img { width: 100%; transition: .3s all ease-in-out; min-height: 130px; object-fit: contain; object-position: center; }
+  @media(min-width: 481px){
+    .product-upsell.layout-horizontal { flex-flow: row; }
+    .product-upsell.layout-horizontal .upsell-item {
+        flex: 1;
+        width: 33.33%;
+    }
+  }
+  @media(max-width: 480px){
+    .product-upsell.layout-horizontal .upsell-item {
+        flex: 1;
+        width: 45%;
+        margin-bottom: 10px;
+    }
+  }
+  
+  .product-upsell.layout-horizontal .upsell-item {
+      display: flex;
+      flex-flow: column;
+      padding: 2px;
+  }
+  @media(min-width: 1024px){
+    .product-upsell.layout-vertical .upsell-item { flex-flow: row; align-items: center; }
+  }
+  @media (max-width: 420px){
+    .product-upsell.layout-vertical .upsell-item { flex-wrap: wrap; align-items: flex-start; }
+  }
+  @media(min-width: 421px) and (max-width: 767px){
+    .product-upsell.layout-vertical .upsell-item { flex-flow: row; }
+  }
+  .product-upsell.layout-vertical .upsell-item {
+      display: flex;
+      gap: 15px;
+  }
+  .product-upsell .upsell-item .upsell-item-info {
+      display: flex;
+      flex-flow: column;
+      font-size: 16px;
+      line-height: normal;
+      width: 100%;
+      justify-content: space-between;
+  }
+  .product-upsell .upsell-item .upsell-item-info a {
+      color: inherit;
+      text-decoration: none;
+      font-family: var(--font-heading-family);
+      /* max-height: 42px; */
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+  }
+  .product-upsell .upsell-item .upsell-item-info span.selected-color {
+      color: #000;
+      font-weight: 700;
+  }
+  .product-upsell .upsell-item .upsell-item-info button {
+      font-size: 10px;
+      line-height: 12px;
+      padding: 8px 10px 8px 10px !important;
+      margin-top: 0 !important;
+      min-height: unset;
+      height: 32px;
+  }
+  .product-upsell.layout-vertical .upsell-item .upsell-item-info form .upsell-action-row button {
+      text-transform: uppercase;
+  }
+  .product-upsell-wrapper .heading {
+      margin-bottom: 10px;
+      display: inline-block;
+  }
+  .product-upsell .upsell-item .upsell-item-banner {
+      border-radius: 0;
+      overflow: hidden;
+      box-shadow: 0 0 2px 0 rgba(0, 0, 0, .2);
+      background-color: #F3F3F3;
+      display: inline-block;
+      width: 100%;
+  }
+  .product-upsell .upsell-item, .product-upsell .upsell-item .upsell-item-info, .product-upsell .upsell-item .upsell-item-info form, .product-upsell .upsell-item .upsell-item-info .upsell-item-info-content {
+      row-gap: 7.5px;
+  }
+  .product-upsell .upsell-item .upsell-item-info .upsell-item-info-content, .product-upsell .upsell-item .upsell-item-info form {
+      display: flex;
+      flex-flow: column;
+  }
+  .product-upsell .upsell-item .upsell-item-info form { margin: 0; }
+  @media(max-width: 543px){
+    .product-upsell{
+      /* white-space: nowrap; */
+        overflow-x: auto;
+    }
+  }
+</style>
+
+<!-- JSON Schema -->
+{
+      "type": "upsell_addon",
+      "name": "Upsell Product List",
+      "settings": [
+        {
+          "type": "inline_richtext",
+          "id": "title",
+          "label": "Title"
+        },
+        {
+          "type": "color",
+          "id": "heading-color",
+          "label": "Heading Color"
+        },
+        {
+          "type": "select",
+          "default": "horizontal",
+          "id": "layout",
+          "label": "Layout",
+          "options": [
+            {
+              "label": "Horizontal",
+              "value": "horizontal"
+            },
+            {
+              "label": "Vertical",
+              "value": "vertical"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "default": "upsell",
+          "id": "type",
+          "label": "Type",
+          "info": "Upsell & Bundle are two different module/feature select one to proceed.",
+          "options": [
+            {
+              "label": "Upsell",
+              "value": "upsell"
+            },
+            {
+              "label": "Bundle",
+              "value": "bundle"
+            }
+          ]
+        },
+        {
+          "type": "select",
+          "default": "dropdown",
+          "id": "variant-type",
+          "label": "Variant Type",
+          "options": [
+            {
+              "label": "Dropdown",
+              "value": "dropdown"
+            },
+            {
+              "label": "Pills",
+              "value": "pills"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "bundle-upsell",
+          "label": "Enable Bundle Upsell",
+          "default": false,
+          "info": "if will work if Type == Bundle & metafield with bundle_upsell_product isn't empty."
+        },
+        {
+          "type": "select",
+          "default": "percentage",
+          "id": "offer-type",
+          "label": "Offer Type",
+          "info": "In case of amount, it will minus the offer amount & in case percentage it will deduct the percent amount of the normal discounted price.",
+          "options": [
+            {
+              "label": "Amount",
+              "value": "amount"
+            },
+            {
+              "label": "Percentage",
+              "value": "percentage"
+            }
+          ]
+        },
+        {
+          "type": "inline_richtext",
+          "id": "cta-text",
+          "label": "CTA Text",
+          "info": "It will show on add to cart button."
+        },
+        {
+          "type": "inline_richtext",
+          "id": "cta-announcement",
+          "label": "CTA Announcement",
+          "info": "It will show with the add to cart text."
+        },
+        {
+          "type": "header",
+          "content": "Options Info",
+          "info": "Upsell: Then, the Upsell Product List items will show. Bundle: Then, the Bundle Product List items will show & for the additional upsell item in the popup the item selected in Bundle Upsell Product will show."
+        }
+      ]
+    },

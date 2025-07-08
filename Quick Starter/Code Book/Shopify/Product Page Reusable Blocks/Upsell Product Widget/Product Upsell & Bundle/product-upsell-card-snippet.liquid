@@ -1,0 +1,107 @@
+<!-- snippets/product-upsell-card-snippet.liquid -->
+
+{% assign upsellproduct = all_products[upsellproduct] %}
+{% assign have-color = false %}
+{% unless upsellproduct.handle == product.handle %} {% endunless %}
+<div class="upsell-item">
+  <div class="upsell-item-banner">
+    <a href="{{ upsellproduct.url }}"><img src="{{ upsellproduct.featured_image | img_url: "500x" }}" alt="{{ product.title }}" width="100%" height="" /></a>
+  </div>
+  <div class="upsell-item-info">
+    {% assign p_title = upsellproduct.title %}
+    <div class="upsell-item-info-content">
+    <a href="{{ upsellproduct.url }}"><strong class="h4">{{- p_title  -}}</strong></a>
+    {% for option in upsellproduct.options_with_values %}
+      {% if option.name contains "Colors" or option.name contains "Color" %}
+      {% assign havecolor = true %}
+      {% assign activecolor = upsellproduct.selected_or_first_available_variant.title | split: "/" | first | handle %}
+      {% for value in option.values %}
+        {% assign optionvalue = value | handle %}
+        {% if optionvalue == activecolor %}
+        <span class="selected-color">{{ value }}</span>
+        {% endif %}
+      {% endfor %}
+      {% endif %}
+    {% endfor %}
+    <span class="upsell-item-price">
+      <span class="upsell-regular-price">
+      {{- upsellproduct.selected_or_first_available_variant.price 
+      | money_without_trailing_zeros 
+      | replace: ",", "" 
+      | replace: ".", "" -}}
+      </span>
+
+      {% if upsellproduct.selected_or_first_available_variant.compare_at_price > upsellproduct.selected_or_first_available_variant.price %}
+        <strike class="upsell-sale-price">
+        {{- upsellproduct.selected_or_first_available_variant.compare_at_price 
+        | money_without_trailing_zeros 
+        | replace: ",", "" 
+        | replace: ".", "" -}}
+        </strike>
+      {% endif %}
+    </span>
+    </div>
+    <form method="post" action="/cart/add" id="product_form_{{ upsellproduct.selected_or_first_available_variant.id }}" accept-charset="UTF-8" class="upsellproduct-form product-form product-form--payment-button" enctype="multipart/form-data">
+      <input type="hidden" name="form_type" value="product">
+      <input type="hidden" name="utf8" value="✓">
+      <input type="hidden" name="quantity" value="1">
+      <input type="hidden" name="product-id" value="{{ upsellproduct.id }}">
+      <input type="hidden" name="id" value="{{ upsellproduct.selected_or_first_available_variant.id }}">
+
+      <div class="upsell-action-row custm_variant_class">
+        {% comment %}
+        
+        {% endcomment %}
+
+        {% if block.settings.variant-type == 'dropdown' %}
+          {% if upsellproduct.variants.size > 0 %}
+            <select>
+              {% for variant in upsellproduct.variants %}
+                {% if have-color == true %}
+                  {% assign variant_name = variant.title | split: "/" %}
+                  {% assign variant_name_without_first = variant_name | slice: 1, variant_name.size %}
+                  {% assign variant_name_joined = variant_name_without_first | join: " / " %}
+                {% else %}
+                  {% assign variant_name_joined = variant.title %}
+                {% endif %}
+                
+                <option raw-value="{{ variant.title }}" value="{{ variant.id }}">{{ variant_name_joined }}</option>
+              {% endfor %}
+  
+            </select>
+          {% endif %}
+        {% endif %}
+
+        {% if block.settings.variant-type == 'pills' %}
+          {% if upsellproduct.variants.size > 0 %}
+          <fieldset class="js size-selector product-form__input product-form__input--pill">
+            <legend class="form__label">Size</legend>
+              {% for variant in upsellproduct.variants %}
+                {% if have-color == true %}
+                  {% assign variant_name = variant.title | split: "/" %}
+                  {% assign variant_name_without_first = variant_name | slice: 1, variant_name.size %}
+                  {% assign variant_name_joined = variant_name_without_first | join: " / " %}
+                {% else %}
+                  {% assign variant_name_joined = variant.title %}
+                {% endif %}
+                <input type="radio" id="product_form_Size-{{ upsellproduct.id }}-{{ variant.id }}" name="Size-{{ upsellproduct.id }}" value="{{ variant.id }}" form="product_form_{{ upsellproduct.selected_or_first_available_variant.id }}" {% if forloop.first == true %}checked{% endif %} data-product-url="" data-option-value-id="{{ variant.id }}">
+                <label for="product_form_Size-{{ upsellproduct.id }}-{{ variant.id }}"> {{ variant_name_joined }}<span class="visually-hidden label-unavailable">Variant sold out or unavailable</span></label>
+                {% comment %}
+                  <option raw-value="{{ variant.title }}" value="{{ variant.id }}">{{ variant_name_joined }}</option>
+                {% endcomment %}
+              {% endfor %}
+          </fieldset>
+          {% endif %}
+        {% endif %}
+
+        {% if block.settings.type == 'upsell' or bundleupsell == true %}
+          {% if upsellproduct.available %}
+          <button type="button" {% comment %}onclick="addToCart({{ upsellProduct.selected_or_first_available_variant.id }}, 1, event);"{% endcomment %} name="add" btn-text="{{ 'products.product.add_to_cart' | t }}" class="ProductForm__AddToCart button small button--primary"><span>{% if block.settings.cta-text != blank and bundleupsell == false %}{{ block.settings.cta-text }}{% else %}{{ 'products.product.add_to_cart' | t }}{% endif %}</span>{% if block.settings.cta-announcement != blank and bundleupsell == false %}<div>{{ block.settings.cta-announcement }}</div>{% endif %}</button>
+          {% else %}
+          <b>{{ 'products.product.sold_out' | t }}</b>
+          {% endif %}
+        {% endif %}
+      </div>
+    </form>
+  </div>
+</div>

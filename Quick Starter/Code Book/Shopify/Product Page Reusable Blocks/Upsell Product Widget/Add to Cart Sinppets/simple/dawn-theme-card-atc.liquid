@@ -1,0 +1,281 @@
+// Function to add a product to the cart
+function addToCart(variantId, quantity = 1, e = null) {
+  if (!variantId) {
+    console.error("Variant ID is required.");
+    return;
+  }
+
+  const button = e?.target;
+  if (button) {
+    button.textContent = "Adding...";
+    button.disabled = true;
+  }
+
+  // Setup formData like Shopify product-form.js
+  const formData = new FormData();
+  formData.append('id', variantId);
+  formData.append('quantity', quantity);
+  formData.append('sections', ['cart-drawer', 'cart-icon-bubble']);
+  formData.append('sections_url', window.location.pathname);
+
+  const config = {
+    method: 'POST',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+    body: formData
+  };
+
+  fetch('/cart/add.js', config)
+    .then(res => res.json())
+    .then(data => {
+      // Shopify-style: Handle error from backend
+      if (data.status && data.message) {
+        console.error("Add to cart error:", data.message);
+        if (button) {
+          button.textContent = "Error";
+        }
+        return;
+      }
+
+      // ✅ Update cart drawer
+      const cartDrawerEl = document.querySelector('cart-drawer');
+      if (!cartDrawerEl) return;
+
+      // Clean .is-empty class (Shopify does this)
+      if (cartDrawerEl.classList.contains('is-empty')) {
+        cartDrawerEl.classList.remove('is-empty');
+      }
+
+      // Inject and open
+      cartDrawerEl.renderContents({
+        id: variantId,
+        sections: {
+          'cart-drawer': data.sections['cart-drawer'],
+          'cart-icon-bubble': data.sections['cart-icon-bubble']
+        }
+      });
+
+      setTimeout(() => {
+        cartDrawerEl.open();
+      }, 50);
+
+    })
+    .catch((err) => {
+      console.error("Cart Add Error:", err);
+      if (button) button.textContent = "Error";
+    })
+    .finally(() => {
+      if (button) {
+        setTimeout(() => {
+          button.textContent = "Add to Cart";
+          button.disabled = false;
+        }, 1500);
+      }
+
+      if (typeof CartPerformance !== 'undefined' && e) {
+        CartPerformance.measureFromEvent("add:user-action", e);
+      }
+    });
+}
+
+
+
+document.addEventListener("click", function (e) {
+  const button = e.target.closest(".product-card-wrapper form.upsellproduct-form.product-form button[type=button]");
+  if (!button) return;
+
+  const productForm = button.closest("form.upsellproduct-form");
+  if (!productForm) return;
+
+  const upsellVariantIdField = productForm.querySelector("input[name=id]");
+  const upsellQuantityField = productForm.querySelector("input[name=quantity]");
+  const sizeVariant = productForm.closest(".product-card-wrapper").querySelector(".quick-add-bysize-options input[type=radio]:checked");
+
+  let upsellVariantId = sizeVariant ? sizeVariant.value : upsellVariantIdField.value;
+  let upsellQuantity = upsellQuantityField.value || 1;
+
+  console.log({ upsellVariantId });
+
+  addToCart(upsellVariantId, upsellQuantity, e);
+});
+
+
+-----------------------
+
+{% capture quickaddbysize %}
+  <div class="quick-add-bysize">
+    <div class="quick-add-bysize-options">
+      {% comment %}
+        {% for variant in product_card_product.variants %}
+        {{ variant.title }}
+        {% endfor %}
+      {% endcomment %}
+
+      
+
+      {% assign activesize = card_product.selected_or_first_available_variant.option1 | handle %}
+
+      {% for option in card_product.options_with_values %}
+        {% if option.position == 1 or option.name == 'Size' %}
+          {% for value in option.values %}
+            {% assign matched_variant = nil %}
+      
+            {% for variant in card_product.variants %}
+              {% assign variant_size = variant.option1 | handle %}
+              {% assign cvalue = value | handle %}
+      
+              {% if variant_size == cvalue %}
+                {% assign matched_variant = variant %}
+                {% break %}
+              {% endif %}
+            {% endfor %}
+      
+            {% if matched_variant %}
+              {% assign cvar = matched_variant.option1 | handle %}
+              
+      
+              <label
+                for="{{ card_product.id }}--{{ value | handle }}"
+                activesize="{{ activesize }}"
+                size="{{ matched_variant.option1 | escape }}"
+                available="{{ matched_variant.available }}"
+                variant-id="{{ matched_variant.id }}"
+              >
+                <input
+                  id="{{ card_product.id }}--{{ value | handle }}"
+                  name="{{ section.id }}-{{ card_product.id }}"
+                  type="radio"
+                  value="{{ matched_variant.id }}"
+                  class="hidden"
+                  {% if cvar == activesize %}checked{% endif %}
+                >
+                <span>{{ value }}</span>
+              </label>
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+
+    </div>
+    
+    {% comment %}
+      <div class="quick-add-bysize-trigger">
+        <svg width="19" height="17" viewBox="0 0 19 17" fill="none" class="icon" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.66 16.8V0H10.34V16.8H8.66ZM0.82 9.16V7.6H18.18V9.16H0.82Z" fill="black"/>
+        </svg>
+      </div>
+    {% endcomment %}
+  </div>
+{% endcapture %}
+
+<style>
+.quick-add-bysize {
+    position: absolute;
+    bottom: 0;
+    /* left: 0; */
+    right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    z-index: 4;
+}
+.quick-add-bysize .quick-add-bysize-options {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+    max-width: 100%;
+    overflow-x: auto;
+}
+.quick-add-bysize .quick-add-bysize-options * {
+    white-space: nowrap;
+}
+.quick-add-bysize .quick-add-bysize-options label {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* border-top: 1px solid;
+    border-bottom: 1px solid;
+    border-right: 1px solid;
+    border-color: #000 !important; */
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.quick-add-bysize {
+    background-color: #fff;
+}
+.quick-add-bysize .quick-add-bysize-options input[type=radio]:not(:checked)+span, .quick-add-bysize .quick-add-bysize-options a.cs-fit-variant:not(:hover) {
+    color: #ccc1b6;
+}
+.quick-add-bysize .quick-add-bysize-options a.cs-fit-variant {
+    text-decoration: none;
+    color: inherit;
+}
+.quick-add-bysize .quick-add-bysize-options {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+.quick-add-bysize .quick-add-bysize-options::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+@media screen and (min-width: 501px){
+  .card-wrapper.product-card-wrapper:not(:hover) .quick-add-bysize {
+      visibility: hidden;
+  }
+  .quick-add-bysize:hover .quick-add-bysize-trigger {
+      visibility: hidden;
+  }
+  .quick-add-bysize .quick-add-bysize-options {
+      max-width: calc(100% - 0px);
+  }
+  .quick-add-bysize .quick-add-bysize-options label {
+      /* width: 48px;
+      min-width: 48px;
+      height: 48px; */
+      font-size: 14px;
+  }
+  .quick-add-bysize .quick-add-bysize-trigger {
+      position: absolute;
+      right: 15px;
+      bottom: 15px;
+  }
+  .quick-add-bysize { padding: 10px 0px; }
+}
+@media(min-width: 1025px){
+  .quick-add-bysize .quick-add-bysize-options {
+      justify-content: center;
+  }
+}
+@media screen and (max-width: 1024px){
+  .quick-add-bysize { padding: 5px 10px; }
+}
+</style>
+
+{% capture addtocartbtn %}
+  <form method="post" action="/cart/add" id="product_form_{{ card_product.selected_or_first_available_variant.id }}" accept-charset="UTF-8" class="upsellproduct-form product-form product-form--payment-button" enctype="multipart/form-data">
+    <input type="hidden" name="form_type" value="product">
+    <input type="hidden" name="utf8" value="✓">
+    <input type="hidden" name="quantity" value="1">
+    <input type="hidden" name="product-id" value="{{ card_product.id }}">
+    <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
+
+    {% comment %}
+      {% if card_product.variants.size > 1 %}
+      <select>
+        {% for variant in card_product.variants %}
+          <option value="{{ variant.id }}">{{ variant.title }}</option>
+        {% endfor %}
+      </select>
+      {% endif %}
+    {% endcomment %}
+    {% comment %}
+      {%- for option in upsellProduct.options_with_values -%}
+        {% for value in option.values %}
+          {{ value }}
+        {% endfor %}
+      {% endfor %}
+    {% endcomment %}
+    <button type="button" {% comment %}onclick="addToCart({{ upsellProduct.selected_or_first_available_variant.id }}, 1, event);"{% endcomment %} name="add" btn-text="Add to Cart" class="ProductForm__AddToCart button rounded" {% if card_product.available == false %}disabled{% endif %}><span>{% if card_product.available %}Add to Cart{% else %}<b>Sold Out</b>{% endif %}</span></button>
+  </form>
+{% endcapture %}

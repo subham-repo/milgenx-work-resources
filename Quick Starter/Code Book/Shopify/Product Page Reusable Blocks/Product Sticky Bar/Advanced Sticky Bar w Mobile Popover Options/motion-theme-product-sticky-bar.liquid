@@ -1,0 +1,925 @@
+<!-- snippets/product-sticky-bar.liquid -->
+
+{% capture productformbutton %}
+  <input type="hidden" name="id" value="{{ product.variants.first.id }}" />
+  <input type="hidden" name="quantity" value="1" min="1" >
+  <button type="submit" class="btn add-to-cart stickybutton" {% if product.available == false %}disabled{% endif %}>
+    {%- if product.selected_or_first_available_variant == null -%}
+      {{ 'products.product.unavailable' | t }}
+    {%- elsif product.selected_or_first_available_variant.available == false or quantity_rule_soldout -%}
+      {{ 'products.product.sold_out' | t }}
+    {%- else -%}
+      {{ 'products.product.add_to_cart' | t }}
+    {%- endif -%}
+  </button>
+{% endcapture %}
+
+{% if template contains 'product' %}
+<div id="huratips-addtocart-sticky" class="sticky-addtocart {% if product.variants.size > 1 %}{% else %}has-only-default-variant{% endif %} mob-layout-{{ block.settings.mob_layout }} {% if block.settings.mob_layout == 'popover' %}mobile-hide-info{% endif %}">
+  <div class="page-width">
+    <div class="product-info {% if block.settings.mob_layout == 'cta-button-only' %}small--hide{% endif %}">
+      <div class="product-meta-info">
+        {% unless product.metafields.global.featured == blank %}
+        <img src="{{ product.metafields.global.featured | asset_url }}" width="60" height="60" alt="{{ product.title | escape }}" loading="lazy" class="{% if block.settings.mob_show_image == false %}small--hide{% endif %} selection-image">
+        {% else %}
+        <img src="{{ product.featured_image | product_img_url: '60x' }}" width="60" height="60" alt="{{ product.title | escape }}" loading="lazy" class="{% if block.settings.mob_show_image == false %}small--hide{% endif %} selection-image" />
+        {% endunless %}
+        {% if block.settings.mob_layout == 'popover' %}
+        <div class="product-meta-detail medium-up--hide large-up--hide">
+          <strong class="title">{{ product.title }}</strong>
+          <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }}>
+            {% render "price", hide_sale_price: hide_sale_price, product: product, current_variant: current_variant  %}
+          </div>
+        </div>
+        <!-- <span class="btn btn--no-animate medium-up--hide large-up--hide">AJOUTER AU PANIER</span> -->
+        {% endif %}
+      </div>
+      <div class="product_info_block">
+      	{% comment %}
+      	  <h3>{{ product.title }}</h3>
+      	{% endcomment %}
+        {%- for block in section.blocks -%}
+          {%- case block.type -%}
+          
+            {%- when 'custom_liquid' -%}
+            {{ block.settings.custom_liquid }}
+            {%- when 'price' -%}
+              <div id="price-{{ section.id }}" role="status" {{ block.shopify_attributes }} class="small--hide">
+                {% render "price", hide_sale_price: hide_sale_price, product: product, current_variant: current_variant  %}
+              </div>
+          {% comment %}
+          {%- when 'variant_picker' -%}
+              {% render 'product-variant-picker', product: product, block: block, product_form_id: product_form_id %}
+          {% endcomment %}
+          {% endcase %}
+          {% endfor %}
+          <div class="product-block variant-view-{{ block.settings.variant_style }}" {% if block.settings.product_dynamic_variants_enable %}data-dynamic-variants-enabled{% endif %} {{ block.shopify_attributes }}>
+            {%- unless product.has_only_default_variant -%}
+              {%- for option in product.options_with_values -%}
+                {%- liquid
+                  if block.settings.color_swatches
+                    assign is_color = false
+                    assign color_option_index = 0
+                    assign swatch_trigger = 'products.general.color_swatch_trigger' | t | downcase
+                    assign color_option_index = forloop.index0
+                    assign downcased_option = option.name | downcase
+                    if downcased_option contains swatch_trigger
+                      assign is_color = true
+                    elsif swatch_trigger == 'color' and downcased_option contains 'colour'
+                      assign is_color = true
+                    endif
+                  endif
+                -%}
+
+                {%- if block.settings.variant_style == 'button' -%}
+                  {% if block.settings.selector == option.name %}
+                    <div class="cs-variant-dropdown">
+                      <div id="custom-color-select" class="custom-select-wrapper"></div>
+  
+                      {%- render 'variant-dropdown',
+                        product: product,
+                        form_id: form_id,
+                        section_id: section_id,
+                        option: option,
+                        forloop: forloop,
+                        variant_labels: block.settings.variant_labels,
+                        isSticky: false
+                      -%}
+
+                      {% comment %}
+                        <div class="medium-hide large-hide">
+                        {%- render 'variant-button',
+                          block: block,
+                          product: product,
+                          form_id: form_id,
+                          section_id: section_id,
+                          option: option,
+                          forloop: forloop,
+                          variant_labels: block.settings.variant_labels,
+                          is_color: is_color,
+                          color_option_index: color_option_index,
+                          connect_to_sizechart: connect_to_sizechart,
+                          sizechart_index: sizechart_index
+                        -%}
+                      </div>
+                      {% endcomment %}
+                    </div>
+
+                    <script>
+                    function createCustomSelect(selectId, containerId) {
+                      const select = document.getElementById(selectId);
+                      const container = document.getElementById(containerId);
+                      if (!select || !container) return;
+                    
+                      // Hide original select
+                      select.style.display = 'none';
+                    
+                      // Build custom dropdown
+                      const display = document.createElement('div');
+                      display.className = 'custom-select-display';
+                    
+                      const optionsWrapper = document.createElement('div');
+                      optionsWrapper.className = 'custom-select-options';
+                    
+                      // Store references to custom options for syncing later
+                      const customOptions = [];
+                    
+                      [...select.options].forEach((option, index) => {
+                        const opt = document.createElement('div');
+                        opt.className = 'custom-select-option';
+                        opt.dataset.value = option.value;
+                    
+                        const img = document.createElement('img');
+                        img.src = option.getAttribute("data-featured-image");
+                        img.alt = option.text;
+                    
+                        const text = document.createElement('span');
+                        text.textContent = option.text;
+                    
+                        opt.appendChild(img);
+                        opt.appendChild(text);
+                        optionsWrapper.appendChild(opt);
+                        customOptions.push({ element: opt, img: img.cloneNode(), text: option.text });
+                    
+                        // Click handler for custom option
+                        opt.addEventListener('click', () => {
+                          select.value = option.value;
+                          updateDisplay(img.cloneNode(), option.text);
+                          optionsWrapper.classList.remove('open');
+                          select.dispatchEvent(new Event('change'));
+                        });
+                    
+                        // Set default selected
+                        if (option.selected || index === 0) {
+                          updateDisplay(img.cloneNode(), option.text);
+                        }
+                      });
+                    
+                      // Add display click
+                      display.addEventListener('click', () => {
+                        optionsWrapper.classList.toggle('open');
+                      });
+                    
+                      // Function to update the custom display content
+                      function updateDisplay(imgEl, textVal) {
+                        display.innerHTML = '';
+                        display.appendChild(imgEl);
+                        display.appendChild(document.createTextNode(textVal));
+                      }
+
+                      console.log({select})
+                      // Watch for external changes to the <select>
+                      select.addEventListener('change', () => {
+                        console.log("received signal")
+                        const selectedOption = [...select.options].find(opt => opt.selected);
+                        if (selectedOption) {
+                          const match = customOptions.find(o => o.text === selectedOption.text);
+                          if (match) {
+                            updateDisplay(match.img, match.text);
+                          }
+                        }
+                      });
+
+                      // Append elements
+                      container.appendChild(display);
+                      container.appendChild(optionsWrapper);
+
+                      // Close dropdown when clicking outside
+                      document.addEventListener('click', function (e) {
+                        const isClickInside = container.contains(e.target);
+                        if (!isClickInside) {
+                          optionsWrapper.classList.remove('open');
+                        }
+                      });
+                    }
+                    
+                    // Call the function
+                    createCustomSelect('SingleOptionSelector-{{ section_id }}-{{ product.id }}-option-{{ forloop.index0 }}', 'custom-color-select');
+
+                    </script>
+
+                    <style>
+                      .custom-select-wrapper {
+                        position: relative;
+                        width: 180px;
+                        font-family: sans-serif;
+                      }
+                     .cs-variant-dropdown { display: inline-flex; }
+                      .custom-select-display, .custom-select-options { border-radius: 6px; }
+                      .custom-select-display {
+                        border: 1px solid #ccc;
+                        padding: 7px;
+                        background: #fff;
+                        cursor: pointer;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                      }
+                      #huratips-addtocart-sticky .product-info {
+                          width: calc(100% - 180px);
+                      }
+                      .cs-variant-dropdown .variant-wrapper--dropdown { margin-right: 0; }
+                      div#huratips-addtocart-sticky .product_info_block { justify-content: space-between; }
+                      .custom-select-options {
+                        position: absolute;
+                        bottom: 100%;
+                        left: 0;
+                        z-index: 10;
+                        background: #fff;
+                        border: 1px solid #ccc;
+                        width: 100%;
+                        max-height: 250px;
+                        overflow-y: auto;
+                        display: none;
+                      }
+                      .custom-select-wrapper img {
+                          margin-right: 0 !important;
+                          width: 24px;
+                          height: 24px;
+                          border-radius: 50%;
+                          object-fit: cover;
+                      }
+                      .custom-select-wrapper {
+                          font-size: 12px;
+                      }
+                      .custom-select-options.open {
+                        display: block;
+                      }
+                      
+                      .custom-select-option {
+                        padding: 10px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        cursor: pointer;
+                        transition: background 0.2s ease;
+                      }
+                      .custom-select-option:hover {
+                        background: #f0f0f0;
+                      }
+                    </style>
+                  {% else %}
+                    {%- render 'variant-button',
+                      block: block,
+                      product: product,
+                      form_id: form_id,
+                      section_id: section_id,
+                      option: option,
+                      forloop: forloop,
+                      variant_labels: block.settings.variant_labels,
+                      is_color: is_color,
+                      color_option_index: color_option_index,
+                      connect_to_sizechart: connect_to_sizechart,
+                      sizechart_index: sizechart_index
+                    -%}
+                  {% endif %}
+                {%- elsif block.settings.variant_style == 'show-selected' -%}
+                  <div index="{{ forloop.index }}" for="{{ option.name | handleize }}" class="mini-variant-option {{ option.name | handleize }}">
+                    <b>{{ option.name }}:</b> <span class="value">{{ option.selected_value }}</span>
+                  </div>
+                {%- else -%}
+                  {%- render 'variant-dropdown',
+                    product: product,
+                    form_id: form_id,
+                    section_id: section_id,
+                    option: option,
+                    forloop: forloop,
+                    variant_labels: block.settings.variant_labels,
+                    isSticky: true
+                  -%}
+                {%- endif -%}
+              {%- endfor -%}
+            {%- endunless -%}
+          </div>
+      </div>
+    </div>
+      {{ productformbutton }}
+  </div>
+</div>
+
+<style>
+  .product-block.variant-view-dropdown .variant-input-wrap select {
+      display: block !important;
+      margin: 0 !important;
+      border-radius: 4px;
+      min-width: 150px;
+      background-color: #f9f9f9;
+      box-shadow: 0 0 4px 0 rgba(0, 0, 0, .2) inset;
+  }
+  .product-block.variant-view-dropdown .variant-wrapper {
+      margin: 0;
+  }
+  .variant-input:last-child label { margin-right: 0; }
+  div#huratips-addtocart-sticky .variant-wrapper--dropdown .variant-input-wrap {
+      margin-bottom: 0;
+  }
+  .product-block.variant-view-dropdown .variant-wrapper {
+      display: block !important;
+  }
+  .product-block.variant-view-dropdown .variant-wrapper--dropdown {
+      height: 40px;
+      margin: 0;
+  }
+  .product-block.variant-view-dropdown .variant-wrapper .variant-input-wrap, 
+  .product-block.variant-view-dropdown .variant-wrapper .variant-input-wrap select {
+      /* min-width: 150px;
+      height: 40px;
+      display: block !important; */
+  }
+</style>
+<script>
+  window.addEventListener("load", function(){
+    let productPageWrapper = document.querySelector(".product-single__meta");
+    let productSubmitBtn = productPageWrapper.querySelector("button.add-to-cart");
+    let stickyBar = document.querySelector("#huratips-addtocart-sticky");
+    let stickySubmitButton = stickyBar.querySelector("button");
+    
+    let singleVariants = productPageWrapper.querySelector("select.product-single__variants");
+    singleVariants.dispatchEvent(new Event('change', { bubbles: true }));
+
+    let popoverTrigger = stickyBar.querySelector(".product-meta-info");
+    if(popoverTrigger){
+      function popoverControl(){
+        if(stickyBar.classList.contains("mobile-hide-info") == true){
+          stickyBar.classList.remove("mobile-hide-info");
+        }else{
+          stickyBar.classList.add("mobile-hide-info")
+        }
+
+        singleVariants.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      popoverTrigger.addEventListener("click", function(){
+        popoverControl()
+      })
+    }
+
+    // On Main Section Variant Change Update Sticky Bar Selection
+    singleVariants.addEventListener("change", function(){
+      let currentVariant = singleVariants.value;
+      let currentVariantData = singleVariants.querySelector("option:checked")['label'].split("-");
+      let currentVariantValues = currentVariantData.shift();
+      let currentVariantPrice = currentVariantData.pop();
+
+      let productVaraintData = currentVariantValues.split("/");
+
+      // In Case: Show Selected
+      let miniVariants = stickyBar.querySelectorAll(".mini-variant-option");
+      if(miniVariants){
+        miniVariants.forEach(function(miniVariant, i){
+          productVaraintData.forEach(function(currentVariantValue, index){
+            console.log({i, index});
+            if(i == index){
+              miniVariant.querySelector(".value").innerText = currentVariantValue;
+            }
+          })
+        })
+
+        miniVariants.forEach(function(miniVariant){
+          miniVariant.addEventListener("click", function(){
+            productPageWrapper.scrollIntoView({ behavior: "smooth", block: "start" });
+          })
+        })
+      }
+
+      // In Case: Dropdown
+      let dropdownVariants = stickyBar.querySelectorAll(".product-block.variant-view-dropdown .variant-wrapper--dropdown select");
+      if(dropdownVariants){
+       dropdownVariants.forEach(function(dropdownVariant, i){
+          productVaraintData.forEach(function(currentVariantValue, index){
+            // console.log({i, index});
+            if(i == index){
+              let fieldOptions = dropdownVariant.querySelectorAll("option");
+              fieldOptions.forEach(function(fieldOption, index){
+                let fieldValue = fieldOption.value;
+                // console.log({fieldValue, currentVariantValue})
+                if(fieldValue === currentVariantValue.replaceAll(' ', '')){
+                  let optionIndex = index;
+                  dropdownVariant.selectedIndex = optionIndex;
+                }
+                // console.log({fieldValue, currentVariantValue, index})
+              })
+            }
+          })
+        }) 
+      }
+
+      let swatchVariants = stickyBar.querySelectorAll(".product-block.variant-view-button .variant-wrapper");
+      if(swatchVariants){
+       swatchVariants.forEach(function(swatchVariant, i){
+         console.log({productVaraintData});
+          productVaraintData.forEach(function(currentVariantValue, index){
+            if(i == index){
+              if(swatchVariant.classList.contains("variant-wrapper--dropdown") == true) {
+                let dropdownVariants = stickyBar.querySelectorAll(".product-block.variant-view-button select");
+                syncStickyDropdownwProductform(dropdownVariants);
+              }else{
+                let fieldOptions = swatchVariant.querySelectorAll("input[type=radio]");
+                fieldOptions.forEach(function(fieldOption, index){
+                  let fieldValue = fieldOption.value;
+                  currentVariantValue = currentVariantValue.replaceAll(' ', '');
+                  if(fieldValue === currentVariantValue){
+                  // console.log({i, index, fieldValue, currentVariantValue});
+                    // console.log(fieldOption)
+                    fieldOption.checked = true;
+                  }
+                })
+              }
+            }
+          })
+        }) 
+      }
+
+      // Sync Product sticky bar dropdown with variant-swatch-king in case of dropdown
+    // let dropdownVariants = stickyBar.querySelectorAll(".product-block.variant-view-dropdown .variant-wrapper--dropdown select");
+    function syncStickyDropdownwProductform(selector){
+      
+      if(selector){
+       selector.forEach(function(dropdownVariant, i){
+         dropdownVariant.addEventListener("change", function(){
+           let changedOption = dropdownVariant.getAttribute("for");
+           let selectedValue = String(dropdownVariant.value).toLowerCase();
+           let optionTarget  = dropdownVariant.getAttribute("data-index");
+           // console.log("Signal Received to syncStickyDropdownwProductform", {changedOption, optionTarget, selectedValue})
+           let varSwatchKing = document.querySelector("variant-swatch-king");
+           let swatchOptions = varSwatchKing.querySelectorAll("div[option-target="+optionTarget+"] .swatch-view-item");
+           swatchOptions.forEach(function(swatchOption){
+             let swatchOptValue = swatchOption.getAttribute("orig-value").toLowerCase();
+             // console.log({swatchOptValue, selectedValue})
+             if( swatchOptValue == selectedValue ){
+               swatchOption.click();
+             }
+             
+           })
+           
+           varSwatchKing.querySelector("div[option-target="+optionTarget+"]");
+         })
+
+        let fieldOptions = dropdownVariant.querySelectorAll("option");
+        fieldOptions.forEach(function(fieldOption, index2){
+          let fieldValue = String(fieldOption.value).toLowerCase();
+          let selectedValue = String(dropdownVariant.value).toLowerCase();
+          let currentVariantValue = String(productVaraintData[i].replaceAll(' ', '')).toLowerCase();
+          // console.log({index2}, fieldValue, currentVariantValue, dropdownVariant)
+          
+          if(fieldValue === currentVariantValue){
+            let optionIndex = index2;
+            dropdownVariant.selectedIndex = optionIndex;
+            let customColorSelect = document.querySelector("div#custom-color-select");
+            let customColorSelectOptions = customColorSelect.querySelectorAll(".custom-select-option");
+            
+            customColorSelectOptions.forEach(function(customColorSelectOption){
+                let dataValue = String(customColorSelectOption.getAttribute("data-value")).toLowerCase()
+                if(dataValue == fieldValue){
+                  console.log("Top to Bottom Signal Received", {dataValue,fieldValue, selectedValue, optionIndex, dropdownVariant, index2})
+                  customColorSelectOption.click();
+                }
+            })
+          }
+          
+        })
+       })
+      }
+    }
+    syncStickyDropdownwProductform(dropdownVariants);
+
+      
+      console.log({currentVariant, currentVariantData, currentVariantValues, currentVariantPrice});
+    })
+
+    // Sync Product sticky bar dropdown with variant-swatch-king in case of buttons
+    let swatchVariants = stickyBar.querySelectorAll(".product-block.variant-view-button .variant-wrapper input[type=radio]");
+    if(swatchVariants){
+     swatchVariants.forEach(function(swatchVariant, i){
+       console.log({swatchVariant})
+       swatchVariant.addEventListener("input", function(){
+         let changedOption = swatchVariant.getAttribute("for");
+         let selectedValue = String(swatchVariant.value).toLowerCase();
+         let optionTarget  = swatchVariant.getAttribute("data-index");
+         console.log({changedOption, optionTarget, selectedValue})
+         let varSwatchKing = document.querySelector("variant-swatch-king");
+         let swatchOptions = varSwatchKing.querySelectorAll("div[option-target="+optionTarget+"] .swatch-view-item");
+         swatchOptions.forEach(function(swatchOption){
+           let swatchOptValue = swatchOption.getAttribute("orig-value").toLowerCase();
+           console.log({swatchOptValue, selectedValue})
+           if( swatchOptValue == selectedValue ){
+             swatchOption.click();
+           }
+         })
+         varSwatchKing.querySelector("div[option-target="+optionTarget+"]");
+       })
+     })
+    }
+    
+    
+
+    stickySubmitButton.addEventListener("click", function(){
+        productSubmitBtn.click();
+    })
+
+    let pageBody = document.body;
+    let mainATCBtn = document.querySelector(".product-form__submit");
+    let stickyATCBar = document.querySelector("#huratips-addtocart-sticky");
+
+    window.addEventListener("scroll", function(){
+
+      const isVisibleInViewport = (element) => {
+          const rect = element.getBoundingClientRect()
+          return (
+              rect.top >= 0 &&
+              rect.left >= 0 &&
+              rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+              rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+          )
+      }
+
+      if(isVisibleInViewport(productSubmitBtn)){
+        stickyATCBar.classList.remove("show-bar");
+        stickyBar.classList.add("mobile-hide-info");
+      }else{
+        stickyATCBar.classList.add("show-bar");
+      }
+    })
+    
+  })
+
+document.addEventListener("DOMContentLoaded", function () {
+    const parentContainer = document.querySelector('#huratips-addtocart-sticky'); // Select the parent container
+
+    if (!parentContainer) {
+        console.log("Parent container #huratips-addtocart-sticky not found.");
+        return;
+    }
+
+    const variantWrapper = parentContainer.querySelector('.variant-input-wrap[data-index="option1"]'); // Select the wrapper inside the parent
+    const variantSelect = variantWrapper ? variantWrapper.querySelector('select') : null; // Get the select inside the wrapper
+    const productImage = parentContainer.querySelector('.product-info img'); // Get the product image inside the parent
+
+    if (variantSelect && productImage) {
+        variantSelect.addEventListener("change", function () {
+            const selectedOption = this.options[this.selectedIndex]; // Get selected option
+            
+            if (selectedOption) { 
+              console.log("..")
+                const newImageSrc = selectedOption.getAttribute("data-featured-image"); // Get featured image URL
+                
+                if (newImageSrc) {
+                  console.log("...")
+                    console.log("Updated Image Src:", newImageSrc); // Log new image URL
+                    productImage.src = newImageSrc; // Update image src
+                } else {
+                  console.log("....")
+                    console.log("No featured image found for this variant.");
+                }
+            }
+        });
+
+        // **Trigger change event on page load to set correct image**
+        variantSelect.dispatchEvent(new Event("change"));
+    } else {
+        console.log("Variant select or product image not found inside #huratips-addtocart-sticky.");
+    }
+});
+
+
+</script>
+<style>
+  #huratips-addtocart-sticky{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    box-shadow: 0px -4px 10px rgba(0, 0, 0, 0.2);
+    transition: .2s transform ease-in-out;
+  }
+  #huratips-addtocart-sticky .product__price-savings, #huratips-addtocart-sticky .product__policies {
+      display: none;
+  }
+  html:not(.js-drawer-open) #huratips-addtocart-sticky .instock-pulse, 
+  .product_info_block fieldset.product-form__input:not(.size){
+      display: none;
+  }
+  .product_info_block fieldset.product-form__input.size {
+      margin-bottom: 0;
+  }
+  .product_info_block fieldset.product-form__input.size input:not(:checked)+label {
+      border: 1px solid #ccc;
+  }
+  div#huratips-addtocart-sticky:not(.show-bar) {
+      transform: translateY(200px);
+  }
+  div#huratips-addtocart-sticky.show-bar {
+      transform: translateY(0px);
+  }
+  html.js-drawer-open #huratips-addtocart-sticky{
+    z-index: 12;
+  }
+  html:not(.js-drawer-open) #huratips-addtocart-sticky{
+    z-index: 9999;
+  }
+  #huratips-addtocart-sticky .product-info img.selection-image {
+    object-position: center;
+    object-fit: cover;
+    border-radius: 6px;
+    box-shadow: 0 0px 2px 0 rgb(0 0 0 / 20%);
+  }
+  #huratips-addtocart-sticky .product-info .product_info_block h3 {
+    margin-bottom: 5px;
+    margin-top: 0;
+    font-weight: bold;
+  }
+  #huratips-addtocart-sticky select,
+  #huratips-addtocart-sticky input,
+  #huratips-addtocart-sticky button{
+    height:40px;
+    margin:0 5px;
+    vertical-align: middle;
+  }
+  #huratips-addtocart-sticky input{
+    width: 60px;
+    text-align: center;
+  }
+  #huratips-addtocart-sticky button {
+      padding: 0 15px;
+      font-weight: bold;
+      white-space: nowrap;
+      text-transform: uppercase;
+      font-size: 13px;
+      font-weight: 600;
+  }
+  #huratips-addtocart-sticky .page-width {
+    width: 100%;
+    display: flex;
+    flex-flow: row;
+    align-items: center;
+    column-gap: 10px;
+  }
+  #huratips-addtocart-sticky .button:before{
+    display:none;
+  }
+  #huratips-addtocart-sticky .page-width:after {
+    display: none;
+  }
+  #huratips-addtocart-sticky .product-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  div#huratips-addtocart-sticky .product_info_block .product-block {
+      display: flex;
+      align-items: flex-end;
+      gap: 15px;
+      margin-bottom: 0;
+      transition: unset;
+      opacity: 1;
+  }
+  .mini-variant-option {
+      border: 1px solid #c8c8c8;
+      padding: 2.5px 15px;
+      border-radius: 4px;
+      background-color: #f0f0f0;
+      box-shadow: 0 0 5px 0 rgba(0, 0, 0, .2) inset;
+      cursor: pointer;
+  }
+  #huratips-addtocart-sticky.mob-layout-cta-button-only .product-info img.selection-image {
+    height: 40px;
+    width: 40px;
+  }
+  @media(min-width: 376px){
+    #huratips-addtocart-sticky.mob-layout-popover .product-info img.selection-image {
+      height: 60px;
+      width: 60px;
+    }
+  }
+  @media(max-width: 375px){
+    #huratips-addtocart-sticky.mob-layout-popover .product-info img.selection-image {
+      height: 55px;
+      width: 55px;
+    }
+  }
+  
+  @media(min-width:768px){
+    #huratips-addtocart-sticky {
+      padding: 5px 0;
+    }
+    #huratips-addtocart-sticky .page-width {
+      justify-content: space-between;
+    }
+    div#huratips-addtocart-sticky {
+        background-color: #fff;
+        border-top: 1px solid #e2e2e2;
+        box-shadow: 0 0 20px 0 rgb(0 0 0 / 10%);
+    }
+    div#huratips-addtocart-sticky .product_info_block .product-block .variant-wrapper, 
+    div#huratips-addtocart-sticky .product_info_block .product-block .variant-wrapper.variant-wrapper--dropdown select-- {
+        display: inline-block !important;
+        margin-top: 0;
+        height: 40px;
+    }
+    div#huratips-addtocart-sticky .product_info_block {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+    div#huratips-addtocart-sticky .product_info_block label.variant__label {
+        /* display: none; */
+    }
+    div#huratips-addtocart-sticky .product_info_block .product-block.variant-view-button .cs-variant-dropdown {
+        order: 1;
+    }
+  }
+  div#huratips-addtocart-sticky {
+    --mobile-container: 15px;
+  }
+  @media(max-width: 375px){
+    div#huratips-addtocart-sticky.mob-layout-popover .product-meta-info span.product__price {
+        font-size: 12px;
+    }
+  }
+  @media(min-width: 376px) and (max-width: 767px){
+    div#huratips-addtocart-sticky.mob-layout-popover .product-meta-info span.product__price {
+        font-size: 14px;
+    }
+  }
+  
+  @media(max-width:767px){
+    
+    #huratips-addtocart-sticky.mob-layout-popover.has-only-default-variant .product-info .product-meta-info, 
+    #huratips-addtocart-sticky.mob-layout-popover.mobile-hide-info .product-info .product_info_block, 
+    #huratips-addtocart-sticky.mob-layout-popover.mobile-hide-info:not(.has-only-default-variant) button[type=submit] {
+        display: none;
+    }
+    #huratips-addtocart-sticky.mob-layout-popover .product-info 
+    div#huratips-addtocart-sticky.mob-layout-cta-button-only {
+        background-color: transparent;
+    }
+    #huratips-addtocart-sticky.mob-layout-popover .page-width {
+        flex-flow: column;
+        padding-left: var(--mobile-container);
+        padding-right: var(--mobile-container);
+        gap: var(--mobile-container);
+    }
+    div#huratips-addtocart-sticky.mob-layout-popover button.stickybutton {
+        margin-bottom: var(--mobile-container);
+        box-shadow: 0 0 7px 2px #948885;
+    }
+    div#huratips-addtocart-sticky.mob-layout-popover .product_info_block .product-block .variant-wrapper {
+        display: block ! IMPORTANT;
+    }
+    div#huratips-addtocart-sticky.mob-layout-popover .product-meta-info span.product__price {
+        line-height: normal;
+    }
+    div#huratips-addtocart-sticky.mob-layout-popover .product-meta-info {
+        display: flex;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        padding-top: var(--mobile-container);
+        padding-bottom: var(--mobile-container);
+        gap: calc(var(--mobile-container) - 3px);
+        align-items: center;
+    }
+    div#huratips-addtocart-sticky.mob-layout-popover .product-meta-info .product-meta-detail {
+        max-width: calc(100% - 0%);
+        overflow: hidden;
+        display: flex;
+        flex-flow: column;
+    }
+    .product-meta-info span.btn {
+        white-space: nowrap;
+        font-size: 14px;
+        line-height: 14px;
+        padding: 10px 16px;
+        text-transform: uppercase;
+        font-family: inherit;
+        display: inline-table;
+    }
+    div#huratips-addtocart-sticky.mob-layout-popover .product-meta-info .product-meta-detail strong.title {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        width: 100%;
+        display: inline-block;
+        font-weight: 500;
+    }
+    div#huratips-addtocart-sticky.mob-layout-popover .product-meta-info {
+        /* padding-left: var(--mobile-container); */
+        /* padding-right: var(--mobile-container); */
+        /* width: calc(100% + calc(var(--mobile-container) * 2)); */
+        /* margin-left: -10px; */
+        width: 100%;
+    }
+    #huratips-addtocart-sticky.mob-layout-popover .product-info, 
+    div#huratips-addtocart-sticky.mob-layout-popover .product_info_block .product-block.variant-view-button {
+        flex-flow: column;
+        align-items: flex-start;
+    }
+    
+    .sticky-addtocart.mob-layout-popover {
+        background-color: #fff;
+        padding: 0;
+    }
+    #huratips-addtocart-sticky button { width: 100%; }
+    #huratips-addtocart-sticky .page-width {
+      justify-content: center;
+    }
+    #huratips-addtocart-sticky button {
+      margin: 0;
+    }
+    #huratips-addtocart-sticky .product-info {
+      margin-bottom: 0px;
+      gap: 15px;
+      /* margin-bottom: 15px; */
+    }
+    #huratips-addtocart-sticky form, 
+    #huratips-addtocart-sticky .product-info, 
+    #huratips-addtocart-sticky .product-info .product_info_block, 
+    #huratips-addtocart-sticky .product-info .product_info_block .product__price .price__pricing-group {
+      width: 100%;
+    }
+    #huratips-addtocart-sticky .product-info .product_info_block .product__price .price__pricing-group {
+      justify-content: space-between;
+    }
+    #huratips-addtocart-sticky .product-info .product_info_block .product__price .price__pricing-group span.price__badge.price__badge--sale {
+      font-size: 12px;
+    }
+  }
+  @media(min-width:768px)and(max-width:991px){
+  	justify-content: space-between;
+  }
+</style>
+{% endif %}
+
+<!-- Code to Render -->
+{%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'sticky_bar' -%}
+        {% render "product-sticky-bar", block:block , hide_sale_price: hide_sale_price, product: product, current_variant: current_variant %}
+    {%- endcase -%}
+{%- endfor -%}
+
+<!-- Block Schema -->
+{
+      "type": "sticky_bar",
+      "name": "Sticky Bar",
+      "settings": [
+        {
+          "type": "header",
+          "content": "Sticky Bar Options"
+        },
+        {
+          "type": "select",
+          "id": "variant_style",
+          "label": "Variant Style",
+          "default": "show-selected",
+          "options": [
+            {
+              "label": "Show Selected",
+              "value": "show-selected"
+            },
+            {
+              "label": "Dropdown",
+              "value": "dropdown"
+            },
+            {
+              "label": "Button",
+              "value": "button"
+            }
+          ]
+        },
+        {
+          "type": "header",
+          "content": "Turn one variant buttons in dropdown with image."
+        },
+        {
+          "type": "text",
+          "id": "selector",
+          "label": "Selector"
+        },
+        {
+          "type": "header",
+          "content": "Mobile view options"
+        },
+        {
+          "type": "select",
+          "id": "mob_layout",
+          "default": "cta-button-only",
+          "label": "Mobile Layout",
+          "options": [
+            {
+              "label": "CTA Button Only",
+              "value": "cta-button-only"
+            },
+            {
+              "label": "Popover Details",
+              "value": "popover"
+            }
+          ]
+        },
+        {
+          "type": "checkbox",
+          "id": "mob_show_image",
+          "label": "Show Image",
+          "default": true
+        }
+      ]
+    },

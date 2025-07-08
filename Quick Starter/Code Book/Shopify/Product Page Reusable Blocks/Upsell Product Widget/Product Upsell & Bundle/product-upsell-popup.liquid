@@ -1,0 +1,126 @@
+<!-- snippets/product-upsell-popup.liquid -->
+<section class="custom-popup">
+  <div class="page-width container-sm">
+    <div class="popup-body">
+      <div class="header">
+        <span class="h4">✓ Your product has been added to cart.</span>
+        <button class="close_model" onclick="toggle_ctaOverScreen();">{% comment %}<span>Close</span>{% endcomment %} <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/></svg></button>
+      </div>
+      <div class="product-upsell-body">
+        <span class="h2">Goes Well With</span>
+        <div id="bundle-upsell" class="product-upsell layout-vertical">
+        {% render "product-upsell-card-snippet", bundleupsell: bundleupsell, upsellproduct: upsellproduct, block: block %}
+        </div>
+      </div>
+      <!-- Add Content Here -->
+    </div>
+  </div>
+</section> 
+
+<style>
+  html.show-custom-popup{
+    overflow: hidden;
+  }
+  html.show-custom-popup section.custom-popup {
+    height: 100%;
+    border-radius: 0;
+    opacity: 1;
+  }
+  html.show-custom-popup body.unloading:before{
+  	display:none;
+  }
+
+  .site-header__logo a {
+    color: #000;
+    border: none;
+  }
+  section.custom-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #0000006e;
+    backdrop-filter: blur(.85px);
+    z-index: 999999;
+    transition: .3s all ease-in-out;
+    overflow: hidden;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+  }
+  section.custom-popup .product-upsell-body {
+      padding: 3rem 3rem;
+      display: flex;
+      flex-flow: column;
+      gap: 20px;
+  }
+  section.custom-popup .popup-body {
+      background-color: #fff;
+      max-width: 740px;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 10px;
+  }
+  html:not(.show-custom-popup) section.custom-popup {
+    height: 0;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    opacity: 0;
+  }
+  section.custom-popup .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #ddd;
+  }
+  section.custom-popup .header a.navbar-brand {
+    display: inline-block;
+    max-width: 180px;
+  }
+  section.custom-popup .header button.close_model {
+    border-style: none;
+    background-color: transparent;
+    font-size: 20px;
+    letter-spacing: .5px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    padding: 0;
+  }
+</style>
+<script>
+  let moveback = false;
+  let cta_hashAddress = '#bundle_upsell'
+  function toggle_ctaOverScreen(moveback){
+    // Use onclick="toggle_ctaOverScreen()" to toggle cta popup
+    // console.log({moveback});
+    let site_container = document.querySelector('html');
+    let sticky_cta_page_class = 'show-custom-popup';
+
+    if(site_container.classList.contains(sticky_cta_page_class)){
+      if(moveback == true){
+        window.location.hash = '';
+        site_container.classList.remove(sticky_cta_page_class);
+      }else{
+        site_container.classList.remove(sticky_cta_page_class);
+        history.pushState(null, null, '#');
+      }
+    }else{
+      site_container.classList.add(sticky_cta_page_class);
+      document.querySelector('body').classList.remove('unloading');
+      history.pushState(null, null, cta_hashAddress);
+    }
+  }
+
+  if(window.location.hash == cta_hashAddress){
+    toggle_ctaOverScreen();
+  }
+
+  window.onhashchange = function() {
+    toggle_ctaOverScreen(moveback = true);
+  }
+</script> 

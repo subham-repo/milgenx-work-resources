@@ -1,0 +1,226 @@
+{% capture quickaddbysize %}
+    <div class="quick-add-bysize">
+      <div class="quick-add-bysize-options">
+        {% comment %}
+          {% for variant in product_card_product.variants %}
+          {{ variant.title }}
+          {% endfor %}
+        {% endcomment %}
+  
+        
+  
+        {% assign activesize = card_product.selected_or_first_available_variant.option1 | handle %}
+  
+        {% for option in card_product.options_with_values %}
+          {% if option.position == 1 or option.name == 'Size' %}
+            {% for value in option.values %}
+              {% assign matched_variant = nil %}
+        
+              {% for variant in card_product.variants %}
+                {% assign variant_size = variant.option1 | handle %}
+                {% assign cvalue = value | handle %}
+        
+                {% if variant_size == cvalue %}
+                  {% assign matched_variant = variant %}
+                  {% break %}
+                {% endif %}
+              {% endfor %}
+        
+              {% if matched_variant %}
+                {% assign cvar = matched_variant.option1 | handle %}
+                
+        
+                <label
+                  for="{{ card_product.id }}--{{ value | handle }}"
+                  activesize="{{ activesize }}"
+                  size="{{ matched_variant.option1 | escape }}"
+                  available="{{ matched_variant.available }}" 
+                  available-quantity="{{ matched_variant.inventory_quantity }}" 
+                  variant-id="{{ matched_variant.id }}"
+                >
+                  <input
+                    id="{{ card_product.id }}--{{ value | handle }}"
+                    name="{{ section.id }}-{{ card_product.id }}"
+                    type="radio"
+                    value="{{ matched_variant.id }}"
+                    class="hidden"
+                    {% if matched_variant.available == false %}disabled{% endif %} 
+                    {% if cvar == activesize %}checked{% endif %}
+                  >
+                  <span>{{ value }}</span>
+                </label>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        {% endfor %}
+      </div>
+      
+      {% comment %}
+        <div class="quick-add-bysize-trigger">
+          <svg width="19" height="17" viewBox="0 0 19 17" fill="none" class="icon" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8.66 16.8V0H10.34V16.8H8.66ZM0.82 9.16V7.6H18.18V9.16H0.82Z" fill="black"/>
+          </svg>
+        </div>
+      {% endcomment %}
+    </div>
+  {% endcapture %}
+  {% capture addtocartbtn %}
+    <form method="post" action="/cart/add" id="product_form_{{ card_product.selected_or_first_available_variant.id }}" accept-charset="UTF-8" class="upsellproduct-form product-form product-form--payment-button" enctype="multipart/form-data">
+      <input type="hidden" name="form_type" value="product">
+      <input type="hidden" name="utf8" value="✓">
+      <input type="hidden" name="product-id" value="{{ card_product.id }}">
+      <input type="hidden" name="id" value="{{ card_product.selected_or_first_available_variant.id }}">
+      <input type="number" name="quantity" value="1">
+      {% comment %}
+        {% if card_product.variants.size > 1 %}
+        <select>
+          {% for variant in card_product.variants %}
+            <option value="{{ variant.id }}">{{ variant.title }}</option>
+          {% endfor %}
+        </select>
+        {% endif %}
+      {% endcomment %}
+      {% comment %}
+        {%- for option in upsellProduct.options_with_values -%}
+          {% for value in option.values %}
+            {{ value }}
+          {% endfor %}
+        {% endfor %}
+      {% endcomment %}
+      <button type="button" {% comment %}onclick="addToCart({{ upsellProduct.selected_or_first_available_variant.id }}, 1, event);"{% endcomment %} status="atc-cta" name="add" btn-text="Add to Cart" class="ProductForm__AddToCart rounded" {% if card_product.available == false %}disabled{% endif %}>
+        {% if card_product.available %}
+          <svg style="display:none;" class="atc-adding" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 3C10.22 3 8.47991 3.52784 6.99987 4.51677C5.51983 5.50571 4.36628 6.91131 3.68509 8.55585C3.0039 10.2004 2.82567 12.01 3.17294 13.7558C3.5202 15.5016 4.37737 17.1053 5.63604 18.364C6.89472 19.6226 8.49836 20.4798 10.2442 20.8271C11.99 21.1743 13.7996 20.9961 15.4442 20.3149C17.0887 19.6337 18.4943 18.4802 19.4832 17.0001C20.4722 15.5201 21 13.78 21 12" stroke="#000000" stroke-width="2" stroke-linecap="round"/><path d="M19.7942 7.5C19.8905 7.66673 19.9813 7.83651 20.0667 8.00907" stroke="#000000" stroke-width="2" stroke-linecap="round"/></svg>
+          <svg style="display:none;" class="atc-cta" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8.7351 14.0181C8.91085 13.6985 9.24662 13.5 9.61132 13.5H16.47C17.22 13.5 17.88 13.09 18.22 12.47L21.6008 6.33041C21.7106 6.13097 21.7448 5.91025 21.7129 5.70131C21.8904 5.52082 22 5.27321 22 5C22 4.44772 21.5523 4 21 4H6C5.96703 4 5.93443 4.0016 5.90228 4.00471L5.7317 3.64435C5.40095 2.94557 4.69708 2.5 3.92398 2.5H2.92004C2.36776 2.5 1.92004 2.94772 1.92004 3.5C1.92004 4.05228 2.36776 4.5 2.92004 4.5H3.14518C3.6184 4.5 4.04931 4.77254 4.25211 5.20011L7.08022 11.1627C7.35632 11.7448 7.33509 12.4243 7.02318 12.988L6.17004 14.53C5.44004 15.87 6.40004 17.5 7.92004 17.5H18.92C19.4723 17.5 19.92 17.0523 19.92 16.5C19.92 15.9477 19.4723 15.5 18.92 15.5H9.61131C8.85071 15.5 8.36855 14.6845 8.7351 14.0181Z" fill="#000000"/><path d="M7.92005 18.5C6.82005 18.5 5.93005 19.4 5.93005 20.5C5.93005 21.6 6.82005 22.5 7.92005 22.5C9.02005 22.5 9.92005 21.6 9.92005 20.5C9.92005 19.4 9.02005 18.5 7.92005 18.5Z" fill="#000000"/><path d="M17.9201 18.5C16.8201 18.5 15.9301 19.4 15.9301 20.5C15.9301 21.6 16.8201 22.5 17.9201 22.5C19.0201 22.5 19.9201 21.6 19.9201 20.5C19.9201 19.4 19.0201 18.5 17.9201 18.5Z" fill="#000000"/><path d="M12.5 10.87H13.5V9.37H15V8.37H13.5V6.87H12.5V8.37H11V9.37H12.5V10.87Z" fill="white"/></svg>
+          <svg style="display:none;" class="atc-error" fill="maroon" width="16" height="16" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><title>times</title><path d="M17.062 16l9.37-9.37c0.136-0.136 0.219-0.323 0.219-0.53 0-0.415-0.336-0.751-0.751-0.751-0.208 0-0.395 0.084-0.531 0.22v0l-9.369 9.369-9.37-9.369c-0.135-0.131-0.319-0.212-0.522-0.212-0.414 0-0.75 0.336-0.75 0.75 0 0.203 0.081 0.387 0.212 0.522l9.368 9.369-9.369 9.369c-0.136 0.136-0.22 0.324-0.22 0.531 0 0.415 0.336 0.751 0.751 0.751 0.207 0 0.394-0.084 0.53-0.219v0l9.37-9.37 9.369 9.37c0.136 0.136 0.324 0.22 0.531 0.22 0.415 0 0.751-0.336 0.751-0.751 0-0.207-0.084-0.395-0.22-0.531v0z"></path></svg>
+          <svg style="display:none;" class="atc-added" width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 12.6111L8.92308 17.5L20 6.5" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        {% endif %}
+      </button>
+    </form>
+  {% endcapture %}
+
+
+  <!-- Code to Render it -->
+  {% if card_product.available %}
+    <div class="quick-add-mini">
+      {{ addtocartbtn }}
+      {{ quickaddbysize }}
+    </div>
+  {% endif %}
+
+  <script>
+
+// Function to add a product to the cart
+function addToCart(variantId, quantity = 1, e = null) {
+  if (!variantId) {
+    console.error("Variant ID is required.");
+    return;
+  }
+
+  const button = e?.target;
+  if (button) {
+    console.log(button)
+    button.setAttribute("status", "adding");
+    button.disabled = true;
+  }
+
+  // Setup formData like Shopify product-form.js
+  const formData = new FormData();
+  formData.append('id', variantId);
+  formData.append('quantity', quantity);
+  formData.append('sections', ['cart-drawer', 'cart-icon-bubble']);
+  formData.append('sections_url', window.location.pathname);
+
+  console.log({formData})
+
+  const config = {
+    method: 'POST',
+    headers: {
+      'X-Requested-With': 'XMLHttpRequest',
+    },
+    body: formData
+  };
+
+  fetch('/cart/add.js', config)
+    .then(res => res.json())
+    .then(data => {
+      // Shopify-style: Handle error from backend
+      if (data.status && data.message) {
+        console.error("Add to cart error:", data.message);
+        if (button) {
+          // button.textContent = "Error";
+          button.setAttribute("status", "error");
+        }
+        return;
+      }else{
+          button.setAttribute("status", "added");
+      }
+
+      // ✅ Update cart drawer
+      const cartDrawerEl = document.querySelector('cart-drawer');
+      if (!cartDrawerEl) return;
+
+      // Clean .is-empty class (Shopify does this)
+      if (cartDrawerEl.classList.contains('is-empty')) {
+        cartDrawerEl.classList.remove('is-empty');
+      }
+
+      // Inject and open
+      cartDrawerEl.renderContents({
+        id: variantId,
+        sections: {
+          'cart-drawer': data.sections['cart-drawer'],
+          'cart-icon-bubble': data.sections['cart-icon-bubble']
+        }
+      });
+
+      setTimeout(() => {
+        // cartDrawerEl.open();
+        window.location.href = "/checkout";
+      }, 50);
+
+    })
+    .catch((err) => {
+      console.error("Cart Add Error:", err);
+      if (button) button.classList.add("error");
+      button.setAttribute("status", "error");
+      setTimeout(function(){
+        button.classList.remove("error")
+      }, 1000)
+    })
+    .finally(() => {
+      if (button) {
+        setTimeout(() => {
+          // button.textContent = "Add to Cart";
+          button.setAttribute("status", "atc-cta");
+          button.disabled = false;
+        }, 1500);
+      }
+
+      if (typeof CartPerformance !== 'undefined' && e) {
+        CartPerformance.measureFromEvent("add:user-action", e);
+      }
+    });
+}
+
+
+
+document.addEventListener("click", function (e) {
+  const button = e.target.closest(".product-card-wrapper form.upsellproduct-form.product-form button[type=button]");
+  if (!button) return;
+
+  const productForm = button.closest("form.upsellproduct-form");
+  if (!productForm) return;
+
+  const upsellVariantIdField = productForm.querySelector("input[name=id]");
+  const upsellQuantityField = productForm.querySelector("input[name=quantity]");
+  const sizeVariant = productForm.closest(".product-card-wrapper").querySelector(".quick-add-bysize-options input[type=radio]:checked");
+
+  let upsellVariantId = sizeVariant ? sizeVariant.value : upsellVariantIdField.value;
+  let upsellQuantity = upsellQuantityField.value || 1;
+
+  console.log({ upsellVariantId });
+
+  addToCart(upsellVariantId, upsellQuantity, e);
+});
+
+  </script>

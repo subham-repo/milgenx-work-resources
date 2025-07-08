@@ -21,7 +21,7 @@
     endif
   -%}
 
-<div id="Slider-{{ section.id }}" class="slider-row {% if section.settings.enable_slider  %}init-flickity-{{ section.id }} {% if show_desktop_slider == false %}no-swipe-desktop{% endif %} {% if show_tab_slider == false %}no-swipe-tab{% endif %} {% if section.settings.swipe_on_mobile == false %}no-swipe-mobile{% endif %}{% endif %}">
+<div id="Slider-{{ section.id }}" class="slider-row {% if show_mobile_slider or show_desktop_slider %}init-flickity-{{ section.id }}{% endif %} multicolumn-list contains-content-container {% if show_desktop_slider == false %}no-swipe-desktop{% endif %} {% if section.settings.show_selected == true %}show-selected-slide{% endif %} {% if section.settings.enable_marquee %}marquee-enabled{% endif %} {% if section.settings.show_overflow == true %}show-overflow{% endif %} {% if section.settings.swipe_on_mobile == false %}no-swipe-mobile{% endif %}{% comment %}{% if show_mobile_slider %} slider slider--mobile grid--peek{% endif %}{% endcomment %} {% if show_mobile_slider or show_desktop_slider %}is-flickity-slider  slides-alignment--{{ section.settings.slider_mode }}{% endif %}">
      <!-- Render Slide Elements Here -->
 </div>     
 
@@ -39,13 +39,13 @@
               element.querySelector("video").removeAttribute("src");   
 
               slides.forEach(function(elem, idx, slides){
-                if (idx === slides.length - 1){ 
-                      // console.log("Last callback call at index " + idx + " with value " + elem );
+               if (idx === slides.length - 1){ 
+                     // console.log("Last callback call at index " + idx + " with value " + elem );
                     if(element.classList.contains("is-selected")){
                       element.querySelector("video").setAttribute("src", element.querySelector("video").getAttribute("video-src"));
                       element.querySelector("video").play(); 
                     }
-                  }
+                 }
               });
             }
           }, 500)
@@ -54,38 +54,96 @@
       
       let elem = elemTarget;
       console.log(elem)
-      let options = { 
-        freeScroll: true,
-        wrapAround: {% if section.settings.slider_mode == 'center' or section.settings.show_arrows %}true {% else %}{{ section.settings.enable_autoplay }}{% endif %}, 
-        imagesLoaded: false, 
-        lazyLoad: true, 
-        adaptiveHeight: false, 
-        cellAlign: '{{ section.settings.slider_mode }}', 
-        continuousAutoPlay: true, 
-        // groupCells: false, 
-        // watchCSS: false, 
-        contain: false, 
-        prevNextButtons: {{ section.settings.show_arrows }}, 
-        pageDots: {{ section.settings.show_dot }}, 
-        {% if section.settings.enable_autoplay == true %}autoPlay: {{ section.blocks.size }}000, {% endif %}
-        dragThreshold: 8, 
-        {% if section.settings.light_arrows == true %}arrowShape: {"x0": 20, "x1": 60, "y1": 40, "x2": 60, "y2": 35, "x3": 25},{% endif %}
-        selectedAttraction: 0.2,
-        friction: 0.8,
-        on: {
-          ready: function() {
-            // console.log('Flickity is ready');
-            videoControls(this)
-          },
-          change: function( index ) {
-            // console.log( 'Slide changed to' + index );
-            // console.log(this)
-            videoControls(this)
+      
+
+      {% if section.settings.enable_marquee == true %}
+        let options = {
+          accessibility: true,
+          resize: true,
+          wrapAround: true,
+          prevNextButtons: false,
+          pageDots: false,
+          percentPosition: true,
+          setGallerySize: true,
+        }
+
+        var flkty = new Flickity(elem, options);
+        
+        // Set initial position to be 0
+        flkty.x = 0;
+        
+        // Start the marquee animation
+        play();
+        
+        // Main function that 'plays' the marquee.
+        function play() {
+          // Set the decrement of position x
+          flkty.x -= 1.5;
+        
+          // Settle position into the slider
+          flkty.settle(flkty.x);
+        
+          // Set the requestId to the local variable
+          requestId = window.requestAnimationFrame(play);
+        }
+        
+        // Main function to cancel the animation.
+        function pause() {
+          if(requestId) {
+            // Cancel the animation
+            window.cancelAnimationFrame(requestId)
+        
+            // Reset the requestId for the next animation.
+            requestId = undefined;
           }
         }
-      }
+        
+        // Pause on hover/focus
+        document.querySelector(elem).addEventListener('mouseenter', e => {
+          console.log("mouseenter");
+          pause();
+        })
+        
+        // Unpause on mouse out / defocus
+        document.querySelector(elem).addEventListener('mouseleave', e => {
+          play();
+        })
+      {% else %}
+        let options = { 
+          freeScroll: true,
+          wrapAround: {% if section.settings.slider_mode == 'center' or section.settings.show_arrows %}true {% else %}{{ section.settings.enable_autoplay }}{% endif %}, 
+          imagesLoaded: true, 
+          lazyLoad: true, 
+          adaptiveHeight: false, 
+          cellAlign: '{{ section.settings.slider_mode }}', 
+          continuousAutoPlay: true, 
+          // groupCells: false, 
+          // watchCSS: false, 
+          contain: true, 
+          prevNextButtons: {{ section.settings.show_arrows }}, 
+          pageDots: {{ section.settings.show_dot }}, 
+          {% if section.settings.enable_autoplay == true %}autoPlay: {{ section.blocks.size }}000, {% endif %}
+          dragThreshold: 8, 
+          arrowShape: {"x0": 20, "x1": 60, "y1": 40, "x2": 60, "y2": 35, "x3": 25},
+          selectedAttraction: 0.2,
+          friction: 0.8,
+          on: {
+            ready: function() {
+              // console.log('Flickity is ready');
+              videoControls(this)
+            },
+            change: function( index ) {
+              // console.log( 'Slide changed to' + index );
+              // console.log(this)
+              videoControls(this)
+            }
+          }
+        }
 
-      var flkty = new Flickity(elem, options);
+        var flkty = new Flickity(elem, options);
+      {% endif %}
+
+      
       
       if(document.querySelector(elem).classList.contains("no-swipe-mobile") == true){
         console.log("no-swipe-mobile");
@@ -95,22 +153,15 @@
         }
       }
 
-      if(document.querySelector(elem).classList.contains("no-swipe-tab") == true){
-        console.log("no-swipe-desktop "+elem);
-        if(matchMedia('(min-width:750px) and (max-width:1200px)').matches){
-            var flkty = new Flickity(elem, options)
-            flkty.destroy()
-        }
-      }
-      
       if(document.querySelector(elem).classList.contains("no-swipe-desktop") == true){
         console.log("no-swipe-desktop "+elem);
-        if(matchMedia('(min-width:1201px)').matches){
+        if(matchMedia('(min-width:750px)').matches){
             var flkty = new Flickity(elem, options)
             flkty.destroy()
         }
       }
     }
+  
     document.addEventListener("DOMContentLoaded", function(){
       initializeFlickity{{ section.index }}(".init-flickity-{{ section.id }}")
     })
@@ -118,80 +169,161 @@
       initializeFlickity{{ section.index }}(".init-flickity-{{ section.id }}")
     })
   {% endif %}
-</script>
 
+  {% if section.settings.video-play-event == 'in-screen' %}
+    // Select all video cards
+    let {{ section.id | remove: "-" }}videoCards = document.querySelectorAll("#{{ section.id | remove: "-" }} video.video-div");
+
+    // Function to load and play video
+    function loadVideo(video) {
+      if (!video.getAttribute('src')) {
+        const videoSrc = video.getAttribute('video-src');
+        if (videoSrc) {
+          video.setAttribute('src', videoSrc);
+          video.load();
+          video.play();
+        }
+      } else {
+        video.play(); // If already loaded, just play
+      }
+    }
+
+    // Function to pause and reset video
+    function unloadVideo(video) {
+      video.pause();
+      video.currentTime = 0;
+      // Optional: Uncomment below to unload the video to save memory
+      // video.removeAttribute('src');
+      // video.load();
+    }
+  
+    // Intersection Observer to detect when videos enter viewport
+    let {{ section.id | remove: "-" }}observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          loadVideo(entry.target);
+        }
+      });
+    }, {
+      threshold: 0.25 // Trigger when 25% of the video is visible
+    });
+
+    {{ section.id | remove: "-" }}videoCards.forEach(video => {
+      {{ section.id | remove: "-" }}observer.observe(video);
+    })
+  {% endif %}
+
+  {% if section.settings.video-play-event == 'on-hover' %}
+    // Select all video cards
+    let {{ section.id | remove: "-" }}videoCards = document.querySelectorAll("#{{ section.id | remove: "-" }} video.video-div");
+    
+    // Function to load and play video
+    function loadVideo(video) {
+      if (!video.getAttribute('src')) {
+        const videoSrc = video.getAttribute('video-src');
+        if (videoSrc) {
+          video.setAttribute('src', videoSrc);
+          video.load();
+          video.play();
+        }
+      } else {
+        video.play(); // If already loaded, just play
+      }
+    }
+    
+    // Function to pause and reset video
+    function unloadVideo(video) {
+      video.pause();
+      video.currentTime = 0;
+      // Optional: Uncomment below to unload the video to save memory
+      // video.removeAttribute('src');
+      // video.load();
+    }
+    
+    // Attach observer and hover listeners
+    {{ section.id | remove: "-" }}videoCards.forEach(video => {
+      video.addEventListener('mouseenter', () => {
+        loadVideo(video);
+      });
+    
+      video.addEventListener('mouseleave', () => {
+        unloadVideo(video);
+      });
+    });
+  {% endif %}
+</script>
 
 <!-- Schema JSON -->
 
   {
-    "type": "header",
-    "content": "Slider Settings"
-  },
-  {
-    "type": "checkbox",
-    "id": "enable_slider",
-    "label": "Enable Slider",
-    "default": false
-  },
-  {
-    "type": "checkbox",
-    "id": "enable_desktop_slider",
-    "label": "Enable Desktop Slider",
-    "default": false
-  },
-  {
-    "type": "checkbox",
-    "id": "swipe_on_tab",
-    "default": false,
-    "label": "Enable Tab View Slider"
-  },
-  {
-    "type": "checkbox",
-    "id": "swipe_on_mobile",
-    "default": false,
-    "label": "Enable Mobile Slider"
-  },
-  {
-    "type": "checkbox",
-    "id": "show_dot",
-    "default": false,
-    "label": "Enable Dots"
-  },
-  {
-    "type": "checkbox",
-    "id": "show_arrows",
-    "default": false,
-    "label": "Enable Arrows"
-  },
-  {
-    "type": "checkbox",
-    "id": "light_arrows",
-    "default": false,
-    "label": "Light Arrows"
-  },
-  {
-    "type": "checkbox",
-    "id": "enable_autoplay",
-    "default": false,
-    "label": "Enable Autoplay"
-  },
-  {
-    "type": "select",
-    "id": "slider_mode",
-    "options": [
-      {
-        "value": "left",
-        "label": "Left"
-      },
-      {
-        "value": "center",
-        "label": "Center"
-      },
-      {
-        "value": "right",
-        "label": "Right"
-      }
-    ],
-    "default": "left",
-    "label": "Slider Cell Alignment"
-  },
+      "type": "header",
+      "content": "Slider Settings"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_desktop_slider",
+      "label": "Enable Desktop Slider",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "swipe_on_mobile",
+      "default": false,
+      "label": "Enable Mobile Slider"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dot",
+      "default": false,
+      "label": "Enable Dots"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "default": false,
+      "label": "Enable Arrows"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_autoplay",
+      "default": false,
+      "label": "Enable Autoplay"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_selected",
+      "default": false,
+      "label": "Show Selected"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_overflow",
+      "default": false,
+      "label": "Show Overflow"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_marquee",
+      "default": false,
+      "label": "Enable Marquee"
+    },
+    {
+      "type": "select",
+      "id": "slider_mode",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left",
+      "label": "Slider Cell Alignment"
+    },

@@ -1,0 +1,186 @@
+{% comment %}
+  popup_id: it's mandatory, it gives identity to popup & it's script.
+  logo_url: it will allow you to enable additional header with logo.
+  content: it's mandtory to pass the content to popup body.
+  maxwidth: Assign fixed width to the popup body
+{% endcomment %}
+
+<section id="{{- popup_id -}}" class="sticky-cta-page-{{ popup_id }}">
+  {% if maxwidth %}<span class="overlay-close-trigger" onclick="{{ popup_id }}toggle_ctaOverScreen();">&nbsp;</span>{% endif %}
+  <div class="popup-body page-width container-sm">
+    <div class="grid">
+      <div class="header {% if logo_url == blank %}float-close-trigger{% else %}have-logo{% endif %} grid__item one-whole">
+        {% if logo_url != blank %}
+        <div class="header-column">&nbsp;</div>
+        <div class="header-column logo">{% if logo_url != blank %}<img src="{{ logo_url }}" alt="logo" width="180" />{% endif %}</div>
+        <div class="header-column close-action"><button class="close_model" onclick="{{ popup_id }}toggle_ctaOverScreen();"><span>Close</span> <svg width="26" height="26" style="margin-left: 10px;" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/>
+        </svg></button></div>
+        {% else %}
+          <button class="close_model" onclick="{{ popup_id }}toggle_ctaOverScreen();">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="#0F1729"/></svg>
+          </button>
+        {% endif %}
+      </div>
+    </div>
+    <!-- Add Content Here -->
+    {{ content }}
+  </div>
+</section> 
+
+<style>
+  html.show-sticky-cta-page-{{ popup_id }}-{{ popup_id }}{
+    overflow: hidden;
+  }
+  html.show-sticky-cta-page-{{ popup_id }}-{{ popup_id }} body.unloading:before{
+  	display:none;
+  }
+  section.sticky-cta-page-{{ popup_id }} .header img.header-logo {
+      max-width: 120px; 
+  }
+  section.sticky-cta-page-{{ popup_id }} .product-upsell {
+      flex-wrap: wrap;
+  }
+  section.sticky-cta-page-{{ popup_id }} .header .header-column {
+      flex: 1;
+      display: flex;
+  }
+  section.sticky-cta-page-{{ popup_id }} .header .header-column.logo {
+      justify-content: center;
+  }
+  section.sticky-cta-page-{{ popup_id }} .header .header-column.close-action {
+      justify-content: flex-end;
+      display: flex;
+  }
+  @media(max-width: 750px){
+    section.sticky-cta-page-{{ popup_id }} .product-upsell .upsell-item {
+        flex: auto;
+    }
+    section.sticky-cta-page-{{ popup_id }} .header button.close_model span {
+        display: none;
+    }
+  }
+	
+  .site-header__logo a {
+    color: #000;
+    border: none;
+  }
+  section.sticky-cta-page-{{ popup_id }} {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: #fff;
+    z-index: 999999;
+    transition: .3s all ease-in-out;
+    overflow: hidden;
+    overflow-y: auto;
+  }
+  html:not(.show-sticky-cta-page-{{ popup_id }}-{{ popup_id }}) section.sticky-cta-page-{{ popup_id }} {
+    height: 0;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+  }
+  html.show-sticky-cta-page-{{ popup_id }}-{{ popup_id }} section.sticky-cta-page-{{ popup_id }} {
+    height: 100%;
+    border-radius: 0;
+    opacity: 1;
+  }
+  section.sticky-cta-page-{{ popup_id }} .popup-body {
+      background-color: #fff;
+      max-width: {{ maxwidth }}px;
+      position: relative;
+  }
+  section.sticky-cta-page-{{ popup_id }} .header.float-close-trigger {
+      position: absolute;
+      justify-content: flex-end !important;
+      width: 100%;
+      left: 0;
+      padding-right: 20px;
+  }
+  {% if maxwidth %}
+  section#{{ popup_id }} {
+      background-color: #9a9a9a66;
+      backdrop-filter: blur(1px);
+      padding: 5% 0;
+      overflow-y: auto;
+  }
+  section#{{ popup_id }} span.overlay-close-trigger {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      top: 0;
+      height: 100%;
+      z-index: -1;
+  }
+  section#{{ popup_id }} .popup-body {
+      background-color: #fff;
+      max-width: 800px;
+  }
+  {% endif %}
+  section.sticky-cta-page-{{ popup_id }} .header.float-close-trigger svg {
+      border-radius: 50%;
+      border: 2px solid #2f5166;
+      padding: 4px;
+      width: 30px;
+      height: 30px;
+  }
+  section.sticky-cta-page-{{ popup_id }} .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  section.sticky-cta-page-{{ popup_id }} .header a.navbar-brand {
+    display: inline-block;
+    max-width: 180px;
+  }
+  section.sticky-cta-page-{{ popup_id }} .header button.close_model {
+      border-style: none;
+      background-color: transparent;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      color: maroon;
+  }
+</style>
+<script>
+  let {{ popup_id }}moveback = false;
+  let {{ popup_id }}cta_hashAddress = '#{{- popup_id -}}'
+  function {{ popup_id }}toggle_ctaOverScreen({{ popup_id }}moveback){
+    // Use onclick="toggle_ctaOverScreen()" to toggle cta popup
+    // console.log({moveback});
+    let site_container = document.querySelector('html');
+    let sticky_cta_page_class = 'show-sticky-cta-page-{{ popup_id }}-{{ popup_id }}';
+
+    if(site_container.classList.contains(sticky_cta_page_class)){
+      if({{ popup_id }}moveback == true){
+        window.location.hash = '';
+        site_container.classList.remove(sticky_cta_page_class);
+      }else{
+        site_container.classList.remove(sticky_cta_page_class);
+        history.pushState(null, null, '#');
+      }
+    }else{
+      site_container.classList.add(sticky_cta_page_class);
+      document.querySelector('body').classList.remove('unloading');
+      history.pushState(null, null, cta_hashAddress);
+    }
+  }
+
+  if(window.location.hash == {{ popup_id }}cta_hashAddress){
+    {{ popup_id }}toggle_ctaOverScreen();
+  }
+
+  window.onhashchange = function() {
+    {{ popup_id }}toggle_ctaOverScreen({{ popup_id }}moveback = true);
+  }
+</script> 
